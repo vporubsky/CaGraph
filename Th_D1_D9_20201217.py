@@ -12,7 +12,7 @@ Context B - neutral
 # Todo: add statistics comparing D1 and D9 with D5
 # Todo: compute statistics on populations of random networks, not specimen-matched single examples of random networks
 import logging
-from neuronal_network_graph import neuronal_network_graph as nng
+from neuronal_network_graph import DGNetworkGraph as nng
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
