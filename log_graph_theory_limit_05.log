@@ -1,0 +1,21 @@
+2020-10-29 11:01:50 __graph_theory_limit_log__ INFO     Begin logging...
+2020-10-29 11:01:50 __graph_theory_limit_log__ INFO     Analyses performed with edge weight threshold: 0.5
+2020-10-29 11:01:50 __graph_theory_limit_log__ INFO     --- Analyzing Day 1 ---
+2020-10-29 11:01:50 __graph_theory_limit_log__ INFO     1055-1_D1 (neurons: 46, con_A edges: 17, con_B edges: 21) all analyses successful.
+2020-10-29 11:01:50 __graph_theory_limit_log__ INFO     1055-2_D1 (neurons: 165, con_A edges: 267, con_B edges: 224) all analyses successful.
+2020-10-29 11:01:51 __graph_theory_limit_log__ INFO     1055-3_D1 (neurons: 122, con_A edges: 43, con_B edges: 40) all analyses successful.
+2020-10-29 11:01:51 __graph_theory_limit_log__ INFO     1055-4_D1 (neurons: 93, con_A edges: 100, con_B edges: 71) all analyses successful.
+2020-10-29 11:01:51 __graph_theory_limit_log__ INFO     14-0_D1 (neurons: 48, con_A edges: 10, con_B edges: 125) all analyses successful.
+2020-10-29 11:01:51 __graph_theory_limit_log__ INFO     --- Analyzing Day 5 ---
+2020-10-29 11:01:51 __graph_theory_limit_log__ INFO     1055-1_D5 (neurons: 54, con_A edges: 29, con_B edges: 39) all analyses successful.
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     1055-2_D5 (neurons: 156, con_A edges: 239, con_B edges: 327) all analyses successful.
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     1055-3_D5 (neurons: 68, con_A edges: 27, con_B edges: 74) all analyses successful.
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     1055-4_D5 (neurons: 100, con_A edges: 192, con_B edges: 76) all analyses successful.
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     14-0_D5 (neurons: 52, con_A edges: 53, con_B edges: 19) all analyses successful.
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     --- Analyzing Day 9 ---
+2020-10-29 11:01:52 __graph_theory_limit_log__ INFO     1055-1_D9 (neurons: 49, con_A edges: 19, con_B edges: 27) all analyses successful.
+2020-10-29 11:01:53 __graph_theory_limit_log__ INFO     1055-2_D9 (neurons: 142, con_A edges: 247, con_B edges: 175) all analyses successful.
+2020-10-29 11:01:53 __graph_theory_limit_log__ INFO     1055-3_D9 (neurons: 111, con_A edges: 34, con_B edges: 47) all analyses successful.
+2020-10-29 11:01:53 __graph_theory_limit_log__ INFO     1055-4_D9 (neurons: 107, con_A edges: 95, con_B edges: 120) all analyses successful.
+2020-10-29 11:01:54 __graph_theory_limit_log__ INFO     14-0_D9 (neurons: 79, con_A edges: 208, con_B edges: 21) all analyses successful.
+2020-10-29 11:01:54 __graph_theory_limit_log__ INFO     End logging.
