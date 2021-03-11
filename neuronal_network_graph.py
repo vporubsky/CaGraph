@@ -1,4 +1,3 @@
-# import logging
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -8,20 +7,17 @@ import os
 from mne.viz import plot_connectivity_circle
 from statsmodels.tsa.stattools import grangercausalitytests
 
-
-# _log = logging.getLogger('__neuronal_network_graph_log__')
-
 class NeuronalNetworkGraph:
     """
     Created: 12/10/2019
-    Ongoing development:
+    Ongoing development: 03/22/2021
     Published:
     Author: Veronica Porubsky
 
-    Class: neuronal_network_graph(csv_file)
+    Class: NeuronalNetworkGraph(csv_file)
     =====================
 
-    This class provides functionality to easily visualize time-series data of 
+    This class provides functionality to easily visualize time-series data of
     neuronal activity and to compute correlation metrics of neuronal networks,
     and generate graph objects which can be analyzed using graph theory.
     There are several graph theoretical metrics for further analysis of
@@ -34,7 +30,7 @@ class NeuronalNetworkGraph:
         A string pointing to the file to be used for data analysis.
     identifiers : list
         A list of identifiers for each row of calcium imaging data in
-        the csv_file passed to neuronal_network_graph
+        the csv_file passed to NeuronalNetworkGraph
 
     Methods
     -------
@@ -101,18 +97,18 @@ class NeuronalNetworkGraph:
 
     # Todo: determine how to integrate cell-matched metadata
     def get_cell_matching_dict(self):
-        '''
+        """
         Returns a dictionary of neuron activity indices for day 1 and day 9
         for each mouse, for all neurons which remain in the field of view for
         both days.
-        '''
+        """
         return
 
     # Todo: may be superfluous
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
-        '''
+        """
         timepoints: tuple
-        '''
+        """
         if not data_matrix:
             data_matrix = self.neuron_dynamics
         if time_points:
@@ -122,7 +118,7 @@ class NeuronalNetworkGraph:
     # Todo: return list of graphs using specified time-subsampling
     # Todo: rename subsample_indices
     def get_time_subsampled_graphs(self, subsample_indices, threshold = 0.3):
-        '''subsample_indices = list of tuples'''
+        """subsample_indices = list of tuples"""
         subsampled_graphs = []
         for i in subsample_indices:
             subsampled_graphs.append(
@@ -131,7 +127,7 @@ class NeuronalNetworkGraph:
         return subsampled_graphs
 
     def get_time_subsampled_correlation_matrix(self, subsample_indices, threshold=0.3):
-        '''subsample_indices = list of tuples'''
+        """subsample_indices = list of tuples"""
         subsampled_corr_mat = []
         for i in subsample_indices:
             subsampled_corr_mat.append(self.get_pearsons_correlation_matrix(time_points=i))
@@ -154,8 +150,8 @@ class NeuronalNetworkGraph:
         return adj_mat.astype(int)
 
     def get_weight_matrix(self):
-        '''Returns a weighted connectivity matrix with zero
-        along the diagonal. No threshold is applied'''
+        """Returns a weighted connectivity matrix with zero
+        along the diagonal. No threshold is applied"""
         weight_matrix = self.pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
@@ -228,8 +224,8 @@ class NeuronalNetworkGraph:
     # Todo: ensure the binary and weighted graphs are built correctly
     # Todo: ensure this is the most efficient graph building method
     def get_network_graph(self, corr_mat=None, threshold = 0.3, weighted=False):
-        '''Must pass a np.ndarray type object to corr_mat, or the Pearsons
-        correlation matrix for the full dataset will be used.'''
+        """Must pass a np.ndarray type object to corr_mat, or the Pearsons
+        correlation matrix for the full dataset will be used."""
         if not isinstance(corr_mat, np.ndarray):
             corr_mat = self.pearsons_correlation_matrix  # update to include other correlation metrics
         G = nx.Graph()
@@ -248,16 +244,16 @@ class NeuronalNetworkGraph:
         return G
 
     def get_random_graph(self, threshold = 0.3):
-        '''nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
-        It uses an existing graph and randomizes it'''
+        """nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
+        It uses an existing graph and randomizes it"""
         G = self.get_network_graph(threshold=threshold)
         G = nx.algorithms.smallworld.random_reference(G)
         return G
 
     # Todo: finish implementation of random graph
     def get_erdos_renyi_graph(self, graph=None, threshold = 0.3):
-        '''Generates an Erdos-Renyi random graph using a network edge coverage
-        metric computed from the graph to be randomized.'''
+        """Generates an Erdos-Renyi random graph using a network edge coverage
+        metric computed from the graph to be randomized."""
         if not graph:
             num_nodes = self.num_neurons
             con_probability = self.get_network_coverage(threshold=threshold)
@@ -480,20 +476,20 @@ class NeuronalNetworkGraph:
 
     # Todo: decide if this is necessary for each context
     def get_degree(self, threshold = 0.3):
-        '''Returns iterator object of (node, degree) pairs.'''
+        """Returns iterator object of (node, degree) pairs."""
         G = self.get_network_graph_from_matrix(threshold=threshold)
         return G.degree
 
     # Todo: get graph degree
     def get_network_degree(self):
-        '''Get the degree of the network'''
+        """Get the degree of the network"""
 
         return
 
     # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
     # Todo: fix for loop implementation - clean it up
     def get_correlated_pair_ratio(self, threshold=0.3, G=None):
-        '''# pairs/ total # cells in FOV --'''
+        """# pairs/ total # cells in FOV --"""
         if not G:
             G = self.get_network_graph_from_matrix(threshold=threshold)
         degree_view = self.get_degree(G)
@@ -505,8 +501,8 @@ class NeuronalNetworkGraph:
     # Todo: rename graph argument if necessary
     # Todo: adapt for directed - current total possible edges is for undirected
     def get_network_coverage(self, graph=None, threshold = 0.3):
-        '''Returns the percentage of edges present in the network
-        out of the total possible edges.'''
+        """Returns the percentage of edges present in the network
+        out of the total possible edges."""
         possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
         if not graph:
             graph = self.get_network_graph(threshold=threshold)
@@ -514,17 +510,16 @@ class NeuronalNetworkGraph:
 
     # Todo: write function
     def get_eigenvector_centrality(self, graph=None, threshold = 0.3):
-        '''Compute the eigenvector centrality of all network nodes, which is the
-        measure of influence each node has on the network.'''
+        """Compute the eigenvector centrality of all network nodes, which is the
+        measure of influence each node has on the network."""
         return
 
 
 
 class DGNetworkGraph(NeuronalNetworkGraph):
 
-    def __init__(self):
-        #Todo: add init
-        return
+    # Pass __init__ from parent class
+    pass
 
     def get_context_A_graph(self, threshold = 0.3):
         corr_mat = self.con_A_pearsons_correlation_matrix
@@ -676,4 +671,5 @@ class DGNetworkGraph(NeuronalNetworkGraph):
 
 class BLANetworkGraph(NeuronalNetworkGraph):
 
-    def __init__(self):
+    # Pass __init__ from parent class
+    pass
