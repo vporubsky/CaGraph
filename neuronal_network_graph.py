@@ -7,12 +7,12 @@ import os
 from mne.viz import plot_connectivity_circle
 from statsmodels.tsa.stattools import grangercausalitytests
 
+
 class NeuronalNetworkGraph:
     """
-    Created: 12/10/2019
     Ongoing development: 03/22/2021
-    Published:
-    Author: Veronica Porubsky
+    Published: XX/XX/XXXX
+    Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
     Class: NeuronalNetworkGraph(csv_file)
     =====================
@@ -34,10 +34,7 @@ class NeuronalNetworkGraph:
 
     Methods
     -------
-    get_context_A_graph(threshold = 0.3)
-        Generates a graph for the...
-
-    get_context_B_graph(threshold = 0.3)
+    get_laplacian_matrix()
         ...
     Todo: **** Make additional classes within neuronal_network_graph so that analyses can be performed by
             subsampling many graphs or by doing simple divisions on a full dataset
@@ -61,6 +58,11 @@ class NeuronalNetworkGraph:
     """
 
     def __init__(self, csv_file, identifiers=None):
+        """
+
+        :param csv_file:
+        :param identifiers:
+        """
         if not csv_file.endswith('csv'):
             raise TypeError
         self.data_filename = str(csv_file)
@@ -70,7 +72,7 @@ class NeuronalNetworkGraph:
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
         if not identifiers:
             self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1, \
-                                  np.shape(self.neuron_dynamics)[0]).astype(int)
+                                      np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = np.array(identifiers)
         self.context_A_dynamics = self.neuron_dynamics[:, 0:1800]
@@ -80,34 +82,39 @@ class NeuronalNetworkGraph:
         self.con_B_pearsons_correlation_matrix = np.corrcoef(self.context_B_dynamics)
 
     # Todo: update description
-    def get_laplacian_matrix(self, graph = None, threshold = 0.3):
-        '''Returns the Laplacian matrix of the specified graph.
-         This matrix '''
+    def get_laplacian_matrix(self, graph=None, threshold=0.3):
+        """
+        Returns the Laplacian matrix of the specified graph.
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             graph = self.get_network_graph_from_matrix(threshold=threshold)
         return nx.laplacian_matrix(graph)
 
     # Todo: make this flexible enough to allow any matrix to be passed
-    def get_network_graph_from_matrix(self, threshold = 0.3, weighted=False):
-        '''Automatically generate graph object from numpy adjacency matrix.'''
+    def get_network_graph_from_matrix(self, threshold=0.3, weighted=False):
+        """
+        Automatically generate graph object from numpy adjacency matrix.
+
+        :param threshold:
+        :param weighted:
+        :return:
+        """
         if weighted:
             return nx.from_numpy_matrix(self.get_weight_matrix())
         else:
             return nx.from_numpy_matrix(self.get_adjacency_matrix(threshold=threshold))
 
-    # Todo: determine how to integrate cell-matched metadata
-    def get_cell_matching_dict(self):
-        """
-        Returns a dictionary of neuron activity indices for day 1 and day 9
-        for each mouse, for all neurons which remain in the field of view for
-        both days.
-        """
-        return
-
     # Todo: may be superfluous
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
         """
-        timepoints: tuple
+
+        :param data_matrix:
+        :param time_points: tuple
+        :return:
         """
         if not data_matrix:
             data_matrix = self.neuron_dynamics
@@ -117,8 +124,13 @@ class NeuronalNetworkGraph:
 
     # Todo: return list of graphs using specified time-subsampling
     # Todo: rename subsample_indices
-    def get_time_subsampled_graphs(self, subsample_indices, threshold = 0.3):
-        """subsample_indices = list of tuples"""
+    def get_time_subsampled_graphs(self, subsample_indices, threshold=0.3):
+        """
+
+        :param subsample_indices: list of tuples
+        :param threshold:
+        :return:
+        """
         subsampled_graphs = []
         for i in subsample_indices:
             subsampled_graphs.append(
@@ -127,13 +139,22 @@ class NeuronalNetworkGraph:
         return subsampled_graphs
 
     def get_time_subsampled_correlation_matrix(self, subsample_indices, threshold=0.3):
-        """subsample_indices = list of tuples"""
+        """
+
+        :param subsample_indices: list of tuples
+        :param threshold:
+        :return:
+        """
         subsampled_corr_mat = []
         for i in subsample_indices:
             subsampled_corr_mat.append(self.get_pearsons_correlation_matrix(time_points=i))
         return subsampled_corr_mat
 
     def get_granger_causality_scores_matrix(self):
+        """
+
+        :return:
+        """
         r, c = np.shape(self.neuron_dynamics)
         gc_matrix = np.zeros((r, r))
         for row in range(r):
@@ -144,29 +165,52 @@ class NeuronalNetworkGraph:
         return gc_matrix
 
     # Todo: refine adjacency matrix
-    def get_adjacency_matrix(self, threshold = 0.3):
+    def get_adjacency_matrix(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         adj_mat = (self.pearsons_correlation_matrix > threshold)
         np.fill_diagonal(adj_mat, 0)
         return adj_mat.astype(int)
 
     def get_weight_matrix(self):
-        """Returns a weighted connectivity matrix with zero
-        along the diagonal. No threshold is applied"""
+        """Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
+
+        :return:
+        """
+
         weight_matrix = self.pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
     def plot_correlation_heatmap(self, correlation_matrix=None):
+        """
+
+        :param correlation_matrix:
+        :return:
+        """
         if not correlation_matrix:
             correlation_matrix = self.get_pearsons_correlation_matrix()
         sns.heatmap(correlation_matrix, vmin=0, vmax=1)
         return
 
     def get_single_neuron_timecourse(self, neuron_trace_number):
+        """
+
+        :param neuron_trace_number:
+        :return:
+        """
         neuron_timecourse_selection = neuron_trace_number
         return np.vstack((self.time, self.neuron_dynamics[neuron_timecourse_selection, :]))
 
     def plot_single_neuron_timecourse(self, neuron_trace_number):
+        """
+
+        :param neuron_trace_number:
+        :return:
+        """
         neuron_timecourse_selection = neuron_trace_number
         count = 1
         x_tick_array = []
@@ -187,7 +231,14 @@ class NeuronalNetworkGraph:
     # Todo: plot stacked timecourses based on input neuron indices from graph theory analyses
     # Todo: adjust y axis title for normalization
     # Todo add time ticks
-    def plot_subnetworks_timecourses(self, graph=None, threshold = 0.3, title=None):
+    def plot_subnetworks_timecourses(self, graph=None, threshold=0.3, title=None):
+        """
+
+        :param graph:
+        :param threshold:
+        :param title:
+        :return:
+        """
         subnetworks = self.get_subnetworks(graph=graph, threshold=threshold)
         for subnetwork in subnetworks:
             count = 0
@@ -205,6 +256,10 @@ class NeuronalNetworkGraph:
             plt.show()
 
     def plot_all_neurons_timecourse(self):
+        """
+
+        :return:
+        """
         plt.figure(num=2, figsize=(10, 2))
         count = 1
         x_tick_array = []
@@ -223,9 +278,16 @@ class NeuronalNetworkGraph:
 
     # Todo: ensure the binary and weighted graphs are built correctly
     # Todo: ensure this is the most efficient graph building method
-    def get_network_graph(self, corr_mat=None, threshold = 0.3, weighted=False):
-        """Must pass a np.ndarray type object to corr_mat, or the Pearsons
-        correlation matrix for the full dataset will be used."""
+    def get_network_graph(self, corr_mat=None, threshold=0.3, weighted=False):
+        """
+        Must pass a np.ndarray type object to corr_mat, or the Pearsons
+        correlation matrix for the full dataset will be used.
+
+        :param corr_mat:
+        :param threshold:
+        :param weighted:
+        :return:
+        """
         if not isinstance(corr_mat, np.ndarray):
             corr_mat = self.pearsons_correlation_matrix  # update to include other correlation metrics
         G = nx.Graph()
@@ -243,17 +305,28 @@ class NeuronalNetworkGraph:
                         G.add_edge(str(self.labels[i]), str(self.labels[j]))
         return G
 
-    def get_random_graph(self, threshold = 0.3):
-        """nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
-        It uses an existing graph and randomizes it"""
+    def get_random_graph(self, threshold=0.3):
+        """
+        nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
+        It uses an existing graph and randomizes it
+
+        :param threshold:
+        :return:
+        """
         G = self.get_network_graph(threshold=threshold)
         G = nx.algorithms.smallworld.random_reference(G)
         return G
 
     # Todo: finish implementation of random graph
-    def get_erdos_renyi_graph(self, graph=None, threshold = 0.3):
-        """Generates an Erdos-Renyi random graph using a network edge coverage
-        metric computed from the graph to be randomized."""
+    def get_erdos_renyi_graph(self, graph=None, threshold=0.3):
+        """
+        Generates an Erdos-Renyi random graph using a network edge coverage
+        metric computed from the graph to be randomized.
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             num_nodes = self.num_neurons
             con_probability = self.get_network_coverage(threshold=threshold)
@@ -264,6 +337,12 @@ class NeuronalNetworkGraph:
         return erdos_renyi_rand_graph
 
     def plot_graph_network(self, graph, position):
+        """
+
+        :param graph:
+        :param position:
+        :return:
+        """
         nx.draw_networkx_nodes(graph, pos=position, node_color='b', node_size=100)
         nx.draw_networkx_edges(graph, pos=position, edge_color='b', )
         nx.draw_networkx_labels(graph, pos=position, font_color='w', font_family='sans-serif')
@@ -273,13 +352,15 @@ class NeuronalNetworkGraph:
 
         # Todo: write function
 
-    def get_num_retained_connections(self):
-
-        return
-
     # Todo: getting stuck on small world analysis when computing sigma -- infinite loop?
     # Todo: this^ may be due to computing the average clustering coefficient or the average shortest path length -- test
-    def get_smallworld_largest_subnetwork(self, graph=None, threshold = 0.3):
+    def get_smallworld_largest_subnetwork(self, graph=None, threshold=0.3):
+        """
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             graph = self.get_largest_subnetwork_graph(threshold=threshold)
         else:
@@ -291,7 +372,14 @@ class NeuronalNetworkGraph:
                 'Largest subnetwork has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
     # Todo: DO NOT USE FUNCTION, NOT UPDATED
-    def get_smallworld_all_subnetworks(self, corr_matrix, G=None, threshold = 0.3):
+    def get_smallworld_all_subnetworks(self, corr_matrix, G=None, threshold=0.3):
+        """
+
+        :param corr_matrix:
+        :param G:
+        :param threshold:
+        :return:
+        """
         if not G:
             G = self.get_network_graph(corr_matrix, threshold)
         G_max_subgraph_generator = sorted(nx.connected_components(G), key=len, reverse=True)
@@ -310,7 +398,13 @@ class NeuronalNetworkGraph:
     # Todo: define hits_threshold based on tail of powerlaw distribution
     # Todo: determine best practices for setting threshold of powerlaw distribution to find hubs
     # Todo: ensure that it is ok to use median and standard deviation
-    def get_hubs(self, graph=None, threshold = 0.3):
+    def get_hubs(self, graph=None, threshold=0.3):
+        """
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             hubs, authorities = nx.hits_numpy(self.get_network_graph(threshold=threshold))
         else:
@@ -324,7 +418,13 @@ class NeuronalNetworkGraph:
 
     # Todo: subnetworks - all, change graph agument to something more meaningful
     # Todo: test get_subnetworks with no graph specified
-    def get_subnetworks(self, graph=None, threshold = 0.3):
+    def get_subnetworks(self, graph=None, threshold=0.3):
+        """
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             connected_components = list(nx.connected_components(self.get_network_graph(threshold=threshold)))
         else:
@@ -335,7 +435,13 @@ class NeuronalNetworkGraph:
 
     # Todo: Return subnetwork graphs -- clean-up
     # Todo: decide whether to use "graph" or "G"
-    def get_largest_subnetwork_graph(self, graph=None, threshold = 0.3):
+    def get_largest_subnetwork_graph(self, graph=None, threshold=0.3):
+        """
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         if not graph:
             graph = self.get_network_graph(threshold=threshold)
         largest_component = max(nx.connected_components(graph), key=len)
@@ -343,6 +449,12 @@ class NeuronalNetworkGraph:
 
     # Todo: review get_stability func
     def get_stability(self, num_folds, threshold):
+        """
+
+        :param num_folds:
+        :param threshold:
+        :return:
+        """
         num_pts = int(np.floor(np.shape(self.neuron_dynamics)[1] / num_folds))
         r, c = np.shape(self.neuron_dynamics)
         stability_mat = np.zeros((r, r))
@@ -367,6 +479,13 @@ class NeuronalNetworkGraph:
         return percent_stability, (neuron_1_index, neuron_2_index)
 
     def get_evolving_circle_graph_network(self, num_folds, gif_name, pause_duration=3):
+        """
+
+        :param num_folds:
+        :param gif_name:
+        :param pause_duration:
+        :return:
+        """
         num_pts = int(np.floor(np.shape(self.neuron_dynamics)[1] / num_folds))
         images = []
         path = os.getcwd()
@@ -395,13 +514,29 @@ class NeuronalNetworkGraph:
 
     # Todo: clean-up initial logic
     def plot_circle_graph_network(self, corr_mat=None, num_lines=20, title=None, subplots=None, fig=None):
+        """
+
+        :param corr_mat:
+        :param num_lines:
+        :param title:
+        :param subplots:
+        :param fig:
+        :return:
+        """
         if not isinstance(corr_mat, np.ndarray):
             corr_mat = self.pearsons_correlation_matrix
-        return plot_connectivity_circle(corr_mat, self.labels, n_lines=num_lines, colormap='winter', textcolor='black', facecolor='white', node_colors = ['grey'], colorbar=True, colorbar_size=0.4, colorbar_pos=(1, -0.2), fontsize_names=0, padding=6.0)
+        return plot_connectivity_circle(corr_mat, self.labels, n_lines=num_lines, colormap='winter', textcolor='black',
+                                        facecolor='white', node_colors=['grey'], colorbar=True, colorbar_size=0.4,
+                                        colorbar_pos=(1, -0.2), fontsize_names=0, padding=6.0)
 
         # Todo: update spike inference algorithm, allow setting of algorithm hyperparameters
 
     def plot_spikes(self, neuron_trace_number):
+        """
+
+        :param neuron_trace_number:
+        :return:
+        """
         neuron_calcium_data = rpy2.robjects.vectors.FloatVector(
             self.neuron_dynamics[neuron_trace_number - 1, :].tolist())
         fit = lzsi.estimateSpikes(neuron_calcium_data, **{'gam': 0.97, 'lambda': 5, 'type': "ar1"})
@@ -422,6 +557,10 @@ class NeuronalNetworkGraph:
         # Todo: update spike inference algorithm
 
     def get_fitted_timecourse_array(self):
+        """
+
+        :return:
+        """
         for i in range(np.shape(self.neuron_dynamics)[0]):
             neuron_calcium_data = rpy2.robjects.vectors.FloatVector(self.neuron_dynamics[i, :].tolist())
             fit = lzsi.estimateSpikes(neuron_calcium_data, **{'gam': 0.97, 'lambda': 5, 'type': "ar1"})
@@ -433,6 +572,10 @@ class NeuronalNetworkGraph:
 
     # Todo: update spike inference algorithm
     def infer_spike_array(self):
+        """
+
+        :return:
+        """
         for i in range(np.shape(self.neuron_dynamics)[0]):
             neuron_calcium_data = rpy2.robjects.vectors.FloatVector(self.neuron_dynamics[i, :].tolist())
             fit = lzsi.estimateSpikes(neuron_calcium_data, **{'gam': 0.97, 'lambda': 5, 'type': "ar1"})
@@ -452,6 +595,10 @@ class NeuronalNetworkGraph:
 
     # Todo: update spike inference algorithm
     def plot_spike_raster(self):
+        """
+
+        :return:
+        """
         spike_array, spike_times = self.infer_spike_array()
         plt.eventplot(spike_times, linelengths=0.5)
         plt.title('Spike raster plot')
@@ -462,66 +609,120 @@ class NeuronalNetworkGraph:
 
     # Todo: write function
     def get_path_length(self):
-        '''Returns the characteristic path length.'''
+        """
+        Returns the characteristic path length.
+
+        :return:
+        """
         return
 
     # Todo: test function
     def get_clustering_coefficient(self, threshold=0.3, G=None):
+        """
+
+        :param threshold:
+        :param G:
+        :return:
+        """
         if not G:
             G = self.get_network_graph_from_matrix(threshold=threshold)
         degree_view = nx.clustering(G)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return clustering_coefficient
 
     # Todo: decide if this is necessary for each context
-    def get_degree(self, threshold = 0.3):
-        """Returns iterator object of (node, degree) pairs."""
+    def get_degree(self, threshold=0.3):
+        """
+        Returns iterator object of (node, degree) pairs.
+
+        :param threshold:
+        :return:
+        """
         G = self.get_network_graph_from_matrix(threshold=threshold)
         return G.degree
 
     # Todo: get graph degree
     def get_network_degree(self):
-        """Get the degree of the network"""
+        """
+        Returns the degree of the network
+
+        :return:
+        """
 
         return
 
     # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
     # Todo: fix for loop implementation - clean it up
     def get_correlated_pair_ratio(self, threshold=0.3, G=None):
-        """# pairs/ total # cells in FOV --"""
+        """
+        # pairs/ total # cells in FOV
+
+        :param threshold:
+        :param G:
+        :return:
+        """
         if not G:
             G = self.get_network_graph_from_matrix(threshold=threshold)
         degree_view = self.get_degree(G)
         correlated_pair_ratio = []
-        [correlated_pair_ratio.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return correlated_pair_ratio
 
     # Todo: get coverage -- figure out if coverage is the correct term
     # Todo: rename graph argument if necessary
     # Todo: adapt for directed - current total possible edges is for undirected
-    def get_network_coverage(self, graph=None, threshold = 0.3):
-        """Returns the percentage of edges present in the network
-        out of the total possible edges."""
+    def get_network_coverage(self, graph=None, threshold=0.3):
+        """
+        Returns the percentage of edges present in the network
+        out of the total possible edges.
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
         if not graph:
             graph = self.get_network_graph(threshold=threshold)
         return len(graph.edges) / possible_edges
 
     # Todo: write function
-    def get_eigenvector_centrality(self, graph=None, threshold = 0.3):
-        """Compute the eigenvector centrality of all network nodes, which is the
-        measure of influence each node has on the network."""
+    def get_eigenvector_centrality(self, graph=None, threshold=0.3):
+        """
+        Compute the eigenvector centrality of all network nodes, which is the
+        measure of influence each node has on the network.
+
+        :param graph:
+        :param threshold:
+        :return:
+        """
         return
 
 
-
 class DGNetworkGraph(NeuronalNetworkGraph):
+    """
 
+    """
     # Pass __init__ from parent class
     pass
 
-    def get_context_A_graph(self, threshold = 0.3):
+    # Todo: Enable integration of cell-matched metadata
+    def get_cell_matching_dict(self):
+        """
+        Returns a dictionary of neuron activity indices for day 1 and day 9
+        for each mouse, for all neurons which remain in the field of view for
+        both days.
+
+        :return:
+        """
+        return
+
+    def get_context_A_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         corr_mat = self.con_A_pearsons_correlation_matrix
         context_A_graph = nx.Graph()
         for i in range(len(self.labels)):
@@ -532,7 +733,12 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         # _log.info('Context A graph generated.')
         return context_A_graph
 
-    def get_context_B_graph(self, threshold = 0.3):
+    def get_context_B_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         corr_mat = self.con_B_pearsons_correlation_matrix
         context_B_graph = nx.Graph()
         for i in range(len(self.labels)):
@@ -543,19 +749,34 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         # _log.info('Context B graph generated.')
         return context_B_graph
 
-    def get_context_A_subnetworks(self, threshold = 0.3):
+    def get_context_A_subnetworks(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         connected_components_A = list(nx.connected_components(self.get_context_A_graph(threshold=threshold)))
         subnetwork_A = []
         [subnetwork_A.append(list(map(int, x))) for x in connected_components_A if len(x) > 1]
         return subnetwork_A
 
-    def get_context_B_subnetworks(self, threshold = 0.3):
+    def get_context_B_subnetworks(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         connected_components_B = list(nx.connected_components(self.get_context_B_graph(threshold=threshold)))
         subnetwork_B = []
         [subnetwork_B.append(list(map(int, x))) for x in connected_components_B if len(x) > 1]
         return subnetwork_B
 
-    def plot_subnetworks_A_timecourses(self, threshold = 0.3):
+    def plot_subnetworks_A_timecourses(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         subnetworks = self.get_context_A_subnetworks(threshold=threshold)
         for subnetwork in subnetworks:
             count = 0
@@ -574,7 +795,12 @@ class DGNetworkGraph(NeuronalNetworkGraph):
 
     # Todo: adjust y axis title for normalization
     # Todo add time ticks
-    def plot_subnetworks_B_timecourses(self, threshold = 0.3):
+    def plot_subnetworks_B_timecourses(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         subnetworks = self.get_context_B_subnetworks(threshold=threshold)
         for subnetwork in subnetworks:
             count = 0
@@ -591,19 +817,34 @@ class DGNetworkGraph(NeuronalNetworkGraph):
             plt.title(f'Subnetwork Timecourses - Context B - Threshold = {threshold}')
             plt.show()
 
-    def get_random_context_A_graph(self, threshold = 0.3):
+    def get_random_context_A_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_A_graph(threshold=threshold)
         random_A_graph = nx.algorithms.smallworld.random_reference(G)
         # _log.info('Randomized Context A graph generated.')
         return random_A_graph
 
-    def get_random_context_B_graph(self, threshold = 0.3):
+    def get_random_context_B_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_B_graph(threshold=threshold)
         random_B_graph = nx.algorithms.smallworld.random_reference(G)
         # _log.info('Randomized Context B graph generated.')
         return random_B_graph
 
-    def get_context_A_hubs(self, threshold = 0.3):
+    def get_context_A_hubs(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         hits_A, authorities_A = nx.hits_numpy(self.get_context_A_graph(threshold=threshold))
         med_hits = np.median(list(hits_A.values()))
         std_hits = np.std(list(hits_A.values()))
@@ -612,7 +853,12 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         [hubs_A.append(x) for x in hits_A.keys() if hits_A[x] > hits_threshold]
         return hubs_A, hits_A
 
-    def get_context_B_hubs(self, threshold = 0.3):
+    def get_context_B_hubs(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         hits_B, authorities_B = nx.hits_numpy(self.get_context_B_graph(threshold=threshold))
         med_hits = np.median(list(hits_B.values()))
         std_hits = np.std(list(hits_B.values()))
@@ -621,55 +867,102 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         [hubs_B.append(x) for x in hits_B.keys() if hits_B[x] > hits_threshold]
         return hubs_B, hits_B
 
-    def get_largest_context_A_subnetwork_graph(self, threshold = 0.3):
+    def get_largest_context_A_subnetwork_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_A_graph(threshold=threshold)
         largest_component = max(nx.connected_components(G), key=len)
         return G.subgraph(largest_component)
 
-    def get_largest_context_B_subnetwork_graph(self, threshold = 0.3):
+    def get_largest_context_B_subnetwork_graph(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_B_graph(threshold=threshold)
         largest_component = max(nx.connected_components(G), key=len)
         return G.subgraph(largest_component)
 
     def get_context_A_correlated_pair_ratio(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_A_graph(threshold=threshold)
         degree_view = self.get_degree(G)
         correlated_pair_ratio = []
-        [correlated_pair_ratio.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return correlated_pair_ratio
 
     def get_context_B_correlated_pair_ratio(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_B_graph(threshold=threshold)
         degree_view = self.get_degree(G)
         correlated_pair_ratio = []
-        [correlated_pair_ratio.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return correlated_pair_ratio
 
     def get_context_A_clustering_coefficient(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_A_graph(threshold=threshold)
         degree_view = nx.clustering(G)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return clustering_coefficient
 
     def get_context_B_clustering_coefficient(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_B_graph(threshold=threshold)
         degree_view = nx.clustering(G)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node]/self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
         return clustering_coefficient
 
-    def get_context_A_degree(self, threshold = 0.3):
+    def get_context_A_degree(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_A_graph(threshold=threshold)
         return G.degree
 
-    def get_context_B_degree(self, threshold = 0.3):
+    def get_context_B_degree(self, threshold=0.3):
+        """
+
+        :param threshold:
+        :return:
+        """
         G = self.get_context_B_graph(threshold=threshold)
         return G.degree
 
+    # Todo: write function
+    def get_num_retained_connections(self):
+        """
+
+        :return:
+        """
+
+        return
 
 
 class BLANetworkGraph(NeuronalNetworkGraph):
-
     # Pass __init__ from parent class
     pass
