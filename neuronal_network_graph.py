@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import imageio
 import os
-from mne.viz import plot_connectivity_circle
+#from mne.viz import plot_connectivity_circle
+from mne_connectivity_circle_update import plot_connectivity_circle
 from statsmodels.tsa.stattools import grangercausalitytests
 
 
@@ -352,6 +353,8 @@ class NeuronalNetworkGraph:
 
         # Todo: write function
 
+
+
     # Todo: getting stuck on small world analysis when computing sigma -- infinite loop?
     # Todo: this^ may be due to computing the average clustering coefficient or the average shortest path length -- test
     def get_smallworld_largest_subnetwork(self, graph=None, threshold=0.3):
@@ -512,8 +515,8 @@ class NeuronalNetworkGraph:
             if file.endswith('_tmp_gif.png'):
                 os.remove(file)
 
-    # Todo: clean-up initial logic
-    def plot_circle_graph_network(self, corr_mat=None, num_lines=20, title=None, subplots=None, fig=None):
+    # Todo: deprecated version:
+    def plot_circle_graph_network(self, corr_mat=None, num_lines=20, title=None, subplot=None, fig=None):
         """
 
         :param corr_mat:
@@ -527,10 +530,21 @@ class NeuronalNetworkGraph:
             corr_mat = self.pearsons_correlation_matrix
         return plot_connectivity_circle(corr_mat, self.labels, n_lines=num_lines, colormap='winter', textcolor='black',
                                         facecolor='white', node_colors=['grey'], colorbar=True, colorbar_size=0.4,
-                                        colorbar_pos=(1, -0.2), fontsize_names=0, padding=6.0)
+                                        colorbar_pos=(1, -0.2), fontsize_names=0, padding=6.0, title=title, subplot=subplot, fig=fig)
 
-        # Todo: update spike inference algorithm, allow setting of algorithm hyperparameters
+    # Todo: clean-up initial logic for more robust error checking
+    def plot_circle_graph_network(self, threshold=0.3, corr_mat=None, num_lines=None, title=None, subplot=None):
+        if not isinstance(corr_mat, np.ndarray):
+            corr_mat = self.pearsons_correlation_matrix
+        if not num_lines:
+            num_lines = len(self.get_network_graph_from_matrix(threshold=threshold, weighted=False).edges())
+        return plot_connectivity_circle(corr_mat, self.labels, n_lines=num_lines, colormap='winter',
+                                            textcolor='black', facecolor='white', node_colors=['grey'], vmin=threshold,
+                                            vmax=1, colorbar=False, fontsize_names=0, padding=2, title=title,
+                                            fontsize_title=16, subplot=subplot)
 
+
+    # Todo: update spike inference algorithm, allow setting of algorithm hyperparameters
     def plot_spikes(self, neuron_trace_number):
         """
 
@@ -617,30 +631,32 @@ class NeuronalNetworkGraph:
         return
 
     # Todo: test function
-    def get_clustering_coefficient(self, threshold=0.3, G=None):
+    def get_clustering_coefficient(self, threshold=0.3, graph=None):
         """
 
         :param threshold:
         :param G:
         :return:
         """
-        if not G:
-            G = self.get_network_graph_from_matrix(threshold=threshold)
-        degree_view = nx.clustering(G)
+        if graph is None:
+            graph = self.get_network_graph_from_matrix(threshold=threshold)
+        degree_view = nx.clustering(graph)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
         return clustering_coefficient
 
     # Todo: decide if this is necessary for each context
-    def get_degree(self, threshold=0.3):
+    def get_degree(self, graph=None, threshold=0.3):
         """
         Returns iterator object of (node, degree) pairs.
 
         :param threshold:
         :return:
         """
-        G = self.get_network_graph_from_matrix(threshold=threshold)
-        return G.degree
+        if graph is None:
+            return self.get_network_graph_from_matrix(threshold=threshold)
+        else:
+            return graph.degree
 
     # Todo: get graph degree
     def get_network_degree(self):
@@ -651,22 +667,22 @@ class NeuronalNetworkGraph:
         """
 
         return
-
+    # Todo: note changed return form from: [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
     # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
-    # Todo: fix for loop implementation - clean it up
-    def get_correlated_pair_ratio(self, threshold=0.3, G=None):
+    def get_correlated_pair_ratio(self, threshold=0.3, graph=None):
         """
         # pairs/ total # cells in FOV
 
+        :param graph:
         :param threshold:
         :param G:
         :return:
         """
-        if not G:
-            G = self.get_network_graph_from_matrix(threshold=threshold)
-        degree_view = self.get_degree(G)
+        if graph is None:
+            graph = self.get_network_graph_from_matrix(threshold=threshold)
+        degree_view = self.get_degree(graph)
         correlated_pair_ratio = []
-        [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
+        [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
         return correlated_pair_ratio
 
     # Todo: get coverage -- figure out if coverage is the correct term

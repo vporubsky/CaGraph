@@ -19,7 +19,7 @@ from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 import scipy
 import seaborn as sns
-import networkx as nx
+
 sns.set(style="whitegrid")
 my_pal = {"D1_A": "salmon", "D1_B": "darkturquoise", "D5_A": "salmon", "D5_B": "darkturquoise", "D9_A":"salmon", "D9_B":"darkturquoise"}
 my_pal = {"rand_D1_A": "grey", "erdos_renyi_D1_A": "black", "D1_A": "salmon", "rand_D1_B": "grey","erdos_renyi_D1_B": "black", "D1_B": "darkturquoise", "rand_D5_A": "grey", "D5_A": "salmon", "rand_D5_B": "grey","D5_B": "darkturquoise", "rand_D9_A": "grey", "D9_A":"salmon", "rand_D9_B": "grey", "D9_B":"darkturquoise"}
@@ -27,8 +27,10 @@ my_pal2 = {"rand_D1_A": "lightcoral", "erdos_renyi_D1_A": "lightcoral", "WT_D1_A
 _log = logging.getLogger(__name__)
 
 #%% Load treated data files - Th
-day1_treated = ['2-1_D1_smoothed_calcium_traces.csv', '2-2_D1_smoothed_calcium_traces.csv','2-3_D1_smoothed_calcium_traces.csv', '348-1_D1_smoothed_calcium_traces.csv', '349-2_D1_smoothed_calcium_traces.csv', '386-2_D1_smoothed_calcium_traces.csv', '387-4_D1_smoothed_calcium_traces.csv', '396-1_D1_smoothed_calcium_traces.csv', '396-3_D1_smoothed_calcium_traces.csv']
-day9_treated = ['2-1_D9_smoothed_calcium_traces.csv', '2-2_D9_smoothed_calcium_traces.csv','2-3_D9_smoothed_calcium_traces.csv', '348-1_D9_smoothed_calcium_traces.csv', '349-2_D9_smoothed_calcium_traces.csv', '386-2_D9_smoothed_calcium_traces.csv', '387-4_D9_smoothed_calcium_traces.csv', '396-1_D9_smoothed_calcium_traces.csv', '396-3_D9_smoothed_calcium_traces.csv']
+D0_Th = []
+D1_Th = ['2-1_D1_smoothed_calcium_traces.csv', '2-2_D1_smoothed_calcium_traces.csv','2-3_D1_smoothed_calcium_traces.csv', '348-1_D1_smoothed_calcium_traces.csv', '349-2_D1_smoothed_calcium_traces.csv', '386-2_D1_smoothed_calcium_traces.csv', '387-4_D1_smoothed_calcium_traces.csv', '396-1_D1_smoothed_calcium_traces.csv', '396-3_D1_smoothed_calcium_traces.csv']
+D5_Th =
+D9_Th = ['2-1_D9_smoothed_calcium_traces.csv', '2-2_D9_smoothed_calcium_traces.csv','2-3_D9_smoothed_calcium_traces.csv', '348-1_D9_smoothed_calcium_traces.csv', '349-2_D9_smoothed_calcium_traces.csv', '386-2_D9_smoothed_calcium_traces.csv', '387-4_D9_smoothed_calcium_traces.csv', '396-1_D9_smoothed_calcium_traces.csv', '396-3_D9_smoothed_calcium_traces.csv']
 
 all_treated_files = [day1_treated, day9_treated]
 
@@ -218,9 +220,6 @@ plt.show()
 labels = ['D1_A', 'D1_B','D9_A', 'D9_B']
 raw = [con_A_num_hubs_D1, con_B_num_hubs_D1, con_A_num_hubs_D9, con_B_num_hubs_D9]
 
-#labels = ['rand_D1_A', 'D1_A', 'rand_D1_B', 'D1_B', 'rand_D5_A','D5_A', 'rand_D5_B','D5_B', 'rand_D9_A','D9_A', 'rand_D9_B', 'D9_B']
-#raw = [rand_con_A_num_hubs_D1, con_A_num_hubs_D1, rand_con_B_num_hubs_D1, con_B_num_hubs_D1, rand_con_A_num_hubs_D5, con_A_num_hubs_D5, rand_con_B_num_hubs_D5, con_B_num_hubs_D5, rand_con_A_num_hubs_D9, con_A_num_hubs_D9, rand_con_B_num_hubs_D9, con_B_num_hubs_D9]
-
 #plt.figure(figsize=(20,10))
 data = pd.DataFrame(np.transpose(np.array(raw)), columns=labels, index=mouse_id_indices)
 sns.swarmplot(data=data, color = 'k');
@@ -247,10 +246,7 @@ print('')
 
 #%% plot subnetwork number metrics with seaborn 
 labels = ['D1_A', 'D1_B', 'D9_A', 'D9_B']
-raw = [con_A_num_subnetworks_D1, con_B_num_subnetworks_D1, con_A_num_subnetworks_D5, con_B_num_subnetworks_D5, con_A_num_subnetworks_D9, con_B_num_subnetworks_D9]
-
-# labels = ['rand_D1_A', 'D1_A', 'rand_D1_B', 'D1_B', 'rand_D9_A','D9_A', 'rand_D9_B', 'D9_B']
-# raw = [rand_con_A_num_subnetworks_D1, con_A_num_subnetworks_D1, rand_con_B_num_subnetworks_D1,con_B_num_subnetworks_D1, rand_con_A_num_subnetworks_D5, con_A_num_subnetworks_D5, rand_con_B_num_subnetworks_D5, con_B_num_subnetworks_D5, rand_con_A_num_subnetworks_D9, con_A_num_subnetworks_D9, rand_con_B_num_subnetworks_D9, con_B_num_subnetworks_D9]
+raw = [con_A_num_subnetworks_D1, con_B_num_subnetworks_D1, con_A_num_subnetworks_D9, con_B_num_subnetworks_D9]
 
 data = pd.DataFrame(np.transpose(np.array(raw)), columns=labels, index=mouse_id_indices)
 

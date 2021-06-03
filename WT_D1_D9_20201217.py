@@ -12,7 +12,7 @@ Context B - neutral
 # Todo: add statistics comparing D1 and D9 with D5
 # Todo: compute statistics on populations of random networks, not specimen-matched single examples of random networks
 import logging
-from neuronal_network_graph import neuronal_network_graph as nng
+from neuronal_network_graph import DGNetworkGraph as nng
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
@@ -24,7 +24,6 @@ sns.set(style="whitegrid")
 my_pal = {"D1_A": "salmon", "D1_B": "darkturquoise", "D5_A": "salmon", "D5_B": "darkturquoise", "D9_A":"salmon", "D9_B":"darkturquoise"}
 my_pal = {"rand_D1_A": "grey", "erdos_renyi_D1_A": "black", "D1_A": "salmon", "rand_D1_B": "grey","erdos_renyi_D1_B": "black", "D1_B": "darkturquoise", "rand_D5_A": "grey", "D5_A": "salmon", "rand_D5_B": "grey","D5_B": "darkturquoise", "rand_D9_A": "grey", "D9_A":"salmon", "rand_D9_B": "grey", "D9_B":"darkturquoise"}
 my_pal2 = {"rand_D1_A": "lightcoral", "erdos_renyi_D1_A": "lightcoral", "WT_D1_A": "firebrick", "rand_D1_B": "paleturquoise","erdos_renyi_D1_B": "paleturquoise", "WT_D1_B": "cadetblue", "rand_D5_A": "lightcoral", "erdos_renyi_D5_A": "lightcoral",  "WT_D5_A": "firebrick", "rand_D5_B": "paleturquoise","erdos_renyi_D5_B": "paleturquoise","WT_D5_B": "cadetblue", "rand_D9_A": "lightcoral", "erdos_renyi_D9_A": "lightcoral",  "WT_D9_A":"firebrick", "rand_D9_B": "paleturquoise","erdos_renyi_D9_B": "paleturquoise", "WT_D9_B":"cadetblue"}
-_log = logging.getLogger(__name__)
 
 #%% Load untreated data files - WT
 day1_untreated = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv', '1055-3_D1_smoothed_calcium_traces.csv', '1055-4_D1_smoothed_calcium_traces.csv', '14-0_D1_smoothed_calcium_traces.csv', '122-1_D1_smoothed_calcium_traces.csv', '122-2_D1_smoothed_calcium_traces.csv', '122-3_D1_smoothed_calcium_traces.csv']#, '124-2_D1_smoothed_calcium_traces.csv']
@@ -259,7 +258,7 @@ plt.show()
 
 #%% plot subnetwork size  metrics with seaborn 
 labels = ['D1_A', 'D1_B', 'D9_A', 'D9_B']
-raw = [con_A_size_subnetworks_D1, con_B_size_subnetworks_D1, con_A_size_subnetworks_D5, con_B_size_subnetworks_D5, con_A_size_subnetworks_D9, con_B_size_subnetworks_D9]
+raw = [con_A_size_subnetworks_D1, con_B_size_subnetworks_D1, con_A_size_subnetworks_D9, con_B_size_subnetworks_D9]
 
 # labels = ['rand_D1_A', 'D1_A', 'rand_D1_B', 'D1_B', 'rand_D5_A','D5_A', 'rand_D5_B','D5_B', 'rand_D9_A','D9_A', 'rand_D9_B', 'D9_B']
 # raw = [rand_con_A_size_subnetworks_D1, con_A_size_subnetworks_D1, rand_con_B_size_subnetworks_D1, con_B_size_subnetworks_D1, rand_con_A_size_subnetworks_D5, con_A_size_subnetworks_D5, rand_con_B_size_subnetworks_D5,con_B_size_subnetworks_D5, rand_con_A_size_subnetworks_D9, con_A_size_subnetworks_D9, rand_con_B_size_subnetworks_D9, con_B_size_subnetworks_D9]

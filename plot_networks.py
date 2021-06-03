@@ -1,10 +1,9 @@
-from neuronal_network_graph import neuronal_network_graph as nng
+from neuronal_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
 import os
 sns.set(style="white")
-os.chdir('/Users/veronica_porubsky/Documents/GitHub/DG-anxiety-connectivity-studies/PyCharmProject/updated-analysis/day1_day9_treatment')
 
 subject_1 = ['1055-1_D0_smoothed_calcium_traces.csv','1055-1_D1_smoothed_calcium_traces.csv','1055-1_D5_smoothed_calcium_traces.csv','1055-1_D9_smoothed_calcium_traces.csv']
 subject_2 = ['1055-2_D0_smoothed_calcium_traces.csv','1055-2_D1_smoothed_calcium_traces.csv','1055-2_D5_smoothed_calcium_traces.csv','1055-2_D9_smoothed_calcium_traces.csv']

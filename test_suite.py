@@ -51,6 +51,12 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
         """
         self.assertTrue(NeuronalNetworkGraphTestSuiteHelper(test_network_data=self.test_network_data).is_extension_csv())
 
+    def test_file_load(self):
+        """
+
+        """
+        self.assertTrue(NeuronalNetworkGraphTestSuiteHelper().generates_DGNetworkGraph_object())
+
 
 
 if __name__ == "__main__":

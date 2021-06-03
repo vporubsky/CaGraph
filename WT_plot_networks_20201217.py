@@ -19,6 +19,7 @@ subject_9 = ['122-4_D1_smoothed_calcium_traces.csv', '122-4_D9_smoothed_calcium_
 
 data = [subject_1, subject_2, subject_3, subject_4, subject_5, subject_6, subject_7, subject_8, subject_9]
 
+
 #%% All measurements, separating contexts
 threshold = 0.3
 mouse_id_indices = []
