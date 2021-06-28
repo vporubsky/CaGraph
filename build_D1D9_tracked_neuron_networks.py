@@ -6,16 +6,15 @@ Created on Tue Mar 31 15:39:13 2020
 
 Title: Build networks composed only of neurons recorded + tracked on D1 and D9
 """
-from neuronal_network_graph import neuronal_network_graph
-import networkx as nx
-import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 
 
 day1 = ['1055-1_D1_all_calcium_traces.npy',  '1055-2_D1_all_calcium_traces.npy','1055-4_D1_all_calcium_traces.npy', '348-1_D1_all_calcium_traces.npy', '349-2_D1_all_calcium_traces.npy','387-4_D1_all_calcium_traces.npy','396-1_D1_all_calcium_traces.npy','396-3_D1_all_calcium_traces.npy']
 day9 = ['1055-1_D9_all_calcium_traces.npy',  '1055-2_D9_all_calcium_traces.npy','1055-4_D9_all_calcium_traces.npy', '348-1_D9_all_calcium_traces.npy', '349-2_D9_all_calcium_traces.npy','387-4_D9_all_calcium_traces.npy','396-1_D9_all_calcium_traces.npy','396-3_D9_all_calcium_traces.npy']
 
+
+#%%
+np.genfromtxt(day1[0].replace('_D1_smoothed_calcium_traces.csv', 'cell_'), delimiter=",")
 
 #%% 
 
@@ -31,7 +30,8 @@ for i in range(len(day1)):
     for row in range(len(cell_matching_indices)):
         if 0 in cell_matching_indices[row]:
             del_row.append(row)
-    matched_indices = np.delete(cell_matching_indices, del_row, 0)        
+    matched_indices = np.delete(cell_matching_indices, del_row, 0)
+
     # decrement the values of indices - Matlab to Python indexing
     matched_indices = np.subtract(matched_indices, np.ones(np.shape(matched_indices)))
     matched_indices = matched_indices.astype(int)    

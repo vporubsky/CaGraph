@@ -112,6 +112,7 @@ class NeuronalNetworkGraph:
     # Todo: may be superfluous
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
         """
+        Returns the Pearson's correlation for all neuron pairs.
 
         :param data_matrix:
         :param time_points: tuple
@@ -642,7 +643,7 @@ class NeuronalNetworkGraph:
             graph = self.get_network_graph_from_matrix(threshold=threshold)
         degree_view = nx.clustering(graph)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
+        [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
         return clustering_coefficient
 
     # Todo: decide if this is necessary for each context
@@ -936,7 +937,7 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         G = self.get_context_A_graph(threshold=threshold)
         degree_view = nx.clustering(G)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node]) for node in G.nodes()]
         return clustering_coefficient
 
     def get_context_B_clustering_coefficient(self, threshold=0.3):
@@ -948,7 +949,7 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         G = self.get_context_B_graph(threshold=threshold)
         degree_view = nx.clustering(G)
         clustering_coefficient = []
-        [clustering_coefficient.append(degree_view[node] / self.num_neurons) for node in G.nodes()]
+        [clustering_coefficient.append(degree_view[node]) for node in G.nodes()]
         return clustering_coefficient
 
     def get_context_A_degree(self, threshold=0.3):

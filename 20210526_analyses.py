@@ -1,9 +1,15 @@
-from neuronal_network_graph_20210416 import DGNetworkGraph as nng
+"""
+Plotting the cumulative density function (CDF) for each individual mouse
+to identify notable outlier subjects.
+
+# Todo: Add some metric to actually pick out outliers automatically based on statistics.
+"""
+from neuronal_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
-import seaborn as sns
 import os
+
 
 #%% Global analysis parameters
 threshold = 0.3
@@ -629,7 +635,7 @@ for idx in range(len(Th_mouse_id_indices)):
     plt.plot(x, y, 'darkturquoise', marker='o')
 
     plt.suptitle(f'{Th_mouse_id_indices[idx]} correlated Pairs Ratio CDF w/ sorted data [Pearson r val: {threshold}]')
-    plt.savefig(os.path.join(os.getcwd(), f"visualization/20210526/{Th_mouse_id_indices[idx]}_corr_pair_CDF.png"), transparent=True, dpi=300)
+    plt.savefig(os.path.join(os.getcwd(), f"visualization/20210526/TH_{Th_mouse_id_indices[idx]}_corr_pair_CDF_A_v_B.png"), transparent=True, dpi=300)
     plt.show()
 
 #%% WT Correlated Pairs Plots: D1 v D9
@@ -1125,68 +1131,82 @@ for idx in range(len(Th_mouse_id_indices)):
 
 
 #%% Plot all mice trajectories to examine differences
-#%% Th Clustering Coefficient
-plt.figure(figsize=(15, 5))
-plt.subplot(121)
+#Th Clustering Coefficient
+import matplotlib as mpl
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["#1727AE", "#2C43B8", "#445BC1", "#6987D5", "#97BAEC", "#BBDFFA"])
+fig = plt.figure(figsize=(15,10))
 for idx in range(len(Th_mouse_id_indices)):
-
-    # sort the data in ascending order
+    plt.subplot(221)
+    # sort WTe data in ascending order
     x = np.sort(Th_con_A_cc_D1[idx])
-    # get the cdf values of y
+    # get WTe cdf values of y
     y = np.arange(len(Th_con_A_cc_D1[idx])) / float(len(Th_con_A_cc_D1[idx]))
 
-    plt.plot(x, y, 'mistyrose', marker='o')
+    # plotting
+    plt.ylabel('CDF')
 
-    # sort the data in ascending order
+    plt.title('context A, day 1')
+    plt.plot(x, y, marker='o')
+
+    plt.subplot(223)
+    # sort WTe data in ascending order
     x = np.sort(Th_con_A_cc_D9[idx])
-    # get the cdf values of y
+    # get WTe cdf values of y
     y = np.arange(len(Th_con_A_cc_D9[idx])) / float(len(Th_con_A_cc_D9[idx]))
 
     # plotting
     plt.ylabel('CDF')
 
-    plt.title('context A')
-    plt.plot(x, y, 'salmon', marker='o')
+    plt.title('context A, day 9')
+    plt.plot(x, y, marker='o')
 
-plt.subplot(122)
-for idx in range(len(Th_mouse_id_indices)):
-
-    # sort the data in ascending order
+    plt.subplot(222)
+    # sort WTe data in ascending order
     x = np.sort(Th_con_B_cc_D1[idx])
-    # get the cdf values of y
+    # get WTe cdf values of y
     y = np.arange(len(Th_con_B_cc_D1[idx])) / float(len(Th_con_B_cc_D1[idx]))
 
     # plotting
-    plt.plot(x, y, 'paleturquoise', marker='o')
+    plt.ylabel('CDF')
+    plt.title('context B, day 1')
+    plt.plot(x, y,marker='o')
 
-    # sort the data in ascending order
+    plt.subplot(224)
+    # sort WTe data in ascending order
     x = np.sort(Th_con_B_cc_D9[idx])
-    # get the cdf values of y
+    # get WTe cdf values of y
     y = np.arange(len(Th_con_B_cc_D9[idx])) / float(len(Th_con_B_cc_D9[idx]))
 
     # plotting
     plt.ylabel('CDF')
 
-    plt.title('context B')
-    plt.plot(x, y, 'darkturquoise', marker='o')
+    plt.title('context B, day 9')
+    plt.plot(x, y, marker='o')
 
-plt.suptitle(f'Th_Clustering Coefficient Ratio CDF w/ sorted data [Pearson r val: {threshold}]')
+plt.figlegend(labels=Th_mouse_id_indices)
+plt.suptitle(f'Th Clustering Coefficient Ratio CDF w/ sorted data [Pearson r val: {threshold}]')
 plt.savefig(os.path.join(os.getcwd(), f"visualization/20210526/Th_clustering_coefficient_CDF_all_mice.png"), transparent=True, dpi=300)
 plt.show()
 
 
 #%% WT Clustering Coefficient
-plt.figure(figsize=(15, 5))
-plt.subplot(121)
+import matplotlib as mpl
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["#1727AE", "#2C43B8", "#445BC1", "#6987D5", "#97BAEC", "#BBDFFA"])
+fig = plt.figure(figsize=(15,10))
 for idx in range(len(WT_mouse_id_indices)):
-
+    plt.subplot(221)
     # sort WTe data in ascending order
     x = np.sort(WT_con_A_cc_D1[idx])
     # get WTe cdf values of y
     y = np.arange(len(WT_con_A_cc_D1[idx])) / float(len(WT_con_A_cc_D1[idx]))
 
-    plt.plot(x, y, 'mistyrose', marker='o')
+    # plotting
+    plt.ylabel('CDF')
 
+    plt.title('context A, day 1')
+    plt.plot(x, y, marker='o')
+
+    plt.subplot(223)
     # sort WTe data in ascending order
     x = np.sort(WT_con_A_cc_D9[idx])
     # get WTe cdf values of y
@@ -1195,20 +1215,21 @@ for idx in range(len(WT_mouse_id_indices)):
     # plotting
     plt.ylabel('CDF')
 
-    plt.title('context A')
-    plt.plot(x, y, 'salmon', marker='o')
+    plt.title('context A, day 9')
+    plt.plot(x, y, marker='o')
 
-plt.subplot(122)
-for idx in range(len(WT_mouse_id_indices)):
-
+    plt.subplot(222)
     # sort WTe data in ascending order
     x = np.sort(WT_con_B_cc_D1[idx])
     # get WTe cdf values of y
     y = np.arange(len(WT_con_B_cc_D1[idx])) / float(len(WT_con_B_cc_D1[idx]))
 
     # plotting
-    plt.plot(x, y, 'paleturquoise', marker='o')
+    plt.ylabel('CDF')
+    plt.title('context B, day 1')
+    plt.plot(x, y,marker='o')
 
+    plt.subplot(224)
     # sort WTe data in ascending order
     x = np.sort(WT_con_B_cc_D9[idx])
     # get WTe cdf values of y
@@ -1217,9 +1238,10 @@ for idx in range(len(WT_mouse_id_indices)):
     # plotting
     plt.ylabel('CDF')
 
-    plt.title('context B')
-    plt.plot(x, y, 'darkturquoise', marker='o')
+    plt.title('context B, day 9')
+    plt.plot(x, y, marker='o')
 
-plt.suptitle(f'WT_Clustering Coefficient Ratio CDF w/ sorted data [Pearson r val: {threshold}]')
+plt.figlegend(labels=WT_mouse_id_indices)
+plt.suptitle(f'WT Clustering Coefficient Ratio CDF w/ sorted data [Pearson r val: {threshold}]')
 plt.savefig(os.path.join(os.getcwd(), f"visualization/20210526/WT_clustering_coefficient_CDF_all_mice.png"), transparent=True, dpi=300)
 plt.show()
