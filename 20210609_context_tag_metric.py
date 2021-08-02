@@ -9,6 +9,7 @@ Workflow:
 4. Run analyses as before
 5. Pull out subset of data for context A active cells
 """
+# Todo: need to run this analysis!
 from neuronal_network_graph import DGNetworkGraph as nng
 import numpy as np
 import networkx as nx
