@@ -8,7 +8,7 @@ Title: Run batch analyses, collecting distributions
 Context A - anxiogenic
 Context B - neutral
 """
-from neuronal_network_graph_20210416 import DGNetworkGraph as nng
+from neuronal_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns

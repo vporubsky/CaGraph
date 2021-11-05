@@ -20,7 +20,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import scipy
-
+import matplotlib
+matplotlib.rcParams.update({'font.size': 14})
 #%% Data files
 # Wildtype condition
 D1_WT = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -124,21 +125,6 @@ for filename in condition_data:
     [cc_9_B.append(clustering[str(int(node))]) for node in data[:, 1]]
     [cr_9_B.append(corr_pair[str(int(node))] / nn_D9.num_neurons) for node in data[:, 1]]
 
-
-    # Build dataframe
-
-    palette = {"D1_A": "mistyrose", "D9_A": "salmon", "D1_B": "paleturquoise", "D9_B":"darkturquoise"}
-
-    labels = ['D1_A', 'D9_A', 'D1_B', 'D9_B']
-    raw = [cc_1_A, cc_9_A, cc_1_B, cc_9_B]
-    data = pd.DataFrame(np.transpose(np.array(raw)), columns=labels)
-
-    plt.subplot(3,3,idx)
-    sns.swarmplot(data=data, color = 'k');
-    sns.boxplot(data=data, whis = 1.5, palette=palette);
-
-    plt.title(mouse_id)
-
     idx += 1
 
     # create lists with all clustering coefficient data to plot matched samples
@@ -146,16 +132,104 @@ for filename in condition_data:
     cc_all_mice_1_B = cc_all_mice_1_B + cc_1_B
     cc_all_mice_9_A = cc_all_mice_9_A + cc_9_A
     cc_all_mice_9_B = cc_all_mice_9_B + cc_9_B
-plt.suptitle(f'{condition} Clustering coefficient cell-matched, threshold: {threshold}')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_clustering_cell_matched.png"), transparent=True, dpi=300)
+
+
+#%% Context A data
+set1 = cc_all_mice_1_A
+set2 = cc_all_mice_9_A
+
+# Put into dataframe
+df = pd.DataFrame({'D1': set1, 'D9': set2})
+data = pd.melt(df)
+
+plt.figure(figsize=(15,15))
+# Plot
+fig, ax = plt.subplots()
+sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
+
+# Now connect the dots
+# Find idx0 and idx1 by inspecting the elements return from ax.get_children()
+idx0 = 0
+idx1 = 1
+locs1 = ax.get_children()[idx0].get_offsets()
+locs2 = ax.get_children()[idx1].get_offsets()
+
+y_all = np.zeros(2)
+for i in range(locs1.shape[0]):
+    x = [locs1[i, 0], locs2[i, 0]]
+    y = [locs1[i, 1], locs2[i, 1]]
+    ax.plot(x, y, color='lightgrey', linewidth=0.5)
+    ax.plot(locs1[i, 0], locs1[i, 1], '.', color='salmon')
+    ax.plot(locs2[i, 0], locs2[i, 1], '.', color='salmon')
+    data = [locs1[:, 1], locs2[:, 1]]
+    ax.boxplot(data, positions=[0,1], capprops =  dict(linewidth=0.5, color = 'salmon'),
+               whiskerprops = dict(linewidth=0.5, color = 'salmon'),
+               boxprops = dict(linewidth=0.5, color = 'salmon'),
+               medianprops=dict(color='salmon'))
+    plt.xticks([])
+    y_all = np.vstack((y_all,y))
+
+plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+plt.yticks([0.5, 1])
+plt.ylabel('')
+plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conA_matched.png"), transparent=True, dpi=300)
 plt.show()
 
+#%% Context B data
+set1 = cc_all_mice_1_B
+set2 = cc_all_mice_9_B
 
-# %% correlated pairs
+# Put into dataframe
+df = pd.DataFrame({'D1': set1, 'D9': set2})
+data = pd.melt(df)
+
 plt.figure(figsize=(15,15))
-idx = 0
+# Plot
+fig, ax = plt.subplots()
+sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
+
+# Now connect the dots
+# Find idx0 and idx1 by inspecting the elements return from ax.get_children()
+idx0 = 0
+idx1 = 1
+locs1 = ax.get_children()[idx0].get_offsets()
+locs2 = ax.get_children()[idx1].get_offsets()
+
+y_all = np.zeros(2)
+for i in range(locs1.shape[0]):
+    x = [locs1[i, 0], locs2[i, 0]]
+    y = [locs1[i, 1], locs2[i, 1]]
+    ax.plot(x, y, color='lightgrey', linewidth=0.5)
+    ax.plot(locs1[i, 0], locs1[i, 1], '.', color='turquoise')
+    ax.plot(locs2[i, 0], locs2[i, 1], '.', color='turquoise')
+    data = [locs1[:, 1], locs2[:, 1]]
+    ax.boxplot(data, positions=[0, 1], capprops=dict(linewidth=0.5, color='turquoise'),
+               whiskerprops=dict(linewidth=0.5, color='turquoise'),
+               boxprops=dict(linewidth=0.5, color='turquoise'),
+               medianprops=dict(color='turquoise'))
+    plt.xticks([])
+    y_all = np.vstack((y_all, y))
+
+plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+plt.yticks([0.5, 1])
+plt.ylabel('')
+plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conB_matched.png"), transparent=True, dpi=300)
+plt.show()
+
+print(scipy.stats.ttest_rel(set1, set2))
+
+
+# %% clustering coefficient
+day = 'D1'
+condition = 'Th'
+condition_data = D1_Th
+plt.figure(figsize=(15,15))
+cc_all_mice_1_A = []
+cc_all_mice_1_B = []
+cc_all_mice_9_A = []
+cc_all_mice_9_B = []
+idx = 1
 for filename in condition_data:
-    idx += 1
     mouse_id = filename.replace('_' + day + '_smoothed_calcium_traces.csv', '')
     path = os.getcwd() + '/cell_matching_data/'
     file = mouse_id + '_cellRegistered.csv'
@@ -226,24 +300,14 @@ for filename in condition_data:
     [cc_9_B.append(clustering[str(int(node))]) for node in data[:, 1]]
     [cr_9_B.append(corr_pair[str(int(node))] / nn_D9.num_neurons) for node in data[:, 1]]
 
+    idx += 1
 
-    # Build dataframe
+    # create lists with all clustering coefficient data to plot matched samples
+    cc_all_mice_1_A = cc_all_mice_1_A + cc_1_A
+    cc_all_mice_1_B = cc_all_mice_1_B + cc_1_B
+    cc_all_mice_9_A = cc_all_mice_9_A + cc_9_A
+    cc_all_mice_9_B = cc_all_mice_9_B + cc_9_B
 
-    palette = {"D1_A": "mistyrose", "D9_A": "salmon", "D1_B": "paleturquoise", "D9_B":"darkturquoise"}
-
-    labels = ['D1_A', 'D9_A', 'D1_B', 'D9_B']
-    raw = [cr_1_A, cr_9_A, cr_1_B, cr_9_B]
-    data = pd.DataFrame(np.transpose(np.array(raw)), columns=labels)
-
-    plt.subplot(3,3,idx)
-    sns.swarmplot(data=data, color = 'k');
-    sns.boxplot(data=data, whis = 1.5, palette=palette);
-
-    plt.title(mouse_id)
-
-plt.suptitle(f'{condition} Correlated pairs ratio cell-matched, threshold: {threshold}')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_corr_pair_matched.png"), transparent=True, dpi=300)
-plt.show()
 
 
 #%% Context A data
@@ -254,6 +318,7 @@ set2 = cc_all_mice_9_A
 df = pd.DataFrame({'D1': set1, 'D9': set2})
 data = pd.melt(df)
 
+plt.figure(figsize=(15,15))
 # Plot
 fig, ax = plt.subplots()
 sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
@@ -269,16 +334,21 @@ y_all = np.zeros(2)
 for i in range(locs1.shape[0]):
     x = [locs1[i, 0], locs2[i, 0]]
     y = [locs1[i, 1], locs2[i, 1]]
-    ax.plot(x, y, color='salmon', alpha=0.2)
-    y_all = np.vstack((y_all,y))
+    ax.plot(x, y, color='lightgrey', linewidth=0.5)
+    ax.plot(locs1[i, 0], locs1[i, 1], '.', color='salmon')
+    ax.plot(locs2[i, 0], locs2[i, 1], '.', color='salmon')
+    data = [locs1[:, 1], locs2[:, 1]]
+    ax.boxplot(data, positions=[0, 1], capprops=dict(linewidth=0.5, color='salmon'),
+               whiskerprops=dict(linewidth=0.5, color='salmon'),
+               boxprops=dict(linewidth=0.5, color='salmon'),
+               medianprops=dict(color='salmon'))
+    plt.xticks([])
+    y_all = np.vstack((y_all, y))
 
-ave_slope = np.mean(y_all[1:,1] - y_all[1:,0])
-plt.xlabel('')
-plt.ylabel('clustering coeff.')
-plt.plot([0, 1], [0.5-ave_slope/2, 0.5+ave_slope/2], 'k')
-
-plt.suptitle(f'{condition} Context A')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_clustering_conA_matched.png"), transparent=True, dpi=300)
+plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+plt.yticks([0.5, 1])
+plt.ylabel('')
+plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conA_matched.png"), transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -291,6 +361,7 @@ set2 = cc_all_mice_9_B
 df = pd.DataFrame({'D1': set1, 'D9': set2})
 data = pd.melt(df)
 
+plt.figure(figsize=(15,15))
 # Plot
 fig, ax = plt.subplots()
 sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
@@ -302,100 +373,26 @@ idx1 = 1
 locs1 = ax.get_children()[idx0].get_offsets()
 locs2 = ax.get_children()[idx1].get_offsets()
 
+
 y_all = np.zeros(2)
 for i in range(locs1.shape[0]):
     x = [locs1[i, 0], locs2[i, 0]]
     y = [locs1[i, 1], locs2[i, 1]]
-    ax.plot(x, y, color='turquoise', alpha=0.2)
+    ax.plot(x, y, color='lightgrey', linewidth=0.5)
+    ax.plot(locs1[i, 0], locs1[i, 1], '.', color='turquoise')
+    ax.plot(locs2[i, 0], locs2[i, 1], '.', color='turquoise')
+    data = [locs1[:, 1], locs2[:, 1]]
+    ax.boxplot(data, positions=[0, 1], capprops=dict(linewidth=0.5, color='turquoise'),
+               whiskerprops=dict(linewidth=0.5, color='turquoise'),
+               boxprops=dict(linewidth=0.5, color='turquoise'),
+               medianprops=dict(color='turquoise'))
+    plt.xticks([])
     y_all = np.vstack((y_all, y))
 
-ave_slope = np.mean(y_all[1:, 1] - y_all[1:, 0])
-plt.xlabel('')
-plt.ylabel('clustering coeff.')
-plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
-plt.suptitle(f'{condition} Context B')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_clustering_conB_matched.png"), transparent=True, dpi=300)
+plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+plt.yticks([0.5, 1])
+plt.ylabel('')
+plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conB_matched.png"), transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
-
-# %% Context A data
-set1 = cc_all_mice_1_A
-set2 = cc_all_mice_9_A
-
-# Put into dataframe
-df = pd.DataFrame({'D1': set1, 'D9': set2})
-data = pd.melt(df)
-
-# Plot
-fig, ax = plt.subplots()
-sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
-
-# Now connect the dots
-# Find idx0 and idx1 by inspecting the elements return from ax.get_children()
-idx0 = 0
-idx1 = 1
-locs1 = ax.get_children()[idx0].get_offsets()
-locs2 = ax.get_children()[idx1].get_offsets()
-
-y_all = np.zeros(2)
-for i in range(locs1.shape[0]):
-    x = [locs1[i, 0], locs2[i, 0]]
-    y = [locs1[i, 1], locs2[i, 1]]
-    if (y[0] == 0.9999999999999999 and y[1] == 0.9999999999999999) or (y[0] == 0.0 and y[1] == 0.0):
-        continue
-    else:
-        ax.plot(x, y, color='salmon', alpha=0.2)
-        y_all = np.vstack((y_all, y))
-
-ave_slope = np.mean(y_all[1:, 1] - y_all[1:, 0])
-plt.xlabel('')
-plt.ylabel('clustering coeff.')
-plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
-plt.suptitle(f'{condition} Context A')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_clustering_conA_matched_remove_extreme.png"), transparent=True, dpi=300)
-plt.show()
-
-print(scipy.stats.ttest_rel(set1, set2))
-
-# %% Context B data
-set1 = cc_all_mice_1_B
-set2 = cc_all_mice_9_B
-
-# Put into dataframe
-df = pd.DataFrame({'D1': set1, 'D9': set2})
-data = pd.melt(df)
-
-# Plot
-fig, ax = plt.subplots()
-sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
-
-# Now connect the dots
-# Find idx0 and idx1 by inspecting the elements return from ax.get_children()
-idx0 = 0
-idx1 = 1
-locs1 = ax.get_children()[idx0].get_offsets()
-locs2 = ax.get_children()[idx1].get_offsets()
-
-y_all = np.zeros(2)
-for i in range(locs1.shape[0]):
-    x = [locs1[i, 0], locs2[i, 0]]
-    y = [locs1[i, 1], locs2[i, 1]]
-    if (y[0] == 0.9999999999999999 and y[1] == 0.9999999999999999) or (y[0] == 0.0 and y[1] == 0.0):
-        continue
-    else:
-        ax.plot(x, y, color='turquoise', alpha=0.2)
-        y_all = np.vstack((y_all, y))
-
-ave_slope = np.mean(y_all[1:, 1] - y_all[1:, 0])
-plt.xlabel('')
-plt.ylabel('clustering coeff.')
-plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
-plt.suptitle(f'{condition} Context B')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210603/{condition}_clustering_conB_matched_remove_extreme.png"), transparent=True, dpi=300)
-plt.show()
-
-print(scipy.stats.ttest_rel(set1, set2))
-
-
-

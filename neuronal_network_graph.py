@@ -11,7 +11,7 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 class NeuronalNetworkGraph:
     """
-    Ongoing development: 03/22/2021
+    Ongoing development: 09/09/2021
     Published: XX/XX/XXXX
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
@@ -76,9 +76,11 @@ class NeuronalNetworkGraph:
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = np.array(identifiers)
-        self.context_A_dynamics = self.neuron_dynamics[:, 0:1800]
-        self.context_B_dynamics = self.neuron_dynamics[:, 1800:3600]
         self.pearsons_correlation_matrix = np.corrcoef(self.neuron_dynamics)
+
+        # Todo: move to DG class
+        self.context_A_dynamics = self.neuron_dynamics[:, 1800:3600] # Record second in Context A
+        self.context_B_dynamics = self.neuron_dynamics[:, 0:1800] # Record first in Context B
         self.con_A_pearsons_correlation_matrix = np.corrcoef(self.context_A_dynamics)
         self.con_B_pearsons_correlation_matrix = np.corrcoef(self.context_B_dynamics)
 
@@ -798,10 +800,10 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         for subnetwork in subnetworks:
             count = 0
             for neuron in subnetwork:
-                y = self.neuron_dynamics[neuron, 0:1800].copy() / max(self.neuron_dynamics[neuron, 0:1800])
+                y = self.neuron_dynamics[neuron, 1800:3600].copy() / max(self.neuron_dynamics[neuron, 1800:3600])
                 for j in range(len(y)):
                     y[j] = y[j] + 1.05 * count
-                plt.plot(self.time[0:1800], y, 'k', linewidth=1)
+                plt.plot(self.time[1800:3600], y, 'k', linewidth=1)
                 plt.xticks([])
                 plt.yticks([])
                 count += 1
@@ -822,10 +824,10 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         for subnetwork in subnetworks:
             count = 0
             for neuron in subnetwork:
-                y = self.neuron_dynamics[neuron, 1800:3600].copy() / max(self.neuron_dynamics[neuron, 1800:3600])
+                y = self.neuron_dynamics[neuron, 0:1800].copy() / max(self.neuron_dynamics[neuron, 0:1800])
                 for j in range(len(y)):
                     y[j] = y[j] + 1.05 * count
-                plt.plot(self.time[1800:3600], y, 'k', linewidth=1)
+                plt.plot(self.time[0:1800], y, 'k', linewidth=1)
                 plt.xticks([])
                 plt.yticks([])
                 count += 1
