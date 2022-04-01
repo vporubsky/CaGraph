@@ -425,3 +425,51 @@ for i, (name, row) in enumerate(df.iterrows()):
 
 plt.savefig("fig_9_mean_clustering_time_binned_6000_tp_bins.png", bbox_inches="tight", dpi=300)
 plt.show()
+
+
+#%% Figure 11: averages the 5 post-drug time bins
+font = {'size'   : 16}
+
+matplotlib.rc('font', **font)
+plt.figure(figsize=(20,10))
+for idx in range(len(labels)):
+
+    mean_cc_A_202_4 = np.mean(cc_tmp_array[9+idx,0])
+    mean_cc_B_202_4 = np.mean(cc_tmp_array[9+idx,1:])
+
+    mean_cc_A_198_1 = np.mean(cc_tmp_array[0+idx,0])
+    mean_cc_B_198_1 = np.mean(cc_tmp_array[0+idx,1:])
+
+
+    mean_cc_A_221_1 = np.mean(cc_tmp_array[18+idx,0])
+    mean_cc_B_221_1 = np.mean(cc_tmp_array[18+idx,1:])
+
+    mean_cc_A_223_3 = np.mean(cc_tmp_array[27+idx,0])
+    mean_cc_B_223_3 = np.mean(cc_tmp_array[27+idx,1:])
+
+     # plotting
+    plt.subplot(250 + idx + 1)
+    plt.plot(0, mean_cc_A_198_1, 'salmon', marker='o')
+    plt.plot(0, mean_cc_A_202_4, 'salmon', marker='o')
+    plt.plot(0, mean_cc_A_221_1, 'salmon', marker='o')
+    plt.plot(0, mean_cc_A_223_3, 'salmon', marker='o')
+
+
+    plt.plot(1, mean_cc_B_198_1, 'turquoise', marker='o')
+    plt.plot(1, mean_cc_B_202_4, 'turquoise', marker='o')
+    plt.plot(1, mean_cc_B_221_1, 'turquoise', marker='o')
+    plt.plot(1, mean_cc_B_223_3, 'turquoise', marker='o')
+    plt.plot([0, 1], [mean_cc_A_198_1, mean_cc_B_198_1], 'lightgrey')
+    plt.plot([0, 1], [mean_cc_A_202_4, mean_cc_B_202_4], 'lightgrey')
+    plt.plot([0, 1], [mean_cc_A_221_1, mean_cc_B_221_1], 'lightgrey')
+    plt.plot([0, 1], [mean_cc_A_223_3, mean_cc_B_223_3], 'lightgrey')
+
+    plt.title(labels[idx])
+    plt.ylim(-0.05, 0.41)
+    plt.xlim(-0.5, 1.5)
+    plt.yticks([0, 0.1, 0.2, 0.3, 0.4])
+    plt.xticks([])
+
+plt.suptitle('')
+plt.savefig('fig_11_mean_clustering.png', dpi=300)
+plt.show()
