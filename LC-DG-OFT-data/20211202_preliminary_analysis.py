@@ -140,16 +140,16 @@ path_to_data = "/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theor
 
 # %% Load untreated data files - saline
 
-data_198_1 = ['198-1_Saline.csv', '198-1_Prop.csv', '198-1_Praz.csv', '198-1_Que5mgkg.csv', '198-1_CNO.csv',
+data_198_1 = ['198-1_Saline.csv', '198-1_Prop.csv', '198-1_Praz.csv', '198-1_Que.csv', '198-1_CNO.csv',
               '198-1_CNOSaline.csv', '198-1_CNOProp.csv', '198-1_CNOPraz.csv', '198-1_CNOQue.csv']
 
-data_202_4 = ['202-4_Saline.csv', '202-4_Prop.csv', '202-4_Praz.csv', '202-4_Que5mgkg.csv', '202-4_CNO.csv',
+data_202_4 = ['202-4_Saline.csv', '202-4_Prop.csv', '202-4_Praz.csv', '202-4_Que.csv', '202-4_CNO.csv',
               '202-4_CNOSaline.csv', '202-4_CNOProp.csv', '202-4_CNOPraz.csv', '202-4_CNOQue.csv']
 
-data_222_1 = ['222-1_Saline.csv', '222-1_Prop.csv', '222-1_Praz.csv', '222-1_Que5mgkg.csv', '222-1_CNO.csv',
+data_222_1 = ['222-1_Saline.csv', '222-1_Prop.csv', '222-1_Praz.csv', '222-1_Que.csv', '222-1_CNO.csv',
               '222-1_CNOSaline.csv', '222-1_CNOProp.csv', '222-1_CNOPraz.csv', '222-1_CNOQue.csv']
 
-data_223_3 = ['223-3_Saline.csv', '223-3_Prop.csv', '223-3_Praz.csv', '223-3_Que5mgkg.csv', '223-3_CNO.csv',
+data_223_3 = ['223-3_Saline.csv', '223-3_Prop.csv', '223-3_Praz.csv', '223-3_Que.csv', '223-3_CNO.csv',
               '223-3_CNOSaline.csv', '223-3_CNOProp.csv', '223-3_CNOPraz.csv', '223-3_CNOQue.csv']
 
 labels = ['Saline', 'Prop', 'Praz', 'Que 5mg/kg', 'CNO', 'CNO + Saline', 'CNO + Prop', 'CNO + Praz', 'CNO + Que']
@@ -470,4 +470,4 @@ plt.plot()
 plt.show()
 
 #%% transitivity
-nn_198 = nng(path_to_data + )
+nn_198 = nng(path_to_data)

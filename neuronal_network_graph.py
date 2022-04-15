@@ -80,7 +80,7 @@ class NeuronalNetworkGraph:
         self.time = self.data[0, :]
         self.neuron_dynamics = self.data[1:len(self.data), :]
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
-        if not identifiers:
+        if identifiers is None:
             self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1, \
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
@@ -103,7 +103,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             graph = self.get_network_graph_from_matrix(threshold=threshold)
         return nx.laplacian_matrix(graph)
 
@@ -131,7 +131,7 @@ class NeuronalNetworkGraph:
         :param time_points: tuple
         :return:
         """
-        if not data_matrix:
+        if data_matrix is None:
             data_matrix = self.neuron_dynamics
         if time_points:
             data_matrix = data_matrix[:, time_points[0]:time_points[1]]
@@ -207,7 +207,7 @@ class NeuronalNetworkGraph:
         :param correlation_matrix:
         :return:
         """
-        if not correlation_matrix:
+        if correlation_matrix is None:
             correlation_matrix = self.get_pearsons_correlation_matrix()
         sns.heatmap(correlation_matrix, vmin=0, vmax=1)
         return
@@ -346,7 +346,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             num_nodes = self.num_neurons
             con_probability = self.get_network_coverage(threshold=threshold)
         else:
@@ -380,7 +380,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             graph = self.get_largest_subnetwork_graph(threshold=threshold)
         else:
             graph = self.get_largest_subnetwork_graph(graph=graph, threshold=threshold)
@@ -391,7 +391,7 @@ class NeuronalNetworkGraph:
                 'Largest subnetwork has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
     # Todo: DO NOT USE FUNCTION, NOT UPDATED
-    def get_smallworld_all_subnetworks(self, corr_matrix, G=None, threshold=0.3):
+    def get_smallworld_all_subnetworks(self, corr_matrix, graph=None, threshold=0.3):
         """
 
         :param corr_matrix:
@@ -399,14 +399,14 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not G:
-            G = self.get_network_graph(corr_matrix, threshold)
-        G_max_subgraph_generator = sorted(nx.connected_components(G), key=len, reverse=True)
+        if graph is None:
+            graph = self.get_network_graph(corr_matrix, threshold)
+        graph_max_subgraph_generator = sorted(nx.connected_components(graph), key=len, reverse=True)
         omega_list = []
-        for i, val in enumerate(G_max_subgraph_generator):
-            G_max_subgraph = G.subgraph(val)
-            if len(G_max_subgraph.nodes) >= 4:
-                omega = nx.algorithms.smallworld.omega(G_max_subgraph)
+        for i, val in enumerate(graph_max_subgraph_generator):
+            graph_max_subgraph = graph.subgraph(val)
+            if len(graph_max_subgraph.nodes) >= 4:
+                omega = nx.algorithms.smallworld.omega(graph_max_subgraph)
                 omega_list.append(omega)
         return omega_list
 
@@ -424,7 +424,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             hubs, authorities = nx.hits_numpy(self.get_network_graph(threshold=threshold))
         else:
             hubs, authorities = nx.hits_numpy(graph)
@@ -444,7 +444,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             connected_components = list(nx.connected_components(self.get_network_graph(threshold=threshold)))
         else:
             connected_components = list(nx.connected_components(graph))
@@ -461,7 +461,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return:
         """
-        if not graph:
+        if graph is None:
             graph = self.get_network_graph(threshold=threshold)
         largest_component = max(nx.connected_components(graph), key=len)
         return graph.subgraph(largest_component)
@@ -506,7 +506,6 @@ class NeuronalNetworkGraph:
         """
         return
 
-    # Todo: test function
     def get_clustering_coefficient(self, threshold=0.3, graph=None):
         """
 
@@ -565,7 +564,7 @@ class NeuronalNetworkGraph:
         :return:
         """
         possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
-        if not graph:
+        if graph is None:
             graph = self.get_network_graph(threshold=threshold)
         return len(graph.edges) / possible_edges
 
@@ -591,7 +590,7 @@ class NeuronalNetworkGraph:
         :param threshold:
         :return: node_groups:
         """
-        if not graph:
+        if graph is None:
             graph = self.get_network_graph_from_matrix(threshold=threshold)
         communities = nx.algorithms.community.centrality.girvan_newman(graph)
         node_groups = []
@@ -610,7 +609,7 @@ class NeuronalNetworkGraph:
         :param alpha:
         :return:
         """
-        if not graph:
+        if graph is None:
             graph = self.get_network_graph()
         nx.draw(graph, pos=nx.spring_layout(graph), node_size=node_size, node_color=node_color, alpha=alpha)
 
