@@ -126,7 +126,7 @@ D9_WT = ['1055-1_D9_smoothed_calcium_traces.csv', '1055-2_D9_smoothed_calcium_tr
          '14-0_D9_smoothed_calcium_traces.csv', '122-1_D9_smoothed_calcium_traces.csv',
          '122-2_D9_smoothed_calcium_traces.csv', '122-3_D9_smoothed_calcium_traces.csv']
 
-path_to_data = "/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/"
+path_to_data = "/LC-DG-FC-data/"
 
 data_file = D1_WT[3]
 mouse_id = data_file.replace('_smoothed_calcium_traces.csv', '')

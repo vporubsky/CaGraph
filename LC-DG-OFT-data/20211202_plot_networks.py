@@ -139,4 +139,4 @@ for subject in ca_data:
         plot.renderers.append(network_graph)
         show(plot)
         # Uncomment line below to save plots
-        #save(plot, filename=os.path.join(os.getcwd(), f"visualization/20210422/context_active_{mouse_id}{context_shorthand}.html"))
+        #save(plot, filename=os.path.join(os.getcwd(), f"plot_metrics/20210422/context_active_{mouse_id}{context_shorthand}.html"))

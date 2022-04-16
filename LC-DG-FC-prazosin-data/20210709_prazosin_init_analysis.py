@@ -7,25 +7,25 @@ Developer Email: verosky@uw.edu
 File Creation Date: July 9, 2021
 File Final Edit Date:
 
-Description: An initial investigation of the prazosin dataset, which includes
+Description: An initial investigation of the LC-DG-FC-prazosin-data dataset, which includes
 exposure to a novel context C after days 1-9 of fear conditioning.
 
 Experimental set-up:
 - Recordings taken on D1 and D9 in Context A and B as before
 - Recordings taken on D10 and D12 in Context C
-- Separate groups that are given saline + CNO or prazosin + CNO
+- Separate groups that are given saline + CNO or LC-DG-FC-prazosin-data + CNO
 
 First dataset animals:
 - 198-1
 - 198-3
 - 202-2
-- 202-4 (prazosin)
+- 202-4 (LC-DG-FC-prazosin-data)
 
 Experimental conclusions from Eric:
 - low number of neurons in the field of view
 - freezing behavior doesn't suggest that the mice can descriminate between the two contexts
-- neither saline or prazosin discriminate between A and B well
-- the prazosin group has higher freezing on D9 but conclusions not clear (low n)
+- neither saline or LC-DG-FC-prazosin-data discriminate between A and B well
+- the LC-DG-FC-prazosin-data group has higher freezing on D9 but conclusions not clear (low n)
 """
 from neuronal_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
@@ -141,8 +141,8 @@ for ca_file in files:
         cc_D12.append(cc)
         cr_D12.append(cr)
 
-#%% Load untreated data files - prazosin
-os.chdir(os.getcwd() + '/prazosin')
+#%% Load untreated data files - LC-DG-FC-prazosin-data
+os.chdir(os.getcwd() + '/LC-DG-FC-prazosin-data')
 files = os.listdir()
 
 # Clustering Coefficient
@@ -246,7 +246,7 @@ for ca_file in files:
         cc_D12_praz.append(cc)
         cr_D12_praz.append(cr)
 
-#%% TMP: not enough data, only use one prazosin and one saline
+#%% TMP: not enough data, only use one LC-DG-FC-prazosin-data and one saline
 saline_idx = 2
 praz_idx = 0
 
@@ -505,7 +505,7 @@ plt.show()
 
 
 
-#%% TMP: not enough data, only use one prazosin and one saline
+#%% TMP: not enough data, only use one LC-DG-FC-prazosin-data and one saline
 saline_idx = 2
 praz_idx = 0
 

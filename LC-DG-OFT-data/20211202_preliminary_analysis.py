@@ -11,8 +11,8 @@ Description: An initial investigation of the OFT dataset under several pharmacol
 
 Experimental set-up:
 - Recordings taken from the DG in the OFT
-- Drug conditions: saline, propanolol, prazosin, quetiapine (5mgkg, 10mg/kg),
-                    CNO + Saline, CNO + prazosin, CNO + quetiapine
+- Drug conditions: saline, propanolol, LC-DG-FC-prazosin-data, quetiapine (5mgkg, 10mg/kg),
+                    CNO + Saline, CNO + LC-DG-FC-prazosin-data, CNO + quetiapine
 - Propanolol: beta blocker, reduces anxiety, inhibits effects of norepinephrine
 - Prazosin: alpha-1 blocker receptor for norepinephrine
 - Quetiapine: antipsychotic medicine, thought to block dopamine type 2 and serotonin 2A receptors

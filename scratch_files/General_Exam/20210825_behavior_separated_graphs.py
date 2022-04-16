@@ -191,7 +191,7 @@ for data_file in treatment_group:
     # for idx in range(len(cc_A)):
     #     plt.hist(cc_A[idx], bins = 20, color='mistyrose', alpha=0.5)
     #     plt.xlim((0, 1.0))
-    # plt.savefig(os.getcwd() + '/20210917/' + mouse_id + '.png', dpi=300)
+    # plt.savefig(os.getcwd() + '/network_visualization/' + mouse_id + '.png', dpi=300)
     # plt.show()
 
 
@@ -231,7 +231,7 @@ plt.ylabel('Median Clustering Coefficient')
 plt.xlabel('Move                                          Freeze')
 # plt.ylim((0.9,1.02))
 # plt.yticks([0.9,1])
-#plt.savefig(os.path.join(os.getcwd(), f"20210917/{mouse_id}_{treatment}_median.png"), transparent=True, dpi=300)
+#plt.savefig(os.path.join(os.getcwd(), f"network_visualization/{mouse_id}_{treatment}_median.png"), transparent=True, dpi=300)
 plt.show()
 
 print(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')

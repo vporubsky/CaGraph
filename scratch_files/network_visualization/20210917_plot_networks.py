@@ -140,5 +140,5 @@ for subject in ca_data:
         plot.renderers.append(network_graph)
 
         show(plot)
-        #save(plot, filename=os.path.join(os.getcwd(), f"visualization/{mouse_id}}.html"))
+        #save(plot, filename=os.path.join(os.getcwd(), f"plot_metrics/{mouse_id}}.html"))
 

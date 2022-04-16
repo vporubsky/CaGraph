@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import logging as _log
 
-_log.basicConfig(filename='DG_FC_summary.log', level=_log.INFO)
+_log.basicConfig(filename='../DG_FC_summary.log', level=_log.INFO)
 
 # _log.info('Context A graph generated.')
 path = os.getcwd() + '/LC-DG-FC-data/'
@@ -49,7 +49,7 @@ plt.title('D9 context B')
 plt.show()
 _log.info('Drew context A and B networks on day 1 and 9.')
 
-#%% Plot weighted network for visualization
+#%% Plot weighted network for plot_metrics
 plt.figure()
 plt.subplot(121)
 G = nng.get_network_graph_from_matrix(weight_matrix=nng.con_A_pearsons_correlation_matrix)
