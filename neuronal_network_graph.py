@@ -10,7 +10,6 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 class NeuronalNetworkGraph:
     """
-    Ongoing development: 02/03/2022
     Published: XX/XX/XXXX
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
@@ -36,10 +35,6 @@ class NeuronalNetworkGraph:
     -------
     get_laplacian_matrix()
         ...
-    Todo: **** Make additional classes within neuronal_network_graph so that analyses can be performed by
-            subsampling many graphs or by doing simple divisions on a full dataset
-            ex: class -- subsample_dataset
-            ex usage: nng.subsample_dataset(subsample_indices = [(), (), ()]) -- return list of graphs
     Todo: Add additional graph theoretical analyses (path length, rich club, motifs...)
     Todo: Add functionality for parsing networks using context-active cell metadata.
     Todo: Add additional correlation metrics and allow user to pass them (currently must use Pearson)
