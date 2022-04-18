@@ -21,7 +21,7 @@ import os
 
 # %% Global analysis parameters
 threshold = 0.3
-path_to_data = "/LC-DG-OFT-data/"
+path_to_data = os.getcwd() + "/LC-DG-OFT-data/"
 
 # %% Load untreated data files - saline
 
@@ -120,54 +120,92 @@ cc_222_1, dv_222_1, binned_events_222_1 = get_clustering_time_bins(data_path=pat
 cc_223_3, dv_223_3, binned_events_223_3 = get_clustering_time_bins(data_path=path_to_data, list_of_datasets=data_223_3, indices=indices, bin_size=bin_size)
 
 #%% Plot individual mice, averaged
-for idx in range(np.shape(cc_223_3)[0]):
-    plt.plot(np.mean(binned_events_223_3[idx], axis=0), cc_223_3[idx], 'k.')
-plt.xticks([])
-plt.yticks([])
-plt.title('223-3')
-plt.ylabel('Mean clustering coefficient')
-plt.xlabel('Bin event count')
-plt.show()
+import seaborn as sns
+import matplotlib
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 22}
 
+matplotlib.rc('font', **font)
+
+fig, axes = plt.subplots(2,2, figsize=(20,20))
+binned = []
+cc = []
+for idx in range(np.shape(cc_223_3)[0]):
+    binned.append(np.mean(binned_events_223_3[idx], axis=0))
+    cc.append(cc_223_3[idx])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[0,0].plot(binned, cc, 'k.')
+sns.regplot(binned, cc, color ='blue', ax=axes[0,0])
+axes[0,0].set_xticks([])
+axes[0,0].set_yticks([])
+axes[0,0].set_title('223-3')
+axes[0,0].set_ylabel('Mean clustering coefficient')
+axes[0,0].set_xlabel('Bin event count')
+
+binned = []
+cc = []
 for idx in range(np.shape(cc_198_1)[0]):
     if idx != 4 and idx != 6:
-        plt.plot(np.mean(binned_events_198_1[idx], axis=0), cc_198_1[idx], 'r.')
-plt.xticks([])
-plt.yticks([])
-plt.title('198-1')
-plt.ylabel('Mean clustering coefficient')
-plt.xlabel('Bin event count')
-plt.show()
+        binned.append(np.mean(binned_events_198_1[idx], axis=0))
+        cc.append(cc_198_1[idx])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[0,1].plot(binned, cc, 'k.')
+sns.regplot(binned, cc, color ='blue', ax=axes[0,1])
+axes[0,1].set_xticks([])
+axes[0,1].set_yticks([])
+axes[0,1].set_title('198-1')
+axes[0,1].set_ylabel('Mean clustering coefficient')
+axes[0,1].set_xlabel('Bin event count')
 
+
+binned = []
+cc = []
 for idx in range(np.shape(cc_202_4)[0]):
-    plt.plot(np.mean(binned_events_202_4[idx], axis=0), cc_202_4[idx], 'b.')
-plt.xticks([])
-plt.yticks([])
-plt.title('202-4')
-plt.ylabel('Mean clustering coefficient')
-plt.xlabel('Bin event count')
-plt.show()
+    binned.append(np.mean(binned_events_202_4[idx], axis=0))
+    cc.append(cc_202_4[idx])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[1,0].plot(binned, cc, 'k.')
+sns.regplot(binned, cc, color ='blue', ax=axes[1,0])
+axes[1,0].set_xticks([])
+axes[1,0].set_yticks([])
+axes[1,0].set_title('202-4')
+axes[1,0].set_ylabel('Mean clustering coefficient')
+axes[1,0].set_xlabel('Bin event count')
 
+
+binned = []
+cc = []
 for idx in range(np.shape(cc_222_1)[0]):
-    plt.plot(np.mean(binned_events_222_1[idx], axis=0), cc_222_1[idx], 'g.')
-plt.xticks([])
-plt.yticks([])
-plt.title('222-1')
-plt.ylabel('Mean clustering coefficient')
-plt.xlabel('Bin event count')
+    binned.append(np.mean(binned_events_222_1[idx], axis=0))
+    cc.append(cc_222_1[idx])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[1,1].plot(binned, cc, 'k.')
+sns.regplot(binned, cc, color ='blue', ax=axes[1,1])
+axes[1,1].set_xticks([])
+axes[1,1].set_yticks([])
+axes[1,1].set_title('222-1')
+axes[1,1].set_ylabel('Mean clustering coefficient')
+axes[1,1].set_xlabel('Bin event count')
+
+plt.savefig('mean_clustering_v_bin_event_count.png', dpi=200)
 plt.show()
 
 
 #%% Plot by each neuron -- 198-1
 mouse_id = '198-1'
 
-store_drug_condition = []
+store_drug_condition_198_1 = []
 # For each drug condition
 for drug in range(len(dv_198_1)):
 
     # If the file does not exist, there will be a zero stored in binned_events_198_1[drug]
-    if type(binned_events_198_1[drug]) == int:
-        store_drug_condition.append(np.nan)
+    if not type(binned_events_198_1[drug]) == np.ndarray:
+        store_drug_condition_198_1.append(np.nan)
         continue
 
     # If the file exists, determine the cc for each neuron
@@ -184,46 +222,49 @@ for drug in range(len(dv_198_1)):
                     bin_event_val = binned_events_198_1[drug][idx, time_bin]
                     x_vals.append(cc_val)
                     cc_per_neuron[idx, time_bin] = cc_val
-    store_drug_condition.append(cc_per_neuron)
+    store_drug_condition_198_1.append(cc_per_neuron)
 
 plt.figure(figsize=(10,10))
 for drug in range(len(labels)):
-    if type(binned_events_198_1[drug]) is int:
+    if not type(binned_events_198_1[drug]) == np.ndarray:
         continue
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_198_1[drug])):
             # average for each neuron across time bins
-            plt.plot(np.mean(binned_events_198_1[drug][neuron]), np.mean(store_drug_condition[drug][neuron]), 'k.')
+            plt.plot(np.mean(binned_events_198_1[drug][neuron]), np.mean(store_drug_condition_198_1[drug][neuron]), 'k.')
 plt.xlabel('Mean binned events')
 plt.ylabel('Mean clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
 plt.show()
 
+
+binned = []
+cc = []
 plt.figure(figsize=(10,10))
 for drug in range(len(labels)):
-    if type(binned_events_198_1[drug]) is int:
+    if not type(binned_events_198_1[drug]) == np.ndarray:
         continue
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_198_1[drug])):
             # average for each neuron across time bins
-            plt.plot(binned_events_198_1[drug][neuron], store_drug_condition[drug][neuron], 'k.')
+            plt.plot(binned_events_198_1[drug][neuron], store_drug_condition_198_1[drug][neuron], 'k.')
 plt.xlabel('Num binned events')
 plt.ylabel('Clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 #%% Plot by each neuron -- 202-4
 mouse_id = '202-4'
 
-store_drug_condition = []
+store_drug_condition_202_4 = []
 # For each drug condition
 for drug in range(len(dv_202_4)):
 
     # If the file does not exist, there will be a zero stored in binned_events_202_4[drug]
     if type(binned_events_202_4[drug]) == int:
-        store_drug_condition.append(np.nan)
+        store_drug_condition_202_4.append(np.nan)
         continue
 
     # If the file exists, determine the cc for each neuron
@@ -240,7 +281,7 @@ for drug in range(len(dv_202_4)):
                     bin_event_val = binned_events_202_4[drug][idx, time_bin]
                     x_vals.append(cc_val)
                     cc_per_neuron[idx, time_bin] = cc_val
-    store_drug_condition.append(cc_per_neuron)
+    store_drug_condition_202_4.append(cc_per_neuron)
 
 plt.figure(figsize=(10,10))
 count = 0
@@ -249,31 +290,29 @@ for drug in range(len(labels)):
         continue
         count += 1
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_202_4[drug])):
             # average for each neuron across time bins
-            plt.plot(np.mean(binned_events_202_4[drug][neuron]), np.mean(store_drug_condition[drug][neuron]), 'k.')
+            plt.plot(np.mean(binned_events_202_4[drug][neuron]), np.mean(store_drug_condition_202_4[drug][neuron]), 'k.')
 plt.xlabel('Mean binned events')
 plt.ylabel('Mean clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 
 plt.figure(figsize=(10,10))
 # Plot each time bin - neuron pair
-plt.figure(figsize=(10,10))
-plt.figure(figsize=(10,10))
 for drug in range(len(labels)):
     if type(binned_events_202_4[drug]) is int:
         continue
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_202_4[drug])):
             # average for each neuron across time bins
-            plt.plot(binned_events_202_4[drug][neuron], store_drug_condition[drug][neuron], 'k.')
+            plt.plot(binned_events_202_4[drug][neuron], store_drug_condition_202_4[drug][neuron], 'k.')
 plt.xlabel('Num binned events')
 plt.ylabel('Clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 
@@ -281,13 +320,13 @@ plt.show()
 
 mouse_id = '222-1'
 
-store_drug_condition = []
+store_drug_condition_222_1 = []
 # For each drug condition
 for drug in range(len(dv_222_1)):
 
     # If the file does not exist, there will be a zero stored in binned_events_222_1[drug]
     if type(binned_events_222_1[drug]) == int:
-        store_drug_condition.append(np.nan)
+        store_drug_condition_222_1.append(np.nan)
         continue
 
     # If the file exists, determine the cc for each neuron
@@ -304,7 +343,7 @@ for drug in range(len(dv_222_1)):
                     bin_event_val = binned_events_222_1[drug][idx, time_bin]
                     x_vals.append(cc_val)
                     cc_per_neuron[idx, time_bin] = cc_val
-    store_drug_condition.append(cc_per_neuron)
+    store_drug_condition_222_1.append(cc_per_neuron)
 
 plt.figure(figsize=(10,10))
 count = 0
@@ -313,43 +352,41 @@ for drug in range(len(labels)):
         continue
         count += 1
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_222_1[drug])):
             # average for each neuron across time bins
-            plt.plot(np.mean(binned_events_222_1[drug][neuron]), np.mean(store_drug_condition[drug][neuron]), 'k.')
+            plt.plot(np.mean(binned_events_222_1[drug][neuron]), np.mean(store_drug_condition_222_1[drug][neuron]), 'k.')
 plt.xlabel('Mean binned events')
 plt.ylabel('Mean clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 
 plt.figure(figsize=(10,10))
 # Plot each time bin - neuron pair
-plt.figure(figsize=(10,10))
-plt.figure(figsize=(10,10))
 for drug in range(len(labels)):
     if type(binned_events_222_1[drug]) is int:
         continue
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_222_1[drug])):
             # average for each neuron across time bins
-            plt.plot(binned_events_222_1[drug][neuron], store_drug_condition[drug][neuron], 'k.')
+            plt.plot(binned_events_222_1[drug][neuron], store_drug_condition_222_1[drug][neuron], 'k.')
 plt.xlabel('Num binned events')
 plt.ylabel('Clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 #%% Plot by each neuron -- 223-3
 mouse_id = '223-3'
 
-store_drug_condition = []
+store_drug_condition_223_3 = []
 # For each drug condition
 for drug in range(len(dv_223_3)):
 
     # If the file does not exist, there will be a zero stored in binned_events_223_3[drug]
     if type(binned_events_223_3[drug]) == int:
-        store_drug_condition.append(np.nan)
+        store_drug_condition_223_3.append(np.nan)
         continue
 
     # If the file exists, determine the cc for each neuron
@@ -366,7 +403,7 @@ for drug in range(len(dv_223_3)):
                     bin_event_val = binned_events_223_3[drug][idx, time_bin]
                     x_vals.append(cc_val)
                     cc_per_neuron[idx, time_bin] = cc_val
-    store_drug_condition.append(cc_per_neuron)
+    store_drug_condition_223_3.append(cc_per_neuron)
 
 plt.figure(figsize=(10,10))
 count = 0
@@ -375,32 +412,113 @@ for drug in range(len(labels)):
         continue
         count += 1
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_223_3[drug])):
             # average for each neuron across time bins
-            plt.plot(np.mean(binned_events_223_3[drug][neuron]), np.mean(store_drug_condition[drug][neuron]), 'k.')
+            plt.plot(np.mean(binned_events_223_3[drug][neuron]), np.mean(store_drug_condition_223_3[drug][neuron]), 'k.')
 plt.xlabel('Mean binned events')
 plt.ylabel('Mean clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_mean_cc_v_binned_events.png', dpi=200)
 plt.show()
 
 
 
 # Plot each time bin - neuron pair
 plt.figure(figsize=(10,10))
-plt.figure(figsize=(10,10))
 for drug in range(len(labels)):
     if type(binned_events_223_3[drug]) is int:
         continue
     else:
-        for neuron in range(len(store_drug_condition[drug])):
+        for neuron in range(len(store_drug_condition_223_3[drug])):
             # average for each neuron across time bins
-            plt.plot(binned_events_223_3[drug][neuron], store_drug_condition[drug][neuron], 'k.')
+            plt.plot(binned_events_223_3[drug][neuron], store_drug_condition_223_3[drug][neuron], 'k.')
 plt.xlabel('Num binned events')
 plt.ylabel('Clustering coefficient')
 plt.title(mouse_id)
-plt.savefig(os.getcwd() + f'/scratch_files/General_Exam_figures/{mouse_id}_cc_v_binned_events.png', dpi=200)
+plt.savefig(os.getcwd() + f'/scratch_files/General_Exam/{mouse_id}_cc_v_binned_events.png', dpi=200)
 plt.show()
 
+
+#%% Figure X
+fig, axes = plt.subplots(2,2, figsize=(20,20))
+
+mouse_id = '198-1'
+binned = []
+cc = []
+for drug in range(len(labels)):
+    if not type(binned_events_198_1[drug]) == np.ndarray:
+        continue
+    else:
+        for neuron in range(len(store_drug_condition_198_1[drug])):
+
+            binned.append(binned_events_198_1[drug][neuron])
+            cc.append(store_drug_condition_198_1[drug][neuron])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[0,0].plot(binned, cc, 'k.')
+axes[0,0].set_xticks([])
+axes[0,0].set_yticks([])
+axes[0,0].set_xlabel('Num binned events')
+axes[0,0].set_ylabel('Clustering coefficient')
+axes[0,0].set_title(mouse_id)
+
+mouse_id = '202-4'
+binned = []
+cc = []
+for drug in range(len(labels)):
+    if type(binned_events_202_4[drug]) is int:
+        continue
+    else:
+        for neuron in range(len(store_drug_condition_202_4[drug])):
+            binned.append(binned_events_202_4[drug][neuron])
+            cc.append(store_drug_condition_202_4[drug][neuron])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[0,1].plot(binned, cc, 'k.')
+axes[0,1].set_xticks([])
+axes[0,1].set_yticks([])
+axes[0,1].set_xlabel('Num binned events')
+axes[0,1].set_ylabel('Clustering coefficient')
+axes[0,1].set_title(mouse_id)
+
+mouse_id = '222-1'
+binned = []
+cc = []
+for drug in range(len(labels)):
+    if type(binned_events_222_1[drug]) is int:
+        continue
+    else:
+        for neuron in range(len(store_drug_condition_222_1[drug])):
+            binned.append(binned_events_222_1[drug][neuron])
+            cc.append(store_drug_condition_222_1[drug][neuron])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[1,0].set_xticks([])
+axes[1,0].set_yticks([])
+axes[1,0].plot(binned, cc, 'k.')
+axes[1,0].set_xlabel('Num binned events')
+axes[1,0].set_ylabel('Clustering coefficient')
+axes[1,0].set_title(mouse_id)
+
+mouse_id = '223-3'
+binned = []
+cc = []
+for drug in range(len(labels)):
+    if type(binned_events_223_3[drug]) is int:
+        continue
+    else:
+        for neuron in range(len(store_drug_condition_223_3[drug])):
+            binned.append(binned_events_223_3[drug][neuron])
+            cc.append(store_drug_condition_223_3[drug][neuron])
+binned = list(np.concatenate(binned).flat)
+cc = list(np.concatenate(cc).flat)
+axes[1,1].plot(binned, cc, 'k.')
+axes[1,1].set_xticks([])
+axes[1,1].set_yticks([])
+axes[1,1].set_xlabel('Num binned events')
+axes[1,1].set_ylabel('Clustering coefficient')
+axes[1,1].set_title(mouse_id)
+plt.savefig(os.getcwd() + f"/scratch_files/General_Exam/cc_v_binned_events.png", dpi=200)
+plt.show()
 
 #%% Given a neuron label, plot the time-course for that time bin
