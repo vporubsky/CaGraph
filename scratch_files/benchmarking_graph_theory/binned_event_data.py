@@ -20,7 +20,7 @@ import os
 
 # %% Global analysis parameters
 threshold = 0.3
-path_to_data = os.getcwd() + "/LC-DG-OFT-data/"
+path_to_data = os.getcwd() + "/LC-DG-FC-data/"
 
 # %% Load untreated data files - saline
 

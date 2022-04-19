@@ -6,6 +6,7 @@ from pynwb import NWBHDF5IO
 import imageio
 import os
 from statsmodels.tsa.stattools import grangercausalitytests
+from scipy import stats
 
 
 class NeuronalNetworkGraph:
@@ -608,11 +609,67 @@ class NeuronalNetworkGraph:
             graph = self.get_network_graph()
         nx.draw(graph, pos=nx.spring_layout(graph), node_size=node_size, node_color=node_color, alpha=alpha)
 
-    # Todo: write function
-    def plot_CDF(self, data=None):
+    def plot_CDF(self, data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=False):
         """
-        Plots the cumulative distribution function.
+        Plots the cumulative distribution function of the provided list of data.
+
+        :param data: list of float values
+        :param color: str matplotlib color style
+        :param marker: str matplotlib marker style
+        :param x_label: str
+        :param y_label: str
+        :param y_label: bool
         """
+
+        # sort the dataset in ascending order
+        sorted_data = np.sort(data)
+
+        # get the cdf values of dataset
+        cdf = np.arange(len(data)) / float(len(data))
+
+        # plotting
+        plt.plot(sorted_data, cdf, color=color, marker=marker)
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+
+        if show_plot:
+            plt.show()
+
+
+    def plot_CDF_compare_two_samples(self, data_list=None, color_list=['black', 'black'], marker='o', x_label='', y_label='CDF', show_plot=False):
+
+        """
+        Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
+        the Kolmogorov-Smirnov distance between the distributions.
+
+        :param data_list: list of lists containing float values to compare with KS-test
+        :param color_list: list of str containing matplotlib color styles
+        :param marker: str matplotlib marker style
+        :param x_label: str
+        :param y_label: str
+        :param y_label: bool
+        """
+
+        # Evaluate KS-test statistic
+        stat_level = stats.ks_2samp(data_list[0], data_list[1])
+
+        for idx, data in enumerate(data_list):
+            # sort the dataset in ascending order
+            sorted_data = np.sort(data)
+
+            # get the cdf values of dataset
+            cdf = np.arange(len(data)) / float(len(data))
+
+            # plotting
+            plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
+
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.title(f'P value: {stat_level.pvalue:.2e}')
+
+        if show_plot:
+            plt.show()
+
 
 
 class DGNetworkGraph(NeuronalNetworkGraph):
