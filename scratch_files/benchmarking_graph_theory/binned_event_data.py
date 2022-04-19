@@ -12,7 +12,6 @@ each neuron vs. the number of binned events for a given time bin for that neuron
 clustered neurons are primarily.
 
 """
-
 import numpy as np
 from neuronal_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt

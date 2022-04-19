@@ -608,12 +608,18 @@ class NeuronalNetworkGraph:
             graph = self.get_network_graph()
         nx.draw(graph, pos=nx.spring_layout(graph), node_size=node_size, node_color=node_color, alpha=alpha)
 
+    # Todo: write function
+    def plot_CDF(self, data=None):
+        """
+        Plots the cumulative distribution function.
+        """
+
 
 class DGNetworkGraph(NeuronalNetworkGraph):
     """
     Class for LC-DG experiments. Context A and Context B are specified for
-    fear conditioning paradigm, where Context A is neutral and recorded from
-    time 180 to 360 seconds and Context B is anxiogeneic and recorded from time
+    fear conditioning paradigm, where Context A is anxiogenic and recorded from
+    time 180 to 360 seconds and Context B is neutral and recorded from time
     0 to 180 seconds.
     """
 

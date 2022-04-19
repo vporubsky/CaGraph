@@ -11,7 +11,7 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Runs before any tests have been executed."""
-        cls.nng = NeuronalNetworkGraph(data_file=os.getcwd() + '/LC-DG-FC-data/caData_day1_Th/2-1_D1_smoothed_calcium_traces.csv')
+        cls.nng = NeuronalNetworkGraph(data_file=os.getcwd() + '/LC-DG-FC-data/2-1_D1_smoothed_calcium_traces.csv')
         pass
 
     @classmethod
@@ -49,6 +49,11 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
     def test_getNetworkGraph(self):
         """"""
         self.nng.get_network_graph()
+
+    def test_plotCDF(self):
+        """Test """
+        self.nng.plot_CDF(data=self.nng.get_clustering_coefficient())
+
 
 
 if __name__ == '__main__':
