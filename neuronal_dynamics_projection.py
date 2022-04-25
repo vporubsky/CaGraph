@@ -179,6 +179,7 @@ class NeuronalDynamicsProjection:
         if axs is not None:
             ax1, ax2 = axs
         else:
+            fig= plt.figure(figsize=[9, 4])
             ax1 = fig.add_subplot(1, 2, 1, projection='3d')
             ax2 = fig.add_subplot(1, 2, 2, projection='3d')
             axs = [ax1, ax2]
@@ -211,36 +212,4 @@ class NeuronalDynamicsProjection:
 
         if return_axes:
             return [ax1, ax2]
-
-
-#%% 3D plotting test
-from dg_network_graph import DGNetworkGraph as nng
-
-D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
-                 '1055-4_D1_smoothed_calcium_traces.csv', '122-1_D1_smoothed_calcium_traces.csv',
-                 '122-2_D1_smoothed_calcium_traces.csv', '122-3_D1_smoothed_calcium_traces.csv',
-                 '14-0_D1_smoothed_calcium_traces.csv']
-
-D9_data_list = ['1055-1_D9_smoothed_calcium_traces.csv', '1055-2_D9_smoothed_calcium_traces.csv',
-                 '1055-4_D9_smoothed_calcium_traces.csv', '122-1_D9_smoothed_calcium_traces.csv',
-                 '122-2_D9_smoothed_calcium_traces.csv', '122-3_D9_smoothed_calcium_traces.csv',
-                 '14-0_D9_smoothed_calcium_traces.csv']
-
-for idx, data_file in enumerate(D1_data_list):
-
-    mouse_id = data_file[0:data_file.index('_D')]
-
-    fig = plt.figure(figsize=[9, 4])
-    nn = nng(os.getcwd() + '/LC-DG-FC-data/' + D1_data_list[0], dataset_id = mouse_id)
-    ndp = NeuronalDynamicsProjection(os.getcwd() + '/LC-DG-FC-data/' + D1_data_list[0])
-    ax1, ax2 = ndp.plot_3D_projection(dataset=nn.context_A_dynamics[:, 0:1790], color='mistyrose', return_axes=True)
-    ndp.plot_3D_projection(dataset=nn.context_B_dynamics[:, 0:1790], axs=[ax1,ax2], color='turquoise')
-
-    nn = nng(os.getcwd() + '/LC-DG-FC-data/' + D9_data_list[idx], dataset_id=mouse_id)
-    ndp = NeuronalDynamicsProjection(os.getcwd() + '/LC-DG-FC-data/' + D9_data_list[0])
-    ndp.plot_3D_projection(dataset=nn.context_A_dynamics[:, 0:1790], axs=[ax1,ax2], color='salmon')
-    ndp.plot_3D_projection(dataset=nn.context_B_dynamics[:, 0:1790], axs=[ax1,ax2], color='teal')
-    plt.suptitle(f'{nn.data_id}')
-    plt.legend(['D1_A', 'D1_B', 'D9_A', 'D9_B'], loc='upper right')
-    plt.show()
 
