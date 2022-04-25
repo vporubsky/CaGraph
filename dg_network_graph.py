@@ -10,10 +10,15 @@ File Final Edit Date:
 Description: 
 """
 from neuronal_network_graph import NeuronalNetworkGraph
+import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pynwb import NWBHDF5IO
+import imageio
 import os
+from statsmodels.tsa.stattools import grangercausalitytests
+from scipy import stats
 
 class DGNetworkGraph(NeuronalNetworkGraph):
     """
@@ -26,8 +31,8 @@ class DGNetworkGraph(NeuronalNetworkGraph):
     """
 
     # Pass __init__ from parent class
-    def __init__(self, data_file, identifiers=None):
-        super().__init__(data_file, identifiers)
+    def __init__(self, data_file, identifiers=None, dataset_id=None):
+        super().__init__(data_file, identifiers, dataset_id)
         self.context_A_dynamics = self.neuron_dynamics[:, 1800:3600]  # Record second in Context A
         self.context_B_dynamics = self.neuron_dynamics[:, 0:1800]  # Record first in Context B
         self.con_A_pearsons_correlation_matrix = np.corrcoef(self.context_A_dynamics)

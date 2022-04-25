@@ -52,7 +52,7 @@ class NeuronalNetworkGraph:
     Todo: change labels or identifiers or identifiers to labels?
     """
 
-    def __init__(self, data_file, identifiers=None, data_id=None):
+    def __init__(self, data_file, identifiers=None, dataset_id=None):
         """
 
         :param csv_file: str
@@ -73,8 +73,8 @@ class NeuronalNetworkGraph:
         else:
             print('Data must be passed as a .csv or .nwb file.')
             raise TypeError
-        if data_id is not None:
-            self.data_id = data_id
+        if dataset_id is not None:
+            self.data_id = dataset_id
         self.data_filename = str(data_file)
         self.time = self.data[0, :]
         self.neuron_dynamics = self.data[1:len(self.data), :]
