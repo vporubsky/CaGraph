@@ -14,7 +14,7 @@ import pandas as pd
 import scipy
 import random
 from pynwb import NWBHDF5IO
-
+import os
 
 class NeuronalDynamicsProjection:
     """
@@ -126,7 +126,7 @@ D9_WT = ['1055-1_D9_smoothed_calcium_traces.csv', '1055-2_D9_smoothed_calcium_tr
          '14-0_D9_smoothed_calcium_traces.csv', '122-1_D9_smoothed_calcium_traces.csv',
          '122-2_D9_smoothed_calcium_traces.csv', '122-3_D9_smoothed_calcium_traces.csv']
 
-path_to_data = "/LC-DG-FC-data/"
+path_to_data = os.getcwd() +"/LC-DG-FC-data/"
 
 data_file = D1_WT[3]
 mouse_id = data_file.replace('_smoothed_calcium_traces.csv', '')
@@ -324,3 +324,6 @@ ax.scatter3D(projection_b9[:, 0], projection_b9[:, 1], projection_b9[:, 2], '.',
 plt.show()
 
 # %% Look at only cells that are preferentially active in a given context
+
+
+
