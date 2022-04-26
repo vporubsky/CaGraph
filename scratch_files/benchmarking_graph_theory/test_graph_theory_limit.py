@@ -100,4 +100,3 @@ for treatment_group_index in [0, 1, 2]:
 
 
 _log.info('End logging.')
-# Todo: Verify that hub threshold is acceptable

@@ -9,7 +9,7 @@ Workflow:
 4. Run analyses as before
 5. Pull out subset of data for cell-matched data
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from dg_network_graph import DGNetworkGraph as nng
 import numpy as np
 import networkx as nx
 import os
@@ -43,11 +43,13 @@ D9_Th = ['387-4_D9_smoothed_calcium_traces.csv', '396-1_D9_smoothed_calcium_trac
 
 # %% set hyper-parameters
 threshold = 0.3
+path_to_data = '/LC-DG-FC-data/'
+
 
 # %% clustering coefficient
 day = 'D1'
-condition = 'WT'
-condition_data = D1_WT
+condition = 'Th'
+condition_data = D1_Th
 plt.figure(figsize=(15,15))
 cc_all_mice_1_A = []
 cc_all_mice_1_B = []
@@ -56,7 +58,7 @@ cc_all_mice_9_B = []
 idx = 1
 for filename in condition_data:
     mouse_id = filename.replace('_' + day + '_smoothed_calcium_traces.csv', '')
-    path = os.getcwd() + '/cell_matching_data/'
+    path = os.getcwd() + '/LC-DG-FC-data/cell_matching_data/'
     file = mouse_id + '_cellRegistered.csv'
     path_to_file = path + file
     data = np.genfromtxt(path_to_file, delimiter=",")
@@ -67,8 +69,8 @@ for filename in condition_data:
     # decrement all indices by 1 to convert Matlab indexing to Python
     data = data - np.ones(np.shape(data))
 
-    nn_D1 = nng(mouse_id + '_D1_smoothed_calcium_traces.csv')
-    nn_D9 = nng(mouse_id + '_D9_smoothed_calcium_traces.csv')
+    nn_D1 = nng(path_to_data + mouse_id + '_D1_smoothed_calcium_traces.csv')
+    nn_D9 = nng(path_to_data + mouse_id + '_D9_smoothed_calcium_traces.csv')
 
     nn_D1_con_A = nn_D1.get_context_A_graph(threshold=threshold)
     nn_D1_con_B = nn_D1.get_context_B_graph(threshold=threshold)
@@ -148,7 +150,7 @@ for filename in condition_data:
     cc_all_mice_9_A = cc_all_mice_9_A + cc_9_A
     cc_all_mice_9_B = cc_all_mice_9_B + cc_9_B
 plt.suptitle(f'{condition} Clustering coefficient cell-matched, threshold: {threshold}')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_cell_matched.png", transparent=True, dpi=300)
+plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/{condition}_clustering_cell_matched.png", transparent=True, dpi=300)
 plt.show()
 
 
@@ -158,7 +160,7 @@ idx = 0
 for filename in condition_data:
     idx += 1
     mouse_id = filename.replace('_' + day + '_smoothed_calcium_traces.csv', '')
-    path = os.getcwd() + '/cell_matching_data/'
+    path = os.getcwd() + '/LC-DG-FC-data/cell_matching_data/'
     file = mouse_id + '_cellRegistered.csv'
     path_to_file = path + file
     data = np.genfromtxt(path_to_file, delimiter=",")
@@ -243,11 +245,12 @@ for filename in condition_data:
     plt.title(mouse_id)
 
 plt.suptitle(f'{condition} Correlated pairs ratio cell-matched, threshold: {threshold}')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_corr_pair_matched.png", transparent=True, dpi=300)
+#plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/visualization/20210603/{condition}_corr_pair_matched.png", transparent=True, dpi=300)
 plt.show()
 
 
 #%% Context A data
+plt.rcParams.update({'font.size': 12})
 set1 = cc_all_mice_1_A
 set2 = cc_all_mice_9_A
 
@@ -278,8 +281,9 @@ plt.xlabel('')
 plt.ylabel('clustering coeff.')
 plt.plot([0, 1], [0.5-ave_slope/2, 0.5+ave_slope/2], 'k')
 
-plt.suptitle(f'{condition} Context A')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_conA_matched.png", transparent=True, dpi=300)
+stat = (scipy.stats.ttest_rel(set1, set2))
+plt.suptitle(f'{condition} Context A (p-value = {stat.pvalue:.4f})')
+plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/{condition}_clustering_conA_matched.png", transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -314,8 +318,9 @@ ave_slope = np.mean(y_all[1:, 1] - y_all[1:, 0])
 plt.xlabel('')
 plt.ylabel('clustering coeff.')
 plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
-plt.suptitle(f'{condition} Context B')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_conB_matched.png", transparent=True, dpi=300)
+stat = (scipy.stats.ttest_rel(set1, set2))
+plt.suptitle(f'{condition} Context B (p-value = {stat.pvalue:.4f})')
+plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/{condition}_clustering_conB_matched.png", transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -393,7 +398,7 @@ plt.xlabel('')
 plt.ylabel('clustering coeff.')
 plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
 plt.suptitle(f'{condition} Context B')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_conB_matched_remove_extreme.png", transparent=True, dpi=300)
+#plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_conB_matched_remove_extreme.png", transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -433,7 +438,7 @@ plt.ylabel('clustering coeff.')
 plt.plot([0, 1], [0.5-ave_slope/2, 0.5+ave_slope/2], 'k')
 
 plt.suptitle(f'{condition} D1')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_D1_matched.png", transparent=True, dpi=300)
+#plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_D1_matched.png", transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -469,7 +474,7 @@ plt.xlabel('')
 plt.ylabel('clustering coeff.')
 plt.plot([0, 1], [0.5 - ave_slope / 2, 0.5 + ave_slope / 2], 'k')
 plt.suptitle(f'{condition} D9')
-plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_D9_matched.png", transparent=True, dpi=300)
+#plt.savefig(f"/Users/veronica_porubsky/GitHub/DG_graph_theory/scratch_files/visualization/20210603/{condition}_clustering_D9_matched.png", transparent=True, dpi=300)
 plt.show()
 
 
