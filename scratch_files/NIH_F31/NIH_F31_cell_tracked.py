@@ -45,6 +45,8 @@ D9_Th = ['387-4_D9_smoothed_calcium_traces.csv', '396-1_D9_smoothed_calcium_trac
 threshold = 0.3
 
 # %% clustering coefficient
+path_to_data = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
+path_to_export = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/'
 day = 'D1'
 condition = 'WT'
 condition_data = D1_WT
@@ -56,7 +58,7 @@ cc_all_mice_9_B = []
 idx = 1
 for filename in condition_data:
     mouse_id = filename.replace('_' + day + '_smoothed_calcium_traces.csv', '')
-    path = os.getcwd() + '/cell_matching_data/'
+    path = os.getcwd() + '/LC-DG-FC-data/cell_matching_data/'
     file = mouse_id + '_cellRegistered.csv'
     path_to_file = path + file
     data = np.genfromtxt(path_to_file, delimiter=",")
@@ -67,8 +69,8 @@ for filename in condition_data:
     # decrement all indices by 1 to convert Matlab indexing to Python
     data = data - np.ones(np.shape(data))
 
-    nn_D1 = nng(mouse_id + '_D1_smoothed_calcium_traces.csv')
-    nn_D9 = nng(mouse_id + '_D9_smoothed_calcium_traces.csv')
+    nn_D1 = nng(path_to_data + mouse_id + '_D1_smoothed_calcium_traces.csv')
+    nn_D9 = nng(path_to_data + mouse_id + '_D9_smoothed_calcium_traces.csv')
 
     nn_D1_con_A = nn_D1.get_context_A_graph(threshold=threshold)
     nn_D1_con_B = nn_D1.get_context_B_graph(threshold=threshold)
@@ -172,7 +174,7 @@ for i in range(locs1.shape[0]):
 plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
 plt.yticks([0.5, 1])
 plt.ylabel('')
-plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conA_matched.png"), transparent=True, dpi=300)
+plt.savefig(path_to_export + f'{condition}_clustering_conA_matched.png', transparent=True, dpi=300)
 plt.show()
 
 #%% Context B data
@@ -213,7 +215,7 @@ for i in range(locs1.shape[0]):
 plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
 plt.yticks([0.5, 1])
 plt.ylabel('')
-plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conB_matched.png"), transparent=True, dpi=300)
+plt.savefig(path_to_export + f'/{condition}_clustering_conB_matched.png', transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -231,7 +233,7 @@ cc_all_mice_9_B = []
 idx = 1
 for filename in condition_data:
     mouse_id = filename.replace('_' + day + '_smoothed_calcium_traces.csv', '')
-    path = os.getcwd() + '/cell_matching_data/'
+    path = os.getcwd() + '/LC-DG-FC-data/cell_matching_data/'
     file = mouse_id + '_cellRegistered.csv'
     path_to_file = path + file
     data = np.genfromtxt(path_to_file, delimiter=",")
@@ -242,8 +244,8 @@ for filename in condition_data:
     # decrement all indices by 1 to convert Matlab indexing to Python
     data = data - np.ones(np.shape(data))
 
-    nn_D1 = nng(mouse_id + '_D1_smoothed_calcium_traces.csv')
-    nn_D9 = nng(mouse_id + '_D9_smoothed_calcium_traces.csv')
+    nn_D1 = nng(path_to_data + mouse_id + '_D1_smoothed_calcium_traces.csv')
+    nn_D9 = nng(path_to_data + mouse_id + '_D9_smoothed_calcium_traces.csv')
 
     nn_D1_con_A = nn_D1.get_context_A_graph(threshold=threshold)
     nn_D1_con_B = nn_D1.get_context_B_graph(threshold=threshold)
@@ -348,7 +350,7 @@ for i in range(locs1.shape[0]):
 plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
 plt.yticks([0.5, 1])
 plt.ylabel('')
-plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conA_matched.png"), transparent=True, dpi=300)
+plt.savefig(path_to_export + f'{condition}_clustering_conA_matched.png', transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
@@ -392,7 +394,7 @@ for i in range(locs1.shape[0]):
 plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
 plt.yticks([0.5, 1])
 plt.ylabel('')
-plt.savefig(os.path.join(os.getcwd(), f"NIH_F31/{condition}_clustering_conB_matched.png"), transparent=True, dpi=300)
+plt.savefig(path_to_export + f'{condition}_clustering_conB_matched.png', transparent=True, dpi=300)
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
