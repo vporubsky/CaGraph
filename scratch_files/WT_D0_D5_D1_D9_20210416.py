@@ -8,11 +8,14 @@ Title: Run batch analyses, collecting distributions
 Context A - anxiogenic
 Context B - neutral
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from dg_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import os
+export_path = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/'
+import_data_path = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
+dpi = 200
 
 sns.set(style="whitegrid")
 
@@ -121,7 +124,7 @@ for day in [0, 1, 2, 3]:
         if day == 0:
             mouse_id_indices.append(mouse_id.replace('_D0', ''))
 
-        nn = nng(filename)
+        nn = nng(import_data_path+ filename)
         print(f"Executing analyses for {mouse_id}")
         num_neurons = nn.num_neurons
 
@@ -271,7 +274,7 @@ plt.subplot(427); plt.hist(raw[6], bins=20, color='salmon', alpha=0.4); plt.titl
 plt.subplot(428); plt.hist(raw[7], bins=20, color='turquoise', alpha=0.4); plt.title('WT_D9_B'); #plt.xlim((0,0.5))
 
 plt.suptitle(f'Hub value, Pearson r val: {threshold}')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210416/WT_hubs.png"), dpi=300)
+plt.savefig(export_path + 'WT_hubs.png', dpi=300)
 plt.show()
 
 #%% Correlated pairs ratio analysis
@@ -305,7 +308,7 @@ plt.subplot(427); plt.hist(raw[6], bins=50, color='salmon', alpha=0.4); plt.titl
 plt.subplot(428); plt.hist(raw[7], bins=50, color='turquoise', alpha=0.4); plt.title('WT_D9_B'); plt.xlim((0,0.5))
 
 plt.suptitle(f'Correlated pairs ratio, Pearson r val: {threshold}')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210416/WT_correlated_pairs.png"), dpi=300)
+plt.savefig(export_path + 'WT_correlated_pairs.png', dpi=dpi)
 plt.show()
 
 # %% clustering coefficient
@@ -339,6 +342,8 @@ plt.subplot(427); plt.hist(raw[6], bins=50, color='salmon', alpha=0.4); plt.titl
 plt.subplot(428); plt.hist(raw[7], bins=50, color='turquoise', alpha=0.4); plt.title('WT_D9_B'); plt.xlim((0,0.05))
 
 plt.suptitle(f'Clustering coefficient [Pearson r val: {threshold}]')
-plt.savefig(os.path.join(os.getcwd(), f"visualization/20210416/WT_clustering_coefficient.png"), dpi=300)
+plt.savefig(export_path + 'WT_clustering_coefficient.png', dpi=300)
 plt.show()
 
+
+#%%

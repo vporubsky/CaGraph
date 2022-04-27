@@ -6,7 +6,7 @@ Created on Sun Jun  7 23:10:49 2020
 
 Title: get context-specific connectivity
 """
-from neuronal_network_graph import neuronal_network_graph as nng
+from dg_network_graph import DGNetworkGraph as nng
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ from cycler import cycler
 sns.set(style="whitegrid")
 
 def get_context_active_indices(con_act):
+    np.genfromtxt(con_act, delimiter=',')
     nonspecific_indices  = []
     con_A_active_indices = []
     con_B_active_indices = []
@@ -28,12 +29,14 @@ def get_context_active_indices(con_act):
             con_B_active_indices.append(i)
     return nonspecific_indices, con_A_active_indices, con_B_active_indices
 
+path_to_data = '/LC-DG-FC-data/'
+path_to_export = '/scratch_files/General_Exam/'
 
 #%% Day 1 analyses
 day1_untreated_ids = ['1055-1_D1',  '1055-2_D1','1055-3_D1', '1055-4_D1', '14-0_D1']
 
-con_act_substring = '_neuron_context_active.npy'
-calcium_traces_substring = '_all_calcium_traces.npy'
+con_act_substring = '_neuron_context_active.csv'
+calcium_traces_substring = '_smoothed_calcium_traces.csv'
 
 D1_both_con_A_active_con_A_connectivity = [] # two context A active cells correlation in context A
 D1_both_con_A_active_con_B_connectivity = [] # two context A active cells correlation in context B
@@ -55,15 +58,10 @@ A_idx_list = []
 B_idx_list =[]
 
 for mouse_id in day1_untreated_ids:
-    
-    con_act = np.load(mouse_id + con_act_substring)[0] # load context active designations
-    
-    ns_idx, A_idx, B_idx = get_context_active_indices(con_act) # sort indices of context active cells
-    ns_idx_list.append(len(ns_idx)/len(con_act))
-    A_idx_list.append(len(A_idx)/len(con_act))
-    B_idx_list.append(len(B_idx)/len(con_act))
-    
-    nn = nng(mouse_id + calcium_traces_substring)
+
+    con_act = np.genfromtxt(path_to_data + mouse_id + con_act_substring, delimiter=',')
+    ns_idx, A_idx, B_idx = get_context_active_indices(path_to_data + mouse_id + con_act_substring) # sort indices of context active cells
+    nn = nng(path_to_data + mouse_id + calcium_traces_substring)
     pearsons_con_A = nn.con_A_pearsons_correlation_matrix
     pearsons_con_B = nn.con_B_pearsons_correlation_matrix
 
@@ -109,11 +107,11 @@ print('Mean percentage of context A active cells: {:.3f}%'.format(np.mean(A_idx_
 print('Mean percentage of context B active cells: {:.3f}%'.format(np.mean(B_idx_list)*100))
 print('Mean percentage of nonspecific cells: {:.3f}%'.format(np.mean(ns_idx_list)*100))
                     
-#%% Day 9 analyses 
+#%% Day 9 analyses
 day9_untreated_ids = ['1055-1_D9',  '1055-2_D9','1055-3_D9', '1055-4_D9', '14-0_D9']
 
-con_act_substring = '_neuron_context_active.npy'
-calcium_traces_substring = '_all_calcium_traces.npy'
+con_act_substring = '_neuron_context_active.csv'
+calcium_traces_substring = '_smoothed_calcium_traces.csv'
 
 D9_both_con_A_active_con_A_connectivity = [] # two context A active cells correlation in context A
 D9_both_con_A_active_con_B_connectivity = [] # two context A active cells correlation in context B
@@ -137,14 +135,14 @@ B_idx_list =[]
 
 for mouse_id in day9_untreated_ids:
     
-    con_act = np.load(mouse_id + con_act_substring)[0] # load context active designations
+    con_act = path_to_data + mouse_id + con_act_substring
     
-    ns_idx, A_idx, B_idx = get_context_active_indices(con_act) # sort indices of context active cells
+    ns_idx, A_idx, B_idx = get_context_active_indices(path_to_data + mouse_id + con_act_substring) # sort indices of context active cells
     ns_idx_list.append(len(ns_idx)/len(con_act))
     A_idx_list.append(len(A_idx)/len(con_act))
     B_idx_list.append(len(B_idx)/len(con_act))
     
-    nn = nng(mouse_id + calcium_traces_substring)
+    nn = nng(path_to_data + mouse_id + calcium_traces_substring)
     pearsons_con_A = nn.con_A_pearsons_correlation_matrix
     pearsons_con_B = nn.con_B_pearsons_correlation_matrix
 
@@ -214,7 +212,7 @@ raw = [D1_both_con_A_active_con_B_connectivity, D9_both_con_A_active_con_B_conne
 plt.title('Context A Active -- Correlation in Context B')
 plt.xticks([])
 sns.violinplot(data=raw, whis = 1.5);
-plt.savefig('CSE528_conA_active_conB_correlations.png', dpi = 300)
+plt.savefig(path_to_export + 'CSE528_conA_active_conB_correlations.png', dpi = 300)
 
 #%% Plot context B active connectivity metrics
 fig, ax = plt.subplots()
@@ -227,7 +225,7 @@ raw = [D1_both_con_B_active_con_A_connectivity, D9_both_con_B_active_con_A_conne
 plt.title('Context B Active -- Correlation in Context A')
 plt.xticks([])
 sns.violinplot(data=raw, whis = 1.5);
-plt.savefig('CSE528_conB_active_conA_correlations.png', dpi = 300)
+plt.savefig(path_to_export + 'CSE528_conB_active_conA_correlations.png', dpi = 300)
 
 #%% Plot context B active connectivity metrics -- in context B
 fig, ax = plt.subplots()
@@ -240,4 +238,4 @@ raw = [D1_both_con_B_active_con_B_connectivity, D9_both_con_B_active_con_B_conne
 plt.title('Context B Active -- Correlation in Context B')
 plt.xticks([])
 sns.violinplot(data=raw, whis = 1.5);
-plt.savefig('CSE528_conB_active_conB_correlations.png', dpi = 300)
+plt.savefig(path_to_export + 'CSE528_conB_active_conB_correlations.png', dpi = 300)

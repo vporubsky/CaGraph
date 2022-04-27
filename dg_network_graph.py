@@ -50,14 +50,17 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         """
         return
 
-    # Todo: Integrate cell-selectivity metadata --- consider adding this to neuronal_network_graph.py as responsiveness to stimuli/environment
-    def get_context_active(self):
+    def get_context_active(self, context_tag_data):
         """
-        Returns a dictionary of metadata indicating which cells are selective for context A or context B.
+        Returns lists indicating the indices of non-specific cells, context A-specific, or context B-specific cells.
 
         :return:
         """
-        return
+        context_tags = list(np.genfromtxt(context_tag_data,delimiter=','))
+        nonspecific_indices = [i for i, e in enumerate(context_tags) if e == 0]
+        con_A_active_indices = [i for i, e in enumerate(context_tags) if e == 1]
+        con_B_active_indices = [i for i, e in enumerate(context_tags) if e == 2]
+        return nonspecific_indices, con_A_active_indices, con_B_active_indices
 
     def get_context_A_graph(self, threshold=0.3, weighted=False):
         """

@@ -10,7 +10,10 @@ import statsmodels.api as sm
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
-df = pd.read_csv('14-0_D1_all_calcium_traces.csv')
+path_to_data ='/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
+path_to_export = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/'
+
+df = pd.read_csv(path_to_data + '14-0_D1_smoothed_calcium_traces.csv')
 plt.xlabel('Time')
 plt.ylabel('Calcium fluorescence')
 plt.plot(np.linspace(0,360,3600), df.iloc[1])
