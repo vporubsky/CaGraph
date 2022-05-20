@@ -13,12 +13,6 @@ from neuronal_network_graph import NeuronalNetworkGraph
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
-import seaborn as sns
-from pynwb import NWBHDF5IO
-import imageio
-import os
-from statsmodels.tsa.stattools import grangercausalitytests
-from scipy import stats
 
 class DGNetworkGraph(NeuronalNetworkGraph):
     """

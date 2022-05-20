@@ -3,8 +3,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pynwb import NWBHDF5IO
-import imageio
-import os
 from statsmodels.tsa.stattools import grangercausalitytests
 from scipy import stats
 
@@ -22,6 +20,10 @@ class NeuronalNetworkGraph:
     and generate graph objects which can be analyzed using graph theory.
     There are several graph theoretical metrics for further analysis of
     neuronal network connectivity patterns.
+
+    Most analyses are computed using a graph generated based on Pearson's correlation coefficient values computed
+    between neuron timeseries data. A threshold for Pearson's correlation coefficient is typically set edges added
+    when R>0.3. https://www.nature.com/articles/s41467-020-17270-w#MOESM1 https://www.nature.com/articles/nature15389
     ...
 
     Attributes
@@ -37,22 +39,16 @@ class NeuronalNetworkGraph:
     get_laplacian_matrix()
         ...
     Todo: Add additional graph theoretical analyses (path length, rich club, motifs...)
-    Todo: Add functionality for parsing networks using context-active cell metadata.
-    Todo: Add additional correlation metrics and allow user to pass them (currently must use Pearson)
-    Todo: Add sliding window analysis ***
-    Todo: Add timeshifting for analysis ***
-    Todo: Consider adding converter to look at frequency domain or wavelets -- examine coherence
-    Todo: Add function to generate stacked subnetwork/module timecourses
+    Todo: Add additional correlation metrics and allow user to pass them (currently only Pearson)
     Todo: Add documentation to all methods using docstrings
     Todo: Add all methods to Class docstring
+    Todo: update description of all functions
     Todo: Determine the distribution of eigenvector centrality scores in connected modules/subnetworks
-    Todo: Add justification for r=0.3 threshold: https://www.nature.com/articles/nature15389 https://www.nature.com/articles/nature12015
+    Todo: Add citations as justification for for r=0.3 threshold
     Todo: Implement shuffle distribution r value correction: https://www.nature.com/articles/s41467-020-17270-w#MOESM1
-    Todo: Possible correlation method: https://www.frontiersin.org/articles/10.3389/fninf.2018.00007/full
-    Todo: change labels or identifiers or identifiers to labels?
     """
 
-    def __init__(self, data_file, identifiers=None, dataset_id=None):
+    def __init__(self, data_file, labels=None, dataset_id=None):
         """
 
         :param csv_file: str
@@ -79,14 +75,14 @@ class NeuronalNetworkGraph:
         self.time = self.data[0, :]
         self.neuron_dynamics = self.data[1:len(self.data), :]
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
-        if identifiers is None:
+        if labels is None:
             self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1, \
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
-            self.labels = identifiers
+            self.labels = labels
         self.pearsons_correlation_matrix = np.corrcoef(self.neuron_dynamics)
 
-    # Todo: update description of all functions
+
     def get_laplacian_matrix(self, graph=None, threshold=0.3):
         """
         Returns the Laplacian matrix of the specified graph.
@@ -99,7 +95,6 @@ class NeuronalNetworkGraph:
             graph = self.get_network_graph_from_matrix(threshold=threshold)
         return nx.laplacian_matrix(graph)
 
-    # Todo: make this flexible enough to allow any matrix to be passed
     def get_network_graph_from_matrix(self, threshold=0.3, weight_matrix=None):
         """
         Automatically generate graph object from numpy adjacency matrix.
@@ -113,8 +108,6 @@ class NeuronalNetworkGraph:
             return nx.from_numpy_matrix(self.get_adjacency_matrix(threshold=threshold))
         return nx.from_numpy_matrix(self.get_weight_matrix(weight_matrix=weight_matrix))
 
-
-    # Todo: may be superfluous
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
         """
         Returns the Pearson's correlation for all neuron pairs.
@@ -129,8 +122,6 @@ class NeuronalNetworkGraph:
             data_matrix = data_matrix[:, time_points[0]:time_points[1]]
         return np.corrcoef(data_matrix, rowvar=True)
 
-    # Todo: return list of graphs using specified time-subsampling
-    # Todo: rename subsample_indices
     def get_time_subsampled_graphs(self, subsample_indices, threshold=0.3, weighted=False):
         """
 
@@ -171,7 +162,6 @@ class NeuronalNetworkGraph:
                 gc_matrix[row, col] = gc_test_dict['ssr_chi2test'][1]
         return gc_matrix
 
-    # Todo: refine adjacency matrix
     def get_adjacency_matrix(self, threshold=0.3):
         """
 
@@ -182,7 +172,6 @@ class NeuronalNetworkGraph:
         np.fill_diagonal(adj_mat, 0)
         return adj_mat.astype(int)
 
-    # Todo: update parameter description
     def get_weight_matrix(self, weight_matrix=None):
         """Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
         :param weight_matrix: numpy.ndarray containing weights
@@ -268,7 +257,8 @@ class NeuronalNetworkGraph:
 
     # Todo: plot stacked timecourses based on input neuron indices from graph theory analyses
     # Todo: adjust y axis title for normalization
-    # Todo add time ticks
+    # Todo: add time ticks
+    # Todo: check that the self.num_neurons is not too many for color_palette
     def plot_subnetworks_timecourses(self, graph=None, threshold=0.3, palette=None, title=None):
         """
 
@@ -279,7 +269,7 @@ class NeuronalNetworkGraph:
         """
         subnetworks = self.get_subnetworks(graph=graph, threshold=threshold)
         if palette is None:
-            #Todo: check that the self.num_neurons is not too many for color_palette
+
             palette = sns.color_palette('husl', self.num_neurons)
         for idx, subnetwork in enumerate(subnetworks):
             count = 0
@@ -369,10 +359,11 @@ class NeuronalNetworkGraph:
                         G.add_edge(str(self.labels[i]), str(self.labels[j]))
         return G
 
+    # Todo: update to be able to pass a graph for randomization
     def get_random_graph(self, threshold=0.3):
         """
         nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
-        It uses an existing graph and randomizes it
+        It randomizes the existing graph.
 
         :param threshold:
         :return:
@@ -381,7 +372,6 @@ class NeuronalNetworkGraph:
         G = nx.algorithms.smallworld.random_reference(G)
         return G
 
-    # Todo: finish implementation of random graph
     def get_erdos_renyi_graph(self, graph=None, threshold=0.3):
         """
         Generates an Erdos-Renyi random graph using a network edge coverage
@@ -397,8 +387,7 @@ class NeuronalNetworkGraph:
         else:
             num_nodes = len(graph.nodes)
             con_probability = self.get_network_coverage(graph=graph)
-        erdos_renyi_rand_graph = nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
-        return erdos_renyi_rand_graph
+        return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
 
     def plot_graph_network(self, graph, position):
         """
@@ -414,9 +403,7 @@ class NeuronalNetworkGraph:
         plt.show()
         return
 
-        # Todo: write function
-
-    # Todo: getting stuck on small world analysis when computing sigma -- infinite loop?
+    # Todo: getting stuck on small world analysis when computing sigma -- infinite loop
     # Todo: this^ may be due to computing the average clustering coefficient or the average shortest path length -- test
     def get_smallworld_largest_subnetwork(self, graph=None, threshold=0.3):
         """
@@ -455,13 +442,9 @@ class NeuronalNetworkGraph:
                 omega_list.append(omega)
         return omega_list
 
-    # Todo: consider using pagerank instead of HITS algorithm
-    # Todo: rename graph argument
-    # Todo: change hits to hubs
-    # Todo: consider how best to allow the user to return hits_A or hits_B to do analysis
+
     # Todo: define hits_threshold based on tail of powerlaw distribution
     # Todo: determine best practices for setting threshold of powerlaw distribution to find hubs
-    # Todo: ensure that it is ok to use median and standard deviation
     def get_hubs(self, graph=None, threshold=0.3):
         """
 
@@ -480,8 +463,6 @@ class NeuronalNetworkGraph:
         [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
         return hubs_list, hubs
 
-    # Todo: subnetworks - all, change graph agument to something more meaningful
-    # Todo: test get_subnetworks with no graph specified
     def get_subnetworks(self, graph=None, threshold=0.3):
         """
 
@@ -497,8 +478,6 @@ class NeuronalNetworkGraph:
         [subnetworks.append(list(map(int, x))) for x in connected_components if len(x) > 1]
         return subnetworks
 
-    # Todo: Return subnetwork graphs -- clean-up
-    # Todo: decide whether to use "graph" or "G"
     def get_largest_subnetwork_graph(self, graph=None, threshold=0.3):
         """
 
@@ -511,38 +490,7 @@ class NeuronalNetworkGraph:
         largest_component = max(nx.connected_components(graph), key=len)
         return graph.subgraph(largest_component)
 
-    # Todo: review get_stability func
-    def get_stability(self, num_folds, threshold):
-        """
-
-        :param num_folds:
-        :param threshold:
-        :return:
-        """
-        num_pts = int(np.floor(np.shape(self.neuron_dynamics)[1] / num_folds))
-        r, c = np.shape(self.neuron_dynamics)
-        stability_mat = np.zeros((r, r))
-        for n in range(1, num_folds):
-            corr_mat = np.corrcoef(self.neuron_dynamics[1:np.shape(self.neuron_dynamics)[0], \
-                                   n * num_pts - num_pts:n * num_pts], \
-                                   rowvar=True)
-            r, c = np.shape(corr_mat)
-            for row in range(r):
-                for col in range(c):
-                    if corr_mat[row, col] > threshold:
-                        stability_mat[row, col] += 1
-        percent_stability = stability_mat / num_folds
-        neuron_1_index = []
-        neuron_2_index = []
-        for row in range(r):
-            for col in range(c):
-                if row != col:
-                    if percent_stability[row, col] > 0.1:
-                        neuron_1_index.append(row)
-                        neuron_2_index.append(col)
-        return percent_stability, (neuron_1_index, neuron_2_index)
-
-    # Todo: write function
+    # Todo: add functionality get_path_length
     def get_path_length(self):
         """
         Returns the characteristic path length.
@@ -565,7 +513,6 @@ class NeuronalNetworkGraph:
         [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
         return clustering_coefficient
 
-    # Todo: decide if this is necessary for each context
     def get_degree(self, graph=None, threshold=0.3):
         """
         Returns iterator object of (node, degree) pairs.
@@ -578,7 +525,6 @@ class NeuronalNetworkGraph:
         else:
             return graph.degree
 
-    # Todo: note changed return form from: [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
     # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
     def get_correlated_pair_ratio(self, threshold=0.3, graph=None):
         """
@@ -596,8 +542,6 @@ class NeuronalNetworkGraph:
         [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
         return correlated_pair_ratio
 
-    # Todo: get coverage -- figure out if coverage is the correct term
-    # Todo: rename graph argument if necessary
     # Todo: adapt for directed - current total possible edges is for undirected
     def get_network_coverage(self, graph=None, threshold=0.3):
         """
@@ -643,7 +587,6 @@ class NeuronalNetworkGraph:
             node_groups.append(list(community))
         return node_groups
 
-
     # Todo: add additional arguments
     def draw_network(self, graph=None, node_size=25, node_color='b', alpha=0.5):
         """
@@ -667,7 +610,7 @@ class NeuronalNetworkGraph:
         :param marker: str matplotlib marker style
         :param x_label: str
         :param y_label: str
-        :param y_label: bool
+        :param show_plot: bool
         """
 
         # sort the dataset in ascending order
@@ -696,7 +639,7 @@ class NeuronalNetworkGraph:
         :param marker: str matplotlib marker style
         :param x_label: str
         :param y_label: str
-        :param y_label: bool
+        :param show_plot: bool
         """
 
         # Evaluate KS-test statistic

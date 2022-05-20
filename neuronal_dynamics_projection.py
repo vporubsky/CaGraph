@@ -9,11 +9,9 @@ File Final Edit Date:
 
 Description: A class to perform dimensionality reduction. Currently only implementing PCA.
 """
-import os
 from pynwb import NWBHDF5IO
 import numpy as np
 from scipy.linalg import svd
-import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
@@ -68,10 +66,15 @@ class NeuronalDynamicsProjection:
             raise TypeError
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
 
-    # Todo: define U, Sig and V matrices
     def get_SVD(self):
         """
         Returns the singular value decomposition of the neuronal dynamics as U, Sig, and V matrices.
+        The singular value decomposition is a generalization of the eigendecomposition of a square normal matrix with
+        an orthonormal eigenbasis -- it can accomodate any mxn matrix.
+
+        U: an mxm complex unitary matrix (eigen neurons -- tells you about the column space of the data)
+        Sig: an mxn rectangular diagonal matrix with non-negative real numbers along the diagonal
+        V: an nxn complex unitary matrix (eigen timeseries -- tells you about the row space of the data )
 
         :return: U, Sig, and V matrices
         """

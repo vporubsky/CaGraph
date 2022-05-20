@@ -1,10 +1,17 @@
 """
-Plotting the cumulative density function (CDF) for each individual mouse
-to identify notable outlier subjects.
+Developer Name: Veronica Porubsky
+Developer ORCID: 0000-0001-7216-3368
+Developer GitHub Username: vporubsky
+Developer Email: verosky@uw.edu
 
+File Creation Date: 2021-05-26
+File Final Edit Date:
+
+Description: Plotting the cumulative density function (CDF) for each individual mouse
+to identify notable outlier subjects.
 # Todo: Add some metric to actually pick out outliers automatically based on statistics.
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from dg_network_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats

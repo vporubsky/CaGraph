@@ -23,9 +23,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 
+plt.style.use('/nng.mplstyle')
 #%% Plotting and figure options
-sns.set(style="white")
-plt.rcParams.update({'font.size': 16})
 export_path = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/'
 import_data_path = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
 dpi = 200
@@ -69,7 +68,6 @@ D9_WT = ['1055-1_D9_smoothed_calcium_traces.csv', '1055-2_D9_smoothed_calcium_tr
 
 all_WT_files = [D0_WT, D1_WT, D5_WT, D9_WT]
 
-#%% Analyses
 
 #%% 3D PCA plotting test WT
 from dg_network_graph import DGNetworkGraph as nng
