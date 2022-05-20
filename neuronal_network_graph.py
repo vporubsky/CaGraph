@@ -73,6 +73,7 @@ class NeuronalNetworkGraph:
             self.data_id = dataset_id
         self.data_filename = str(data_file)
         self.time = self.data[0, :]
+        self.dt = self.time[1] - self.time[0]
         self.neuron_dynamics = self.data[1:len(self.data), :]
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
         if labels is None:
