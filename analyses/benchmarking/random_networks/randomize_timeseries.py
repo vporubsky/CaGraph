@@ -65,7 +65,11 @@ def generate_randomized_timeseries_binned(data: list, bin_size: int) -> np.ndarr
 
     flatten_array = time.copy()
     for row in range(np.shape(build_new_array)[0]):
-        flat_row = [item for sublist in build_new_array[row, :] for item in sublist]
+        print(build_new_array[row, :])
+        try:
+            flat_row = [item for sublist in build_new_array[row, :] for item in sublist]
+        except:
+            flat_row = build_new_array[row, :].copy()
         flatten_array = np.vstack([flatten_array, flat_row])
 
     return flatten_array
@@ -181,3 +185,19 @@ plt.ylim((0,200))
 plt.legend(['shuffled', 'context B'])
 plt.savefig(EXPORT_PATH + 'random_v_context_B_hist.png', dpi=200)
 plt.show()
+
+
+#%% Randomize across all mice
+for file in os.listdir(FC_DATA_PATH):
+    if file.endswith('_smoothed_calcium_traces.csv'):
+        print(file)
+        mouse_id = file.replace('_smoothed_calcium_traces.csv', '')
+        data = np.genfromtxt(FC_DATA_PATH + '/' + file, delimiter=',')
+        #random_binned_data = generate_randomized_timeseries_binned(data=data.copy(), bin_size=20)
+        random_data = generate_randomized_timeseries_matrix(data=data.copy())
+        plt.plot(random_binned_data[0, :], random_binned_data[1, :])
+        plt.title('Binned random data')
+        plt.show()
+
+        #np.savetxt(RANDOM_DATA_PATH + f'{mouse_id}_random_binned_data.csv', random_binned_data, delimiter=",")
+        np.savetxt(RANDOM_DATA_PATH + f'{mouse_id}_random_data.csv', random_data, delimiter=",")

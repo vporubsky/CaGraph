@@ -55,7 +55,11 @@ class NeuronalNetworkGraph:
         :param identifiers:
         :param dataset_id: str
         """
-        if data_file.endswith('csv'):
+        if isinstance(data_file, np.ndarray):
+            self.data = data_file
+            self.time = self.data[0, :]
+            self.neuron_dynamics = self.data[1:len(self.data), :]
+        elif data_file.endswith('csv'):
             self.data = np.genfromtxt(data_file, delimiter=",")
             self.time = self.data[0, :]
             self.neuron_dynamics = self.data[1:len(self.data), :]
@@ -71,6 +75,9 @@ class NeuronalNetworkGraph:
             raise TypeError
         if dataset_id is not None:
             self.data_id = dataset_id
+        # Todo: check whether this is appropriate
+        else:
+            self.data_id = 'tmp'
         self.data_filename = str(data_file)
         self.time = self.data[0, :]
         self.dt = self.time[1] - self.time[0]
