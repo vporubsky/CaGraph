@@ -111,20 +111,42 @@ def generate_event_segmented(data: list, event_data: list) -> np.ndarray:
 
 
 #%% Demonstrate binned randomization --rerun
-file_str = '1055-4'
-data = np.genfromtxt(path_to_data + f'/{file_str}_D1_smoothed_calcium_traces.csv', delimiter=',')
-event_data = np.genfromtxt(path_to_data + f'/{file_str}_Day1_eventTrace.csv', delimiter=',')
+file_str = '2-1'
+day = 'D9'
+if day == 'D1':
+    event_day = 'Day1'
+else:
+    event_day = 'Day9'
+data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')
+event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
 random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
 
+
+plt.plot(event_data[0,:], event_data[1,:], '.')
 # Check if context A only random networks are different than context B only, and how they compare to
-plt.plot(random_event_binned_data[0, :], random_event_binned_data[1,:], alpha=0.5)
-plt.plot(data[0, :], data[1,:], 'r', alpha = 0.5)
+plt.plot(random_event_binned_data[0, :], random_event_binned_data[1,:], color='grey', alpha=0.5)
+plt.plot(data[0, 0:1800], data[1,0:1800], 'darkturquoise', alpha = 0.5)
+plt.plot(data[0, 1800:3600], data[1,1800:3600], 'salmon', alpha = 0.5)
 plt.title('Binned random data')
 plt.show()
+
 
 random_nng = nng(random_event_binned_data)
 x = random_nng.pearsons_correlation_matrix
 np.fill_diagonal(x, 0)
+
+#%%  Generate multiple random
+# store_flattened_random = list(np.tril(x).flatten())
+# for i in range(1):
+#     random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
+#     random_nng = nng(random_event_binned_data)
+#     x = random_nng.pearsons_correlation_matrix
+#     np.fill_diagonal(x, 0)
+#     store_flattened_random = store_flattened_random + list(np.tril(x).flatten())
+# x = store_flattened_random
+# x = np.array(x)
+
+#%% Compute percentiles
 Q1 = np.percentile(x, 25, interpolation='midpoint')
 Q3 = np.percentile(x, 75, interpolation='midpoint')
 print(Q3)
@@ -132,23 +154,25 @@ IQR = Q3 - Q1
 outlier_threshold = Q3 + 1.5 * IQR
 print(outlier_threshold)
 
-random_nng = nng(random_event_binned_data)
-x = random_nng.pearsons_correlation_matrix
-np.fill_diagonal(x, 0)
-
-ground_truth_nng = nng(data)
-y = ground_truth_nng.pearsons_correlation_matrix
+ground_truth_nng_B = nng(data[:, 0:1800])
+y = ground_truth_nng_B.pearsons_correlation_matrix
 np.fill_diagonal(y, 0)
 
+ground_truth_nng_A = nng(data[:, 1800:3600])
+z = ground_truth_nng_A.pearsons_correlation_matrix
+np.fill_diagonal(z, 0)
+
+#%%
 plt.ylim(0,700)
 plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
-plt.hist(np.tril(y).flatten(), bins=50, color='blue', alpha=0.3)
+plt.hist(np.tril(y).flatten(), bins=50, color='salmon', alpha=0.3)
+plt.hist(np.tril(z).flatten(), bins=50, color='darkturquoise', alpha=0.3)
 plt.axvline(x = outlier_threshold, color = 'red')
 plt.legend(['threshold (Q3 + 1.5*IQR)', 'shuffled', 'ground truth',])
 plt.xlabel("Pearson's r-value")
 plt.ylabel("Frequency")
 plt.title(file_str)
-plt.savefig(EXPORT_PATH + f'{file_str}_D1_threshold_histogram_binned_event.png', dpi=300)
+plt.savefig(EXPORT_PATH + f'{file_str}_{day}_threshold_histogram_binned_event.png', dpi=300)
 plt.show()
 
 from scipy import stats
@@ -158,3 +182,10 @@ print(f"KS-statistic: {stats.ks_2samp(random_vals, data_vals)}")
 
 print(f"The threshold is: {outlier_threshold}")
 
+
+
+
+#%% Plot event trace to visualize
+plt.plot(random_event_binned_data[0, :], random_event_binned_data[1,:], color='grey', alpha=0.5)
+plt.plot(data[0, 0:1800], data[1,0:1800], 'darkturquoise', alpha = 0.5)
+plt.plot(data[0, 1800:3600], data[1,1800:3600], 'salmon', alpha = 0.5)
