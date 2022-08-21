@@ -98,12 +98,11 @@ def generate_event_segmented(data: list, event_data: list) -> np.ndarray:
     Return a numpy array or NWB file.
     """
     time = data[0, :].copy()
-    build_new_array = np.array(event_bins(data=data[1, :], events=event_data[1,:]))
 
     # build binned dist
     flatten_array = time.copy()
-    for row in range(np.shape(data[2:, :])[0]):
-        binned_row = event_bins(data=data[row + 2, :], events = event_data[row + 2, :])
+    for row in range(np.shape(data[1:, :])[0]):
+        binned_row = event_bins(data=data[row + 1, :], events = event_data[row + 1, :])
         flatten_array = np.vstack([flatten_array, binned_row])
 
     return flatten_array
@@ -111,8 +110,8 @@ def generate_event_segmented(data: list, event_data: list) -> np.ndarray:
 
 
 #%% Demonstrate binned randomization --rerun
-file_str = '2-1'
-day = 'D9'
+file_str = '122-3'
+day = 'D1'
 if day == 'D1':
     event_day = 'Day1'
 else:
@@ -189,3 +188,4 @@ print(f"The threshold is: {outlier_threshold}")
 plt.plot(random_event_binned_data[0, :], random_event_binned_data[1,:], color='grey', alpha=0.5)
 plt.plot(data[0, 0:1800], data[1,0:1800], 'darkturquoise', alpha = 0.5)
 plt.plot(data[0, 1800:3600], data[1,1800:3600], 'salmon', alpha = 0.5)
+plt.show()
