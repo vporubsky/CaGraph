@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 
 RANDOM_DATA_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/randomized_neural_data/'
-EXPORT_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/'
+EXPORT_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/scratch-analysis/'
 
 def bins(lst, n):
     """Yield successive n-sized chunks from lst."""
@@ -40,14 +40,18 @@ def event_bins(data, events):
     data = list(data)
     build_binned_list = []
     event_idx = list(np.nonzero(events)[0])
-    if event_idx[-1] != len(data):
-        event_idx.append(len(data))
-    start_val = 0
-    for idx in event_idx:
-        build_binned_list.append(data[start_val:idx])
-        start_val = idx
-    np.random.shuffle(build_binned_list)
-    flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
+    print(event_idx)
+    if not event_idx:
+        flat_random_binned_list = data
+    else:
+        if event_idx[-1] != len(data):
+            event_idx.append(len(data))
+        start_val = 0
+        for idx in event_idx:
+            build_binned_list.append(data[start_val:idx])
+            start_val = idx
+        np.random.shuffle(build_binned_list)
+        flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
     return flat_random_binned_list
 
 
@@ -110,7 +114,24 @@ def generate_event_segmented(data: list, event_data: list) -> np.ndarray:
 
     return flatten_array
 
+def generate_randomized(data: list, bin_size: int) -> np.ndarray:
+    """
+    data: list
 
+    Parameter data should contain a list of np.ndarray objects.
+
+    Return a numpy array or NWB file.
+    """
+    time = data[0, :].copy()
+    build_new_array = np.array(bins(lst=data[1, :], n=bin_size))
+
+    # build binned dist
+    flatten_array = time.copy()
+    for row in range(np.shape(data[2:, :])[0]):
+        binned_row = bins(lst=data[row + 2, :], n=bin_size)
+        flatten_array = np.vstack([flatten_array, binned_row])
+
+    return flatten_array
 
 #%% Demonstrate binned randomization example
 file_str = '122-2'
@@ -202,36 +223,42 @@ for file in os.listdir(path_to_data):
         mouse_id_list.append(mouse_id)
 
 #%% Only looking at Context B (first half of data)
-import pandas as pd
-# store: mouse_id, threshold event separated, ks-stat event separated, threshold bin-separated, ks-stat bin-separated
-results = np.zeros((58, 4))
+# store: mouse_id, mean, median, max pearson, threshold event separated, ks-stat event separated, mean, median, max pearson, threshold bin-separated, ks-stat bin-separated
+results = np.zeros((58, 13))
 
 for count, mouse in enumerate(mouse_id_list):
     file_str = mouse[:len(mouse)-3]
     day = mouse[len(mouse)-2:]
     print(file_str)
     print(day)
-    if not day == 'D5' and not day == 'D0':
+    if day == 'D5' or day == 'D0':
+        continue
+    else:
         if day == 'D1':
             event_day = 'Day1'
         else:
             event_day = 'Day9'
-        data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:, 0:1800]
-        event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')[:, 0:1800]
+        data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')
+        event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
         random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
 
         # Plot the points of identified events
-        plt.plot(event_data[0,:], event_data[2,:], '.')
-        # Check if context A only random networks are different than context B only, and how they compare to
-        plt.plot(random_event_binned_data[0, :], random_event_binned_data[2,:], color='grey', alpha=0.5)
-        plt.plot(data[0, 0:1800], data[2,0:1800], 'darkturquoise', alpha = 0.5)
-        #plt.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
-        plt.title('Binned random data')
-        plt.show()
+        # plt.plot(event_data[0,:], event_data[2,:], '.')
+        # # Check if context A only random networks are different than context B only, and how they compare to
+        # plt.plot(random_event_binned_data[0, :], random_event_binned_data[2,:], color='grey', alpha=0.5)
+        # plt.plot(data[0, 0:1800], data[2,0:1800], 'darkturquoise', alpha = 0.5)
+        # #plt.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
+        # plt.title('Binned random data')
+        # plt.show()
 
         random_nng = nng(random_event_binned_data)
         x = random_nng.pearsons_correlation_matrix
         np.fill_diagonal(x, 0)
+
+        # Store event trace results
+        results[count, 0] = np.median(x)
+        results[count, 1] = np.mean(x)
+        results[count, 2] = np.max(x)
 
         ##  Generate multiple random timeseries for robust analysis (but then need to account for change in sampling size)
         # store_flattened_random = list(np.tril(x).flatten())
@@ -247,14 +274,17 @@ for count, mouse in enumerate(mouse_id_list):
         # Compute percentiles
         Q1 = np.percentile(x, 25, interpolation='midpoint')
         Q3 = np.percentile(x, 75, interpolation='midpoint')
-        print(Q3)
         IQR = Q3 - Q1
         outlier_threshold = Q3 + 1.5 * IQR
-        print(outlier_threshold)
 
         ground_truth_nng_B = nng(data[:, 0:1800])
         y = ground_truth_nng_B.pearsons_correlation_matrix
         np.fill_diagonal(y, 0)
+
+        # Store event trace results
+        results[count, 3] = np.median(y)
+        results[count, 4] = np.mean(y)
+        results[count, 5] = np.max(y)
 
         # ground_truth_nng_A = nng(data[:, 1800:3600])
         # z = ground_truth_nng_A.pearsons_correlation_matrix
@@ -269,23 +299,95 @@ for count, mouse in enumerate(mouse_id_list):
         plt.legend(['threshold', 'shuffled', 'ground truth'])
         plt.xlabel("Pearson's r-value")
         plt.ylabel("Frequency")
-        plt.title(file_str + '_' + day)
-        #plt.savefig(EXPORT_PATH + f'{file_str}_{day}_threshold_histogram_binned_event.png', dpi=300)
+        plt.title(file_str + '_' + day+ ': event-binned')
+        plt.savefig(EXPORT_PATH + f'{file_str}_{day}_threshold_histogram_binned_event.png', dpi=300)
         plt.show()
 
         random_vals = np.tril(x).flatten()
         data_vals = np.tril(y).flatten()
-        print(f"KS-statistic: {stats.ks_2samp(random_vals, data_vals)}")
+        print(f"Event-binned KS-statistic: {stats.ks_2samp(random_vals, data_vals)}")
 
         print(f"The threshold is: {outlier_threshold}")
 
         # Plot event trace to visualize
-        plt.plot(random_event_binned_data[0, :], random_event_binned_data[2,:], color='grey', alpha=0.5)
-        plt.plot(data[0, 0:1800], data[2,0:1800], 'darkturquoise', alpha = 0.5)
-        plt.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
-        plt.show()
+        # plt.plot(random_event_binned_data[0, :], random_event_binned_data[2,:], color='grey', alpha=0.5)
+        # plt.plot(data[0, 0:1800], data[2,0:1800], 'darkturquoise', alpha = 0.5)
+        # #plt.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
+        # plt.show()
 
 
         # Store event trace results
-        results[count, 0] = outlier_threshold
-        results[count, 1] = stats.ks_2samp(random_vals, data_vals)
+        results[count, 6] = outlier_threshold
+        results[count, 7] = stats.ks_2samp(random_vals, data_vals)[1]
+
+        # BIN ANALYSIS
+        # random_data = generate_randomized(data=data.copy(), bin_size=1)
+        #
+        # random_nng = nng(random_data)
+        # x=random_nng.pearsons_correlation_matrix
+        # np.fill_diagonal(x, 0)
+        #
+        # # Store event trace results
+        # results[count, 8] = np.median(x)
+        # results[count, 9] = np.mean(x)
+        # results[count, 10] = np.max(x)
+        #
+        # # Compute percentiles
+        # Q1 = np.percentile(x, 25, interpolation='midpoint')
+        # Q3 = np.percentile(x, 75, interpolation='midpoint')
+        # IQR = Q3 - Q1
+        # outlier_threshold = Q3 + 1.5 * IQR
+        #
+        # # Plot with threshold selected
+        # plt.ylim(0,700)
+        # plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
+        # plt.hist(np.tril(y).flatten(), bins=50, color='darkturquoise', alpha=0.3)
+        # plt.axvline(x = outlier_threshold, color = 'red')
+        # plt.legend(['threshold', 'shuffled', 'ground truth'])
+        # plt.xlabel("Pearson's r-value")
+        # plt.ylabel("Frequency")
+        # plt.title(file_str + '_' + day + ': binsize = 1')
+        # plt.show()
+        #
+        # random_vals = np.tril(x).flatten()
+        # data_vals = np.tril(y).flatten()
+        # print(f"Binsize = 1 KS-statistic: {stats.ks_2samp(random_vals, data_vals)}")
+        #
+        # plt.ylim((0,500))
+        # plt.legend(['shuffled', 'ground truth'])
+        # plt.show()
+        #
+        # # Store event trace results
+        # results[count, 11] = outlier_threshold
+        # results[count, 12] = stats.ks_2samp(random_vals, data_vals)[1]
+
+
+#%%
+import pandas as pd
+pd.set_option("display.max.columns", None)
+
+column_titles = ['rand mean', 'rand median', 'rand max', 'true mean', 'true median', 'true max', 'threshold', 'ks-statistic']
+df = pd.DataFrame(results[:, 0:8], mouse_id_list, column_titles)
+#df.insert(0, 'mouse-id', mouse_id_list)
+print(df)
+
+# drop all zero-valued rows
+df = df.loc[~(df==0.000000).all(axis=1)]
+
+# drop all NaN rows
+df = df.dropna(axis=0)
+
+#%%
+threshold_analysis_df = df
+
+#%%
+average_threshold = threshold_analysis_df['threshold'].mean()
+print(average_threshold)
+#%% Store as hdf5
+import numpy as np
+import pandas as pd
+
+save_path = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/'
+threshold_analysis_df.to_hdf(save_path + "threshold_analysis_df.h5", key = 'threshold_analysis_df', mode='w')
+# Read saved HDF5
+df = pd.read_hdf(save_path + "threshold_analysis_df.h5", 'threshold_analysis_df')
