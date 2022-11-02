@@ -46,9 +46,13 @@ class NeuronalNetworkGraph:
     Todo: Determine the distribution of eigenvector centrality scores in connected modules/subnetworks
     Todo: Add citations as justification for for r=0.3 threshold
     Todo: Implement shuffle distribution r value correction: https://www.nature.com/articles/s41467-020-17270-w#MOESM1
+    Todo: Add threshold setting utilties which evaluate whether a given dataset is a good candidate
+     --- Eventually you will need to add to this so it includes event detection --- ask for this code
+    Todo: add threshold as a class object, to be passed or created at construction
+
     """
 
-    def __init__(self, data_file, labels=None, dataset_id=None):
+    def __init__(self, data_file, labels=None, dataset_id=None, threshold=None):
         """
 
         :param csv_file: str
@@ -89,7 +93,16 @@ class NeuronalNetworkGraph:
         else:
             self.labels = labels
         self.pearsons_correlation_matrix = np.corrcoef(self.neuron_dynamics)
+        if threshold is not None:
+            self.threshold = threshold
+        else:
+            self.threshold = self.__generate_threshold()
 
+    def __generate_threshold(self):
+        """
+
+        """
+        return 0.3
 
     def get_laplacian_matrix(self, graph=None, threshold=0.3):
         """
@@ -113,8 +126,8 @@ class NeuronalNetworkGraph:
         :return:
         """
         if weight_matrix is None:
-            return nx.from_numpy_matrix(self.get_adjacency_matrix(threshold=threshold))
-        return nx.from_numpy_matrix(self.get_weight_matrix(weight_matrix=weight_matrix))
+            return nx.from_numpy_array(self.get_adjacency_matrix(threshold=threshold))
+        return nx.from_numpy_array(self.get_weight_matrix(weight_matrix=weight_matrix))
 
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
         """

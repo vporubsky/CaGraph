@@ -54,6 +54,10 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
         """Test """
         self.nng.plot_CDF(data=self.nng.get_clustering_coefficient())
 
+    def test_generateThreshold(self):
+        """Test that the NeuronalNetworkGraph.generate_threshold() function performs as expected when threshold is not set."""
+        self.assertEqual(0.3, self.nng.threshold)
+
 
 
 if __name__ == '__main__':

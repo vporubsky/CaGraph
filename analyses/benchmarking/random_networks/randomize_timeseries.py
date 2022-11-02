@@ -8,6 +8,9 @@ File Creation Date: 05-11-2022
 File Final Edit Date:
 
 Description: methods to generate randomized timeseries from neural data.
+
+Note**: This file bins the timeseries by a pre-defined bin-size, not by the event data.
+
 """
 # Import packages
 import os
@@ -83,8 +86,6 @@ random_data = generate_randomized_timeseries_matrix(data=data.copy())
 plt.plot(random_binned_data[0, :], random_binned_data[1,:])
 plt.title('Binned random data')
 plt.show()
-np.savetxt(RANDOM_DATA_PATH + '2-1_random_binned_data.csv', random_binned_data, delimiter=",")
-np.savetxt('2-1_random_data.csv', random_data, delimiter=",")
 
 #%%
 plt.figure()
@@ -200,4 +201,4 @@ for file in os.listdir(FC_DATA_PATH):
         plt.show()
 
         #np.savetxt(RANDOM_DATA_PATH + f'{mouse_id}_random_binned_data.csv', random_binned_data, delimiter=",")
-        np.savetxt(RANDOM_DATA_PATH + f'{mouse_id}_random_data.csv', random_data, delimiter=",")
+        #np.savetxt(RANDOM_DATA_PATH + f'{mouse_id}_random_data.csv', random_data, delimiter=",")
