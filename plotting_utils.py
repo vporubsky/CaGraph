@@ -18,7 +18,7 @@ import scipy
 #%% Plotting style
 #Todo: add to dg_network_graph
 pal = sns.color_palette('husl', 9)
-plt.style.use('/nng.mplstyle')
+# plt.style.use('/nng.mplstyle') #Commmented out because BLA analysis is trying to use this and cannot find the reference
 
 
 def plot_matched_data(set1, set2, labels, colors):
