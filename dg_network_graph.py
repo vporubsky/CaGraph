@@ -25,8 +25,8 @@ class DGNetworkGraph(NeuronalNetworkGraph):
     """
 
     # Pass __init__ from parent class
-    def __init__(self, data_file, identifiers=None, dataset_id=None):
-        super().__init__(data_file, identifiers, dataset_id)
+    def __init__(self, data_file, identifiers=None, dataset_id=None, threshold=None):
+        super().__init__(data_file, identifiers, dataset_id, threshold)
         self.context_A_dynamics = self.neuron_dynamics[:, 1800:3600]  # Record second in Context A
         self.context_B_dynamics = self.neuron_dynamics[:, 0:1800]  # Record first in Context B
         self.con_A_pearsons_correlation_matrix = np.corrcoef(self.context_A_dynamics)

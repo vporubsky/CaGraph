@@ -1,13 +1,13 @@
 """
-Run correlated pairs ratio analysis and correlation coefficient analysis on
-only the subset of cells that is matched across days 1 and 9.
+Developer Name: Veronica Porubsky
+Developer ORCID: 0000-0001-7216-3368
+Developer GitHub Username: vporubsky
+Developer Email: verosky@uw.edu
 
-Workflow:
-1. Load matched cell-matched data
-2. Create unique identifiers for each matched cell between days 1 and 9
-3. Create networks as before
-4. Run analyses as before
-5. Pull out subset of data for cell-matched data
+File Creation Date: 
+File Final Edit Date:
+
+Description: 
 """
 from dg_network_graph import DGNetworkGraph as nng
 import numpy as np
@@ -44,10 +44,9 @@ D9_Th = ['387-4_D9_smoothed_calcium_traces.csv', '396-1_D9_smoothed_calcium_trac
 # %% set hyper-parameters
 threshold = 0.2
 
-# %% clustering coefficient
-path_to_data = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
-path_to_export = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/scratch_files/General_Exam/'
-path_to_export = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/NAPE_talk/'
+#%% ##################################### clustering coefficient with cell-matched data #####################################
+path_to_data = '/LC-DG-FC-data/'
+path_to_export = '/NAPE_talk/'
 day = 'D1'
 condition = 'WT'
 condition_data = D1_WT
@@ -400,3 +399,107 @@ plt.savefig(path_to_export + f'{condition}_clustering_conB_matched.png', transpa
 plt.show()
 
 print(scipy.stats.ttest_rel(set1, set2))
+
+
+
+#%% ##################################### clustering coefficient vs baseline #####################################
+# %% All measurements, separating contexts
+#%% Load untreated data files - WT
+D1_WT = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv', '1055-3_D1_smoothed_calcium_traces.csv', '1055-4_D1_smoothed_calcium_traces.csv', '14-0_D1_smoothed_calcium_traces.csv']# '122-1_D1_smoothed_calcium_traces.csv', '122-2_D1_smoothed_calcium_traces.csv', '122-3_D1_smoothed_calcium_traces.csv']#, '124-2_D1_smoothed_calcium_traces.csv']
+D5_WT = ['1055-1_D5_smoothed_calcium_traces.csv', '1055-2_D5_smoothed_calcium_traces.csv', '1055-3_D5_smoothed_calcium_traces.csv', '1055-4_D5_smoothed_calcium_traces.csv', '14-0_D5_smoothed_calcium_traces.csv'] #'122-1_D5_smoothed_calcium_traces.csv', '122-2_D5_smoothed_calcium_traces.csv', '122-3_D5_smoothed_calcium_traces.csv', '124-2_D5_smoothed_calcium_traces.csv']
+D9_WT = ['1055-1_D9_smoothed_calcium_traces.csv', '1055-2_D9_smoothed_calcium_traces.csv','1055-3_D9_smoothed_calcium_traces.csv', '1055-4_D9_smoothed_calcium_traces.csv', '14-0_D9_smoothed_calcium_traces.csv']# '122-1_D9_smoothed_calcium_traces.csv', '122-2_D9_smoothed_calcium_traces.csv', '122-3_D9_smoothed_calcium_traces.csv']#, '124-2_D9_smoothed_calcium_traces.csv']
+D0_WT = ['1055-1_D0_smoothed_calcium_traces.csv','1055-2_D0_smoothed_calcium_traces.csv','1055-3_D0_smoothed_calcium_traces.csv','1055-4_D0_smoothed_calcium_traces.csv','14-0_D0_smoothed_calcium_traces.csv']
+all_WT_files = [D0_WT, D1_WT, D5_WT, D9_WT]
+threshold = 0.25
+names = []
+data_mat = []
+
+
+
+con_A_cc_D0 = []
+con_B_cc_D0 = []
+con_A_cc_D1 = []
+con_B_cc_D1 = []
+con_A_cc_D5 = []
+con_B_cc_D5 = []
+con_A_cc_D9 = []
+con_B_cc_D9 = []
+
+mouse_id_indices = []
+
+# %% Context A and B
+# Loop through all subjects and perform experimental and randomized network analyses
+for day in [0, 1, 2, 3]:
+    for mouse_id_index in range(len(all_WT_files[day])):
+        filename = all_WT_files[day][mouse_id_index]
+        mouse_id = filename.strip('_smoothed_calcium_traces.csv')
+
+        if day == 0:
+            mouse_id_indices.append(mouse_id.replace('_D0', ''))
+
+        nn = nng(path_to_data + filename)
+        print(f"Executing analyses for {mouse_id}")
+        num_neurons = nn.num_neurons
+
+        # Context A and B graphs
+        if day == 0:
+            conA = nn.get_network_graph(threshold=threshold)
+            conB = nn.get_network_graph(threshold=threshold)
+        else:
+            conA = nn.get_context_A_graph(threshold=threshold)
+            conB = nn.get_context_B_graph(threshold=threshold)
+
+
+        # clustering coefficient
+        if day == 0:
+            cc_A = nn.get_clustering_coefficient(threshold=threshold)
+            cc_B = nn.get_clustering_coefficient(threshold=threshold)
+        else:
+            cc_A = nn.get_context_A_clustering_coefficient()
+            cc_B = nn.get_context_B_clustering_coefficient()
+
+        if day == 0:
+            con_A_cc_D0 += [cc_A]
+            con_B_cc_D0 += [cc_B]
+
+        elif day == 1:
+            con_A_cc_D1 += [cc_A]
+            con_B_cc_D1 += [cc_B]
+
+        elif day == 2:
+            con_A_cc_D5 += [cc_A]
+            con_B_cc_D5 += [cc_B]
+
+        elif day == 3:
+            con_A_cc_D9 += [cc_A]
+            con_B_cc_D9 += [cc_B]
+
+
+
+
+#%%
+idx = 1
+plt.figure(figsize=(10,5))
+plt.subplot(131)
+nn.plot_CDF_compare_two_samples(data_list=[con_A_cc_D0[idx], con_A_cc_D1[idx]], color_list=['lightgrey', 'mistyrose'])
+plt.legend(['D0', 'D1'])
+plt.xlabel('Clustering coefficient')
+
+
+plt.subplot(132)
+nn.plot_CDF(data=con_A_cc_D0[idx], color='lightgrey')
+nn.plot_CDF(data=con_A_cc_D1[idx], color='mistyrose')
+nn.plot_CDF(data=con_A_cc_D9[idx], color='salmon')
+plt.ylabel('')
+plt.xlabel('Clustering coefficient')
+plt.title('Context A')
+
+plt.subplot(133)
+nn.plot_CDF(data=con_A_cc_D0[idx], color='lightgrey')
+nn.plot_CDF(data=con_B_cc_D1[idx], color='turquoise')
+nn.plot_CDF(data=con_B_cc_D9[idx], color='teal')
+plt.xlabel('Clustering coefficient')
+plt.ylabel('')
+plt.title('Context B')
+plt.savefig(path_to_export + 'day0_day1_clustering.png', dpi=200)
+plt.show()
