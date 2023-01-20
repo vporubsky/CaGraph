@@ -92,7 +92,7 @@ class NeuronalNetworkGraph:
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = labels
-        self.pearsons_correlation_matrix = np.corrcoef(self.neuron_dynamics)
+        self.pearsons_correlation_matrix = np.nan_to_num(np.corrcoef(self.neuron_dynamics))
         if threshold is not None:
             self.threshold = threshold
         else:
@@ -141,7 +141,7 @@ class NeuronalNetworkGraph:
             data_matrix = self.neuron_dynamics
         if time_points:
             data_matrix = data_matrix[:, time_points[0]:time_points[1]]
-        return np.corrcoef(data_matrix, rowvar=True)
+        return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
 
     def get_time_subsampled_graphs(self, subsample_indices, threshold=0.3, weighted=False):
         """
@@ -410,16 +410,18 @@ class NeuronalNetworkGraph:
             con_probability = self.get_network_coverage(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
 
-    def plot_graph_network(self, graph, position):
+    def plot_graph_network(self, graph, position=None):
         """
 
         :param graph:
         :param position:
         :return:
         """
+        if not position:
+            position = nx.spring_layout(graph)
         nx.draw_networkx_nodes(graph, pos=position, node_color='b', node_size=100)
         nx.draw_networkx_edges(graph, pos=position, edge_color='b', )
-        nx.draw_networkx_labels(graph, pos=position, font_color='w', font_family='sans-serif')
+        nx.draw_networkx_labels(graph, pos=position, font_size=6, font_color='w', font_family='sans-serif')
         plt.axis('off')
         plt.show()
         return

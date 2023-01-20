@@ -409,7 +409,7 @@ for count, mouse in enumerate(mouse_id_list):
 
         random_nng = nng(random_data)
         x = random_nng.pearsons_correlation_matrix
-        np.fill_diagonal(x, 0)
+        np.fill_diagonal(x, 5)
 
         # Store event trace results
         results[count, 0] = np.median(x)
@@ -434,6 +434,7 @@ for count, mouse in enumerate(mouse_id_list):
 
         # Plot with threshold selected
         plt.ylim(0,700)
+        plt.xlim(-0.5,1)
         plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
         plt.hist(np.tril(y).flatten(), bins=50, color='darkturquoise', alpha=0.3)
         plt.axvline(x = outlier_threshold, color = 'red')
