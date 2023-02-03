@@ -81,6 +81,8 @@ def event_bins(data, events):
         start_val = idx
     np.random.shuffle(build_binned_list)
     flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
+    threshold = 0.01
+    flat_random_binned_list = [0 if value < threshold else value for value in flat_random_binned_list]
     return flat_random_binned_list
 
 

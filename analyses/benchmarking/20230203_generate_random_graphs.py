@@ -72,12 +72,12 @@ for count, mouse in enumerate(mouse_id_list):
                 tag = 'all cells'
             if len(context_selective_data) > 1:
                 random_nng = nng(random_event_binned_data[context_selective_data, :])
-                x = random_nng.get_clustering_coefficient(threshold=0.3)
+                x = random_nng.get_clustering_coefficient(threshold=0.1)
 
 
                 #ns_idx, A_idx, B_idx = nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
                 ground_truth_nng_A = nng(data[context_selective_data, :])
-                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.3)
+                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.1)
 
                 test_result = stats.ks_2samp(x, y)
                 # print(f"Binsize = 1 KS-statistic: {test_result}")
@@ -142,12 +142,12 @@ for count, mouse in enumerate(mouse_id_list):
                 tag = 'all cells'
             if len(context_selective_data) > 1:
                 random_nng = nng(random_event_binned_data[context_selective_data, :])
-                x = random_nng.get_clustering_coefficient(threshold=0.3)
+                x = random_nng.get_clustering_coefficient(threshold=0.1)
 
 
                 #ns_idx, A_idx, B_idx = nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
                 ground_truth_nng_A = nng(data[context_selective_data, :])
-                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.3)
+                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.1)
 
                 test_result = stats.ks_2samp(x, y)
                 # print(f"Binsize = 1 KS-statistic: {test_result}")
@@ -212,12 +212,12 @@ for count, mouse in enumerate(mouse_id_list):
                 tag = 'all cells'
             if len(context_selective_data) > 1:
                 random_nng = nng(random_event_binned_data[context_selective_data, :])
-                x = random_nng.get_clustering_coefficient(threshold=0.3)
+                x = random_nng.get_clustering_coefficient(threshold=0.1)
 
 
                 #ns_idx, A_idx, B_idx = nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
                 ground_truth_nng_A = nng(data[context_selective_data, :])
-                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.3)
+                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.1)
 
                 test_result = stats.ks_2samp(x, y)
                 # print(f"Binsize = 1 KS-statistic: {test_result}")
@@ -278,12 +278,12 @@ for count, mouse in enumerate(mouse_id_list):
                 tag = 'all cells'
             if len(context_selective_data) > 1:
                 random_nng = nng(random_event_binned_data[context_selective_data, :])
-                x = random_nng.get_clustering_coefficient(threshold=0.3)
+                x = random_nng.get_clustering_coefficient(threshold=0.1)
 
 
                 #ns_idx, A_idx, B_idx = nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
                 ground_truth_nng_A = nng(data[context_selective_data, :])
-                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.3)
+                y = ground_truth_nng_A.get_clustering_coefficient(threshold=0.1)
 
                 test_result = stats.ks_2samp(x, y)
                 # print(f"Binsize = 1 KS-statistic: {test_result}")
@@ -333,3 +333,9 @@ plt.show()
 plotting_utils.plot_matched_data(Th_gt_a, Th_r_a, labels = ['Th gt a', 'Th r a'], colors=['salmon', 'grey'])
 plt.savefig(EXPORT_PATH + f'Th_Cona_hubs.png', dpi=300)
 plt.show()
+
+
+
+#%%
+
+# Todo: write functionality to pull out the top percentage or number of highest correlated or anticorrleated

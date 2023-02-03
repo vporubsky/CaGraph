@@ -36,7 +36,7 @@ for file in os.listdir(path_to_data):
 #%% EVENT ANALYSIS: Only looking at Context B (first half of data)
 # store: mouse_id, mean, median, max pearson, threshold event separated, ks-stat event separated, mean, median, max pearson, threshold bin-separated, ks-stat bin-separated
 results = np.zeros((58, 13))
-set_cs = 1 # 1 = context A, 0 = context B, -1 = nonselective
+set_cs = 2 # 1 = context A, 0 = context B, -1 = nonselective
 
 for count, mouse in enumerate(mouse_id_list):
     file_str = mouse[:len(mouse)-3]
@@ -53,8 +53,8 @@ for count, mouse in enumerate(mouse_id_list):
         else:
             event_day = 'Day9'
         data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:,0:1800]
+        random_data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')
         event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
-        random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
 
         random_ns_idx, random_A_idx, random_B_idx = random_nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
         if set_cs == 1:
@@ -149,6 +149,7 @@ for count, mouse in enumerate(mouse_id_list):
             event_day = 'Day9'
         data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:,1800:3600]
         event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
+        random_data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:,:]
         random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
 
         random_ns_idx, random_A_idx, random_B_idx = random_nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
