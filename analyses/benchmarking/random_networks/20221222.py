@@ -24,7 +24,7 @@ from utils import *
 EXPORT_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/scratch-analysis/'
 
 #%% Demonstrate binned randomization example
-file_str = '122-1'
+file_str = '2-3'
 ex_idx1 = 2
 day = 'D1'
 if day == 'D1':
@@ -34,6 +34,7 @@ else:
 data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')
 event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
 random_event_binned_data = generate_event_segmented(data=data.copy()[:, 0:1800], event_data=event_data)
+random_event_binned_data_A = generate_event_segmented(data=data.copy()[:, 1800:3600], event_data=event_data)
 
 # Plot the points of identified events
 plt.figure(figsize=(15,5))
@@ -48,6 +49,10 @@ plt.show()
 random_nng = nng(random_event_binned_data)
 x = random_nng.pearsons_correlation_matrix
 np.fill_diagonal(x, 0)
+
+random_nng = nng(random_event_binned_data_A)
+v = random_nng.pearsons_correlation_matrix
+np.fill_diagonal(v, 0)
 
 # Compute percentiles
 Q1 = np.percentile(x, 10, method='inverted_cdf')
@@ -75,7 +80,20 @@ plt.legend(['threshold (Q3 + 1.5*IQR)', 'shuffled', 'ground truth',])
 plt.xlabel("Pearson's r-value")
 plt.ylabel("Frequency")
 plt.title(file_str)
-#plt.savefig(EXPORT_PATH + f'{file_str}_{day}_threshold_histogram_binned_event.png', dpi=300)
+plt.savefig(EXPORT_PATH + f'tmp_ex_threshold_histogram_binned_event.png', dpi=300)
+plt.show()
+
+# Plot with threshold selected
+plt.ylim(0,700)
+plt.xlim(-0.2, 1.0)
+plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
+plt.hist(np.tril(z).flatten(), bins=50, color='salmon', alpha=0.3)
+plt.axvline(x = outlier_threshold, color = 'red')
+plt.legend(['threshold (Q3 + 1.5*IQR)', 'shuffled', 'ground truth',])
+plt.xlabel("Pearson's r-value")
+plt.ylabel("Frequency")
+plt.title(file_str)
+plt.savefig(EXPORT_PATH + f'tmp_ex2_threshold_histogram_binned_event.png', dpi=300)
 plt.show()
 
 random_vals = np.tril(x).flatten()
@@ -86,9 +104,15 @@ print(f"The threshold is: {outlier_threshold}")
 
 # Plot event trace to visualize
 plt.figure(figsize=(15,5))
-plt.plot(random_event_binned_data[0, :], random_event_binned_data[ex_idx1,:], color='grey', alpha=0.5)
-plt.plot(data[0, 0:1800], data[ex_idx1,0:1800], 'darkturquoise', alpha = 0.5)
-#plt.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
+fig, (ax1, ax2)  = plt.subplots(2,1)
+ax1.plot(random_event_binned_data[0, :], random_event_binned_data[ex_idx1,:], color='grey', alpha=0.5)
+ax1.plot(data[0, 0:1800], data[ex_idx1,0:1800], 'darkturquoise', alpha = 0.5)
+plt.ylabel('ΔF/F')
+ax2.plot(random_event_binned_data_A[0, :], random_event_binned_data_A[2,:], color='grey', alpha=0.5)
+ax2.plot(data[0, 1800:3600], data[2,1800:3600], 'salmon', alpha = 0.5)
+plt.ylabel('ΔF/F')
+plt.xlabel('Time')
+plt.savefig(EXPORT_PATH + 'tmp_fig.png', dpi=300)
 plt.show()
 
 #%%
