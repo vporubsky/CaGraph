@@ -11,7 +11,7 @@ Description: A script demonstrating each of the functions included in the neuron
 for future documentation generation.
 """
 import numpy as np
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import networkx as nx
 import os

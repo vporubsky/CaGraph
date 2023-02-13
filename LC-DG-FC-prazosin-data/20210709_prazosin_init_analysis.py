@@ -27,7 +27,7 @@ Experimental conclusions from Eric:
 - neither saline or LC-DG-FC-prazosin-data discriminate between A and B well
 - the LC-DG-FC-prazosin-data group has higher freezing on D9 but conclusions not clear (low n)
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats

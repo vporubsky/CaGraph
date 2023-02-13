@@ -9,7 +9,7 @@ File Final Edit Date:
 
 Description: 
 """
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import networkx as nx
 import os

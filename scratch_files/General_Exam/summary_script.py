@@ -1,4 +1,4 @@
-from neuronal_network_graph import DGNetworkGraph
+from ca_graph import DGNetworkGraph
 import os
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -11,14 +11,14 @@ path = os.getcwd() + '/LC-DG-FC-data/'
 mouse_id = '2-1_D1'
 mouse_data_suffix = '_smoothed_calcium_traces.csv'
 
-#%% generate DGNetworkGraph object
+#%% generate DGGraph object
 nng = DGNetworkGraph(data_file=path + mouse_id + mouse_data_suffix)
 
 # plot an example timecourse
 plt.plot(nng.time, nng.neuron_dynamics[1, :])
-_log.info('Plotted single neuron timecourse using NeuronalNetworkGraph dynamics.')
+_log.info('Plotted single neuron timecourse using CaGraph dynamics.')
 nng.plot_single_neuron_timecourse(neuron_trace_number=5, title='')
-_log.info('Plotted single neuron timecourse using NeuronalNetworkGraph plotting.')
+_log.info('Plotted single neuron timecourse using CaGraph plotting.')
 plt.show()
 
 

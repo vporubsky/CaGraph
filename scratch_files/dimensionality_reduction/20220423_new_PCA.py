@@ -61,7 +61,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 #%% figure out how to put my data here
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 
 frames_pre_stim = 6000
 frames_post_stim = 6000

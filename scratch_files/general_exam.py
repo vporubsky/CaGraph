@@ -17,7 +17,7 @@ import os
 import networkx as nx
 
 sys.path.insert(0, '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory')
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -70,7 +70,7 @@ all_WT_files = [D0_WT, D1_WT, D5_WT, D9_WT]
 
 
 #%% 3D PCA plotting test WT
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -135,7 +135,7 @@ for idx, data_file in enumerate(D1_data_list):
 
 
 #%% 3D PCA plotting test on WT with context active only
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -170,7 +170,7 @@ for idx, data_file in enumerate(D1_data_list):
     plt.show()
 
 #%% Plot each context
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -205,7 +205,7 @@ for idx, data_file in enumerate(D9_data_list):
 # todo: get error -- too many bounds
 
 #%% Plot each context
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -238,7 +238,7 @@ for idx, data_file in enumerate(D1_data_list):
         continue
 
 #%% Plot each context
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',
@@ -271,7 +271,7 @@ for idx, data_file in enumerate(D1_data_list):
         continue
 
 #%% Plot each context
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 from neuronal_dynamics_projection import NeuronalDynamicsProjection
 
 D1_data_list = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_traces.csv',

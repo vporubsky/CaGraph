@@ -8,7 +8,7 @@ Title: Test context A, B breakdown
 """
 #%% teste context A and B separation
 import networkx as nx
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import matplotlib.pyplot as plt
 
 path_to_data ='/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'

@@ -11,7 +11,7 @@ Description: Plotting the cumulative density function (CDF) for each individual 
 to identify notable outlier subjects.
 # Todo: Add some metric to actually pick out outliers automatically based on statistics.
 """
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats

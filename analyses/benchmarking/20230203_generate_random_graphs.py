@@ -12,7 +12,7 @@ Description: This file is used to only analyze the context-selective cells
 # Import packages
 import plotting_utils
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import *
@@ -338,4 +338,4 @@ plt.show()
 
 #%%
 
-# Todo: write functionality to pull out the top percentage or number of highest correlated or anticorrleated
+# Todo: write functionality to pull out the top percentage or number of highest correlated or anticorrelated

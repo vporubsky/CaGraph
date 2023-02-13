@@ -7,7 +7,7 @@ Created on Wed Aug 19 14:29:14 2020
 Title: test graph theory breakdown
 """
 import logging
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 
 # Configure hyperparameters
 threshold = 0.5

@@ -7,11 +7,11 @@ Developer Email: verosky@uw.edu
 File Creation Date: 11-04-2022
 File Final Edit Date: 11-04-2022
 
-Description: Short tutorial of using NeuronalNetworkGraph class (to be updated to CaGraph)
+Description: Short tutorial of using CaGraph class (to be updated to CaGraph)
 """
 # Import packages
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 
 #%% Dataset and paths
 # Specify data file names, D1_WT contains a list of .csv files for the Day 1, WT condition

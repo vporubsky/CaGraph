@@ -6,7 +6,7 @@ Created on Sun Jun  7 23:10:49 2020
 
 Title: get context-specific connectivity
 """
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

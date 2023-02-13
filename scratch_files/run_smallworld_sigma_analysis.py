@@ -1,6 +1,6 @@
 '''Run smallworld metric analysis separately due to computational time required to generate
 randomized graphs.'''
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np

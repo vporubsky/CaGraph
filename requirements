@@ -1,0 +1,7 @@
+numpy
+matplotlib
+networkx
+pynwb
+scipy
+seaborn
+statsmodels

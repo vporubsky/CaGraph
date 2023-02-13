@@ -7,12 +7,12 @@ from statsmodels.tsa.stattools import grangercausalitytests
 from scipy import stats
 
 
-class NeuronalNetworkGraph:
+class CaGraph:
     """
     Published: XX/XX/XXXX
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
-    Class: NeuronalNetworkGraph(data_file, identifiers=None)
+    Class: CaGraph(data_file, identifiers=None)
     =====================
 
     This class provides functionality to easily visualize time-series data of
@@ -32,7 +32,7 @@ class NeuronalNetworkGraph:
         A string pointing to the file to be used for data analysis.
     identifiers : list
         A list of identifiers for each row of calcium imaging data in
-        the data_file passed to NeuronalNetworkGraph.
+        the data_file passed to CaGraph.
 
     Methods
     -------

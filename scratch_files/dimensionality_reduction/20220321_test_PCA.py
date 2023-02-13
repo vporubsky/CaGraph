@@ -4,7 +4,7 @@ a decomposition of the data to show the trajectory in 3D state space.
 
 
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.linalg import svd

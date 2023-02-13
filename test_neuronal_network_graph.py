@@ -1,17 +1,17 @@
 import unittest
-from neuronal_network_graph import NeuronalNetworkGraph
+from ca_graph import CaGraph
 import os
 
 class NeuronalNetworkGraphTestSuite(unittest.TestCase):
     """
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
-    Test suite to check that the NeuronalNetworkGraph library functions as expected during development.
+    Test suite to check that the CaGraph library functions as expected during development.
     """
     @classmethod
     def setUpClass(cls):
         """Runs before any tests have been executed."""
-        cls.nng = NeuronalNetworkGraph(data_file=os.getcwd() + '/LC-DG-FC-data/2-1_D1_smoothed_calcium_traces.csv')
+        cls.nng = CaGraph(data_file=os.getcwd() + '/LC-DG-FC-data/2-1_D1_smoothed_calcium_traces.csv')
         pass
 
     @classmethod
@@ -20,7 +20,7 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
         pass
 
     def setUp(self):
-        """Runs before each test. Creates NeuronalNetworkGraph object which can be used in each test."""
+        """Runs before each test. Creates CaGraph object which can be used in each test."""
 
         pass
 
@@ -55,7 +55,7 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
         self.nng.plot_CDF(data=self.nng.get_clustering_coefficient())
 
     def test_generateThreshold(self):
-        """Test that the NeuronalNetworkGraph.generate_threshold() function performs as expected when threshold is not set."""
+        """Test that the CaGraph.generate_threshold() function performs as expected when threshold is not set."""
         self.assertEqual(0.3, self.nng.threshold)
 
 

@@ -11,7 +11,7 @@ Description: This file executes a full report of a system of interest.
 """
 # Import packages
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import matplotlib.pyplot as plt
 

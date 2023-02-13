@@ -9,7 +9,7 @@ Workflow:
 4. Run analyses as before
 5. Pull out subset of data for cell-matched data
 """
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import networkx as nx
 import os

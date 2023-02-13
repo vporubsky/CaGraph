@@ -1,4 +1,4 @@
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx

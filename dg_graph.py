@@ -9,19 +9,16 @@ File Final Edit Date:
 
 Description: 
 """
-from neuronal_network_graph import NeuronalNetworkGraph
-import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
+from ca_graph import *
 
-class DGNetworkGraph(NeuronalNetworkGraph):
+class DGGraph(CaGraph):
     """
     Class for LC-DG experiments. Context A and Context B are specified for
     fear conditioning paradigm, where Context A is anxiogenic and recorded from
     time 180 to 360 seconds and Context B is neutral and recorded from time
     0 to 180 seconds.
 
-    Derived from parent class NeuronalNetworkGraph
+    Derived from parent class CaGraph
     """
 
     # Pass __init__ from parent class
@@ -33,7 +30,7 @@ class DGNetworkGraph(NeuronalNetworkGraph):
         self.con_B_pearsons_correlation_matrix = np.corrcoef(self.context_B_dynamics)
     pass
 
-    # Todo: Integrate cell-matched metadata -- consider adding this to neuronal_network_graph.py
+    # Todo: Integrate cell-matched metadata -- consider adding this to ca_graph.py
     def get_cell_matched(self):
         """
         Returns a dictionary of neuron activity indices for day 1 and day 9

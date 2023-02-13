@@ -8,7 +8,7 @@ Title: test small world
 """
 import networkx as nx
 print(nx.__version__)
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 import matplotlib.pyplot as plt
 
 nn = nng('386-2_D1_all_calcium_traces.npy')
@@ -64,7 +64,7 @@ print('small world stat null is: {}'.format(small_world_stat2))
 #print('small world stat null is: {}'.format(neuron_null_sw_stat))
 
 #%% test get small_world_network_stat_itr
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 nn = nng('396-3_D1_all_calcium_traces.npy')
 neuron_true = nn.get_context_A_graph(threshold = 0.2)
 sigma = nn.get_small_world_network_stat_itr(corr_matrix = nn.get_pearsons_correlation_matrix(nn.neuron_dynamics), G= neuron_true, threshold = 0.2)

@@ -8,10 +8,13 @@ File Creation Date:
 File Final Edit Date:
 
 Description: This file is used to only analyze the context-selective cells
+
+
+2023-02-13: using this file to troubleshoot why random correlations are so high
 """
 # Import packages
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import *
@@ -410,3 +413,28 @@ plt.ylabel("Frequency")
 plt.title(f'{group}: {tag}')
 plt.savefig(EXPORT_PATH + f'full_shuffle_{group}_ConA_{tag}_cdf_binned_event.png', dpi=300)
 plt.show()
+
+
+
+#%% Test pulling out specific neural traces to plot
+time = random_event_binned_data[0,:]
+for first_neuron in range(0, len(x)):
+    for second_neuron in range(0, len(x)):
+        if x[first_neuron, second_neuron] >= 0.7:
+            plt.plot(time, random_event_binned_data[first_neuron+1,:])
+            plt.plot(time, random_event_binned_data[second_neuron+1,:])
+            r, p = stats.pearsonr(random_event_binned_data[first_neuron+1, :], random_event_binned_data[second_neuron+1, :])
+            plt.title(f"R-value: {r}")
+            plt.show()
+
+
+#%% Test pulling out specific neural traces to plot
+time = random_event_binned_data[0,:]
+for first_neuron in range(0, len(y)):
+    for second_neuron in range(0, len(y)):
+        if y[first_neuron, second_neuron] >= 0.7:
+            plt.plot(time, data[first_neuron+1,:])
+            plt.plot(time, data[second_neuron+1,:])
+            r, p = stats.pearsonr(data[first_neuron+1, :], data[second_neuron+1, :])
+            plt.title(f"R-value: {r}")
+            plt.show()

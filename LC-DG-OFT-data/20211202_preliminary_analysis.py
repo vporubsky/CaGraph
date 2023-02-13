@@ -35,7 +35,7 @@ Experimental conclusions/ notes:
 - 198-1 died before CNO and CNO + Propranolol conditions could be run
 
 """
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats

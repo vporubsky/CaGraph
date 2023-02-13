@@ -13,7 +13,7 @@ Description:
 import os
 
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 
 path_to_data = FC_DATA_PATH
 import numpy as np

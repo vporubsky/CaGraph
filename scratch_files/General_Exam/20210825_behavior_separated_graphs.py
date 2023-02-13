@@ -10,7 +10,7 @@ Workflow:
 5. Pull out subset of data for context A active cells
 """
 # Import packages
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import numpy as np
 import os
 import matplotlib.pyplot as plt

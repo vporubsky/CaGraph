@@ -6,7 +6,7 @@ Created on Fri Apr  3 11:12:34 2020
 
 Title: test Pearson's correlation matrix parsing
 """
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle

@@ -19,7 +19,7 @@ Title: Run batch analyses, collecting distributions
 Context A - anxiogenic
 Context B - neutral
 """
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns

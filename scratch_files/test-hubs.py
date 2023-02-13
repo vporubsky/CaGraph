@@ -10,7 +10,7 @@ Edited on Tue Oct 20 to test showing the distribution of hub values and selectin
 on that distribution, given that we expect to see a power law distribution if hubs are present.
 
 """
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np

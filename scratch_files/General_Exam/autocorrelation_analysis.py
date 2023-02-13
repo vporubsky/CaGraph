@@ -1,7 +1,7 @@
 '''Check data for autocorrelations and remove influence of autocorrelations from connectivity analysis.'''
 import os
 
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np

@@ -1,5 +1,5 @@
 import logging
-from neuronal_network_graph import neuronal_network_graph as nng
+from ca_graph import neuronal_network_graph as nng
 
 # set up logger
 logging.basicConfig(filename='log_nng.log',format='%(asctime)s %(name)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S', filemode='w')

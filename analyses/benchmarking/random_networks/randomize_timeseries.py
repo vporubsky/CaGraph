@@ -16,7 +16,7 @@ Note**: This file bins the timeseries by a pre-defined bin-size, not by the even
 import os
 
 from setup import FC_DATA_PATH
-from dg_network_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import matplotlib.pyplot as plt
 import sklearn

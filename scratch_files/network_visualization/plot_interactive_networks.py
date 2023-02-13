@@ -6,7 +6,7 @@ from bokeh.plotting import from_networkx
 from bokeh.palettes import Blues8, Reds8, Purples8, Oranges8, Viridis8, Spectral8
 from bokeh.transform import linear_cmap
 import networkx
-from neuronal_network_graph import BLANetworkGraph as nng
+from ca_graph import BLANetworkGraph as nng
 import os
 import numpy as np
 

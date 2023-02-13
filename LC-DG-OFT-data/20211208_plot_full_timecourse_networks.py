@@ -6,7 +6,7 @@ from bokeh.plotting import from_networkx
 from bokeh.palettes import Blues8
 from bokeh.transform import linear_cmap
 import networkx
-from neuronal_network_graph import DGNetworkGraph as nng
+from ca_graph import DGNetworkGraph as nng
 import os
 
 data_198_1 = ['198-1_Saline.csv', '198-1_Prop.csv', '198-1_Praz.csv', '198-1_Quetiapine5mg-kg.csv', '198-1_Quetiapine10mg-kg.csv',
