@@ -49,6 +49,7 @@ class CaGraph:
     Todo: Add threshold setting utilties which evaluate whether a given dataset is a good candidate
      --- Eventually you will need to add to this so it includes event detection --- ask for this code
     Todo: add threshold as a class object, to be passed or created at construction
+    Todo: check all parameters have appropriate type
 
     """
 

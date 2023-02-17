@@ -15,6 +15,17 @@ Todo: eventually this will need to be incorporated into a formal submodule
 import numpy as np
 
 
+# %% Clean up data
+def remove_quiescent(data, event_bins):
+    """
+    data: numpy.ndarray
+    event_bins: numpy.ndarray
+
+
+    """
+
+
+# %%
 def bins(lst, n):
     """Yield successive n-sized chunks from lst."""
     lst = list(lst)
@@ -22,6 +33,7 @@ def bins(lst, n):
     for i in range(0, len(lst), n):
         build_binned_list.append(lst[i:i + n])
     return build_binned_list
+
 
 # Function definitions
 def generate_randomized_timeseries_matrix(data: list) -> np.ndarray:
@@ -37,6 +49,7 @@ def generate_randomized_timeseries_matrix(data: list) -> np.ndarray:
         np.random.shuffle(data[row, :])
     data[0, :] = time.copy()
     return data
+
 
 def generate_randomized_timeseries_binned(data: list, bin_size: int) -> np.ndarray:
     """
@@ -63,6 +76,7 @@ def generate_randomized_timeseries_binned(data: list, bin_size: int) -> np.ndarr
         flatten_array = np.vstack([flatten_array, flat_row])
 
     return flatten_array
+
 
 def event_bins(data, events):
     """
@@ -99,10 +113,11 @@ def generate_event_segmented(data: list, event_data: list) -> np.ndarray:
     # build binned dist
     flatten_array = time.copy()
     for row in range(np.shape(data[1:, :])[0]):
-        binned_row = event_bins(data=data[row + 1, :], events = event_data[row + 1, :])
+        binned_row = event_bins(data=data[row + 1, :], events=event_data[row + 1, :])
         flatten_array = np.vstack([flatten_array, binned_row])
 
     return flatten_array
+
 
 def generate_randomized(data: list, bin_size: int) -> np.ndarray:
     """
