@@ -57,7 +57,15 @@ for count, mouse in enumerate(mouse_id_list):
             data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:,0:1800]
             random_data = np.genfromtxt(path_to_data + f'/{file_str}_{day}_smoothed_calcium_traces.csv', delimiter=',')[:,:] # Use when you want to shuffle full timeseries
             event_data = np.genfromtxt(path_to_data + f'/{file_str}_{event_day}_eventTrace.csv', delimiter=',')
+            ## Clean up neurons with one event
+            data, event_data = remove_low_activity(data=data, event_data = event_data)
+            print(np.shape(data))
+            print(event_data.shape)
             random_event_binned_data = generate_event_segmented(data=data.copy(), event_data=event_data)
+            data = data[:, 30:]
+            random_event_binned_data = random_event_binned_data[:, 30:]
+            #random_event_binned_data = random_event_binned_data[:,30:]
+            #data = data[:, 30:]
             random_nng = nng(random_event_binned_data)
             random_ns_idx, random_A_idx, random_B_idx = random_nng.get_context_active(path_to_data + f'/{file_str}_{day}_neuron_context_active.csv')  # sort indices of context active cells
             if set_cs == 1:
@@ -126,12 +134,12 @@ for count, mouse in enumerate(mouse_id_list):
                     # Store event trace results
                     results[count, 6] = outlier_threshold
                     results[count, 7] = stats.ks_2samp(random_vals, data_vals)[1]
-plt.legend(['shuffled', 'ground truth'])
-plt.xlabel("Pearson's r-value")
-plt.ylabel("Frequency")
-plt.title(f'{group}: {tag}')
-plt.savefig(EXPORT_PATH + f'full_shuffle_{group}_ConB_{tag}_cdf_binned_event.png', dpi=300)
-plt.show()
+            plt.legend(['shuffled', 'ground truth'])
+            plt.xlabel("Pearson's r-value")
+            plt.ylabel("Frequency")
+            plt.title(f'{group}: {tag}')
+            #plt.savefig(EXPORT_PATH + f'full_shuffle_{group}_ConB_{tag}_cdf_binned_event.png', dpi=300)
+            plt.show()
 
 #%% EVENT ANALYSIS: Only looking at Context A (second half of data)
 # store: mouse_id, mean, median, max pearson, threshold event separated, ks-stat event separated, mean, median, max pearson, threshold bin-separated, ks-stat bin-separated
@@ -420,7 +428,7 @@ plt.show()
 time = random_event_binned_data[0,:]
 for first_neuron in range(0, len(x)):
     for second_neuron in range(0, len(x)):
-        if x[first_neuron, second_neuron] >= 0.7:
+        if x[first_neuron, second_neuron] >= 0.7 and first_neuron != second_neuron:
             plt.plot(time, random_event_binned_data[first_neuron+1,:])
             plt.plot(time, random_event_binned_data[second_neuron+1,:])
             r, p = stats.pearsonr(random_event_binned_data[first_neuron+1, :], random_event_binned_data[second_neuron+1, :])
@@ -429,10 +437,10 @@ for first_neuron in range(0, len(x)):
 
 
 #%% Test pulling out specific neural traces to plot
-time = random_event_binned_data[0,:]
+time = data[0,:]
 for first_neuron in range(0, len(y)):
     for second_neuron in range(0, len(y)):
-        if y[first_neuron, second_neuron] >= 0.7:
+        if y[first_neuron, second_neuron] >= 0.4:
             plt.plot(time, data[first_neuron+1,:])
             plt.plot(time, data[second_neuron+1,:])
             r, p = stats.pearsonr(data[first_neuron+1, :], data[second_neuron+1, :])
