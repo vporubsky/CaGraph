@@ -477,9 +477,9 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            hubs, authorities = nx.hits_numpy(self.get_network_graph(threshold=threshold))
+            hubs, authorities = nx.hits(self.get_network_graph(threshold=threshold))
         else:
-            hubs, authorities = nx.hits_numpy(graph)
+            hubs, authorities = nx.hits(graph)
         med_hubs = np.median(list(hubs.values()))
         std_hubs = np.std(list(hubs.values()))
         hubs_threshold = med_hubs + 2.5 * std_hubs

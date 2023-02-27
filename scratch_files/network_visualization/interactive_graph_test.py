@@ -6,9 +6,10 @@ from bokeh.plotting import from_networkx
 from bokeh.palettes import Blues8, Reds8, Spectral4
 from bokeh.transform import linear_cmap
 import networkx
-from ca_graph import DGNetworkGraph as nng
+from dg_graph import DGGraph as nng
 import numpy as np
 import os
+from setup import FC_DATA_PATH
 
 # WT Data
 subject_1 = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-1_D9_smoothed_calcium_traces.csv']
@@ -36,14 +37,15 @@ subject_9 = ['2-3_D1_smoothed_calcium_traces.csv', '2-3_D9_smoothed_calcium_trac
 
 Th_data = [subject_1, subject_2, subject_3, subject_4, subject_5, subject_6, subject_7, subject_8, subject_9]
 
+day_idx=0
 data = Th_data
-data = [subject_2]
-data = WT_data
+data = [FC_DATA_PATH  + subject_2[day_idx]]
+# data = WT_data
 threshold = 0.3
 
 for subject in data:
     for day_idx in [0, 1]:
-        filename = subject[day_idx]
+        filename = subject
         mouse_id = filename.strip('_smoothed_calcium_traces.csv')
         nn = nng(filename)
         print(f"Executing analyses for {mouse_id}")
@@ -158,4 +160,4 @@ for subject in data:
             plot.renderers.append(network_graph)
             show(plot)
             # Uncomment line below to save plots
-            save(plot, filename=os.path.join(os.getcwd(), f"visualization/20210422/context_active_{mouse_id}{context_shorthand}.html"))
+            # save(plot, filename=os.path.join(os.getcwd(), f"visualization/20210422/context_active_{mouse_id}{context_shorthand}.html"))

@@ -5,3 +5,4 @@ pynwb
 scipy
 seaborn
 statsmodels
+bokeh==2.4.3

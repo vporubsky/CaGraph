@@ -6,14 +6,16 @@ from bokeh.plotting import from_networkx
 from bokeh.palettes import Blues8, Reds8, Purples8, Oranges8, Viridis8, Spectral8
 from bokeh.transform import linear_cmap
 import networkx
-from ca_graph import BLANetworkGraph as nng
+from ca_graph import CaGraph as nng
 import os
 import numpy as np
+from setup import FC_DATA_PATH
 
 ca_data = ['119-0_deconTrace.csv', '120-0_deconTrace.csv', '120-1_deconTrace.csv', \
            '519-0_deconTrace.csv', '568-4_deconTrace.csv', '568-5_deconTrace.csv', \
            '651-0_deconTrace.csv', '658-0_deconTrace.csv']
 ca_data = ['120-1_deconTrace.csv']
+ca_data = [FC_DATA_PATH  + '348-1_D9_smoothed_calcium_traces.csv']
 
 threshold = 0.3
 
@@ -21,7 +23,7 @@ threshold = 0.3
 
 for subject in ca_data:
     filename = subject
-    mouse_id = filename.strip('_deconTrace.csv')
+    mouse_id = filename
 
     nn = nng(filename)
     print(f"Executing analyses for {mouse_id}")
