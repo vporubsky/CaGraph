@@ -14,7 +14,7 @@ from visualization import interactive_network
 
 # Todo: figure out how the color palettes work
 from dg_graph import DGGraph as nng
-from setup import FC_DATA_PATH
+FC_DATA_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
 #%%
 # WT Data
 subject_1 = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-1_D9_smoothed_calcium_traces.csv']
@@ -41,7 +41,7 @@ subject_8 = ['2-2_D1_smoothed_calcium_traces.csv', '2-2_D9_smoothed_calcium_trac
 subject_9 = ['2-3_D1_smoothed_calcium_traces.csv', '2-3_D9_smoothed_calcium_traces.csv']
 
 Th_data = [subject_1, subject_2, subject_3, subject_4, subject_5, subject_6, subject_7, subject_8, subject_9]
-
+#%%
 day_idx=0
 data = Th_data
 data = FC_DATA_PATH  + subject_2[day_idx]
@@ -52,14 +52,15 @@ threshold = 0.3
 
 filename = data
 nn = nng(filename)
-#%%
-interactive_network(ca_graph_obj=nn, adjust_size_by='hubs')
+
+#%% Key functionality
+interactive_network(ca_graph_obj=nn, adjust_size_by='communities')
 
 
 #%% testing
 import networkx
 G = nn.get_network_graph()
-attributes = ['degree', 'CPR', 'hubs', 'communities']
+attributes = ['degree', 'CPR', 'hubs','HITS', 'communities']
 label_keys = list(map(str, list(nn.labels)))
 attribute_dict = {}
 for attribute in attributes:
@@ -91,5 +92,5 @@ for attribute in attributes:
         raise AttributeError('Invalid attribute key entered.')
 
 adjust_node_size = 5
-adjust_size_by = 'HITS'
+adjust_size_by = 'hubs'
 adjusted_node_size = dict([(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by].items()])

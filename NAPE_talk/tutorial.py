@@ -10,8 +10,11 @@ File Final Edit Date: 11-04-2022
 Description: Short tutorial of using CaGraph class (to be updated to CaGraph)
 """
 # Import packages
-from setup import FC_DATA_PATH
+# from setup import *
+FC_DATA_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
 from dg_graph import DGGraph as nng
+from visualization import *
+from benchmarking import *
 
 #%% Dataset and paths
 # Specify data file names, D1_WT contains a list of .csv files for the Day 1, WT condition
@@ -20,6 +23,7 @@ D1_WT = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-2_D1_smoothed_calcium_tr
 
 # Select file to use to generate graph
 FILENAME = '1055-1_D1_smoothed_calcium_traces.csv'
+FILENAME =  '1055-2_D1_smoothed_calcium_traces.csv'
 
 #%% Set hyperparameters
 THRESHOLD = 0.3
@@ -40,3 +44,8 @@ nn_D1_B_cr = nn.get_context_B_correlated_pair_ratio(threshold=THRESHOLD)
 
 #%% Example plotting CDF to compare two conditions
 nn.plot_CDF_compare_two_samples(data_list=[nn_D1_A_cc, nn_D1_B_cc], x_label='cc', show_plot=True)
+
+
+
+#%% Interactive plotting with Bokeh integration
+interactive_network(ca_graph_obj=nn, adjust_size_by='degree')

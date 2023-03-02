@@ -19,7 +19,7 @@ path_to_data = FC_DATA_PATH
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from utils import *
+from benchmarking import *
 
 EXPORT_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/analyses/benchmarking/random_networks/scratch-analysis/'
 

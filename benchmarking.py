@@ -189,3 +189,4 @@ def generate_randomized(data: list, bin_size: int) -> np.ndarray:
 def generate_randomized_across_population(data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
 
     # First split all the data and make a long list of
+    return

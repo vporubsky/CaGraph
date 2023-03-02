@@ -81,7 +81,6 @@ def interactive_network(ca_graph_obj, graph=None, attributes = ['degree', 'HITS'
     # Adjusted node size
     if adjust_node_size is not None:
         # Adjust node size
-        # Todo: adjusted node size not working
         adjusted_node_size = dict([(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by].items()])
         networkx.set_node_attributes(G, name='adjusted_node_size', values=adjusted_node_size)
         size_by_this_attribute = 'adjusted_node_size'
@@ -112,7 +111,6 @@ def interactive_network(ca_graph_obj, graph=None, attributes = ['degree', 'HITS'
     network_graph.node_renderer.glyph = Circle(size=size_by_this_attribute,
                                                     fill_color=linear_cmap(color_by_this_attribute, color_palette,
                                                                             minimum_value_color, maximum_value_color))
-
 
     # Set edge opacity and width
     network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)

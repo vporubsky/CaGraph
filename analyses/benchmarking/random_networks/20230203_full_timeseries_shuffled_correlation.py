@@ -17,7 +17,7 @@ from setup import FC_DATA_PATH
 from dg_graph import DGGraph as nng
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import *
+from benchmarking import *
 import os
 from scipy import stats
 
