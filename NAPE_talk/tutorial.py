@@ -13,7 +13,8 @@ Description: Short tutorial of using CaGraph class (to be updated to CaGraph)
 # from setup import *
 FC_DATA_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
 from ca_graph import CaGraph
-from visualization import *
+from ca_graph import Visualization
+from ca_graph import Preprocess
 from benchmarking import *
 
 #%% Dataset and paths
@@ -38,21 +39,27 @@ cg_graph_con_A = cg.get_network_graph(threshold=THRESHOLD) # Construct a graph
 
 #%% Analyze graph topology
 # compute the clustering coefficient for all nodes
-cg_D1_A_cc = cg.get_context_clustering_coefficient(threshold=THRESHOLD)
-cg_D1_B_cc = cg.get_context_clustering_coefficient(threshold=THRESHOLD)
+cg_D1_A_cc = cg.get_clustering_coefficient(threshold=THRESHOLD)
+cg_D1_B_cc = cg.get_clustering_coefficient(threshold=THRESHOLD)
 
 # compute the correlated pairs ratio for all nodes
-cg_D1_A_cr = cg.get_context_A_correlated_pair_ratio(threshold=THRESHOLD)
-cg_D1_B_cr = cg.get_context_B_correlated_pair_ratio(threshold=THRESHOLD)
+cg_D1_A_cr = cg.get_correlated_pair_ratio(threshold=THRESHOLD)
+cg_D1_B_cr = cg.get_correlated_pair_ratio(threshold=THRESHOLD)
 
 # compute the hubs in the graph
 cg_D1_B_hubs = cg.get_hubs()
 
 #%% Example plotting CDF to compare two conditions
-cg.plot_CDF_compare_two_samples(data_list=[cg_D1_A_cc, cg_D1_B_cc], x_label='cc', color_list= ['salmon', 'turquoise'], show_plot=True)
+Visualization().plot_CDF_compare_two_samples(data_list=[cg_D1_A_cc, cg_D1_B_cc], x_label='cc', color_list= ['salmon', 'turquoise'], show_plot=True)
 
 #%% Standard graph visualization with NetworkX
 cg.plot_graph_network(graph=cg_graph_con_A) # Plot the graph (simplistic version)
 
 #%% Interactive plotting with Bokeh integration
-interactive_network(ca_graph_obj=cg, adjust_size_by='degree') # Generate interactive graph
+Visualization().interactive_network(ca_graph_obj=cg, adjust_size_by='degree') # Generate interactive graph
+
+#%% Plotting analyses
+Visualization().plot_CDF_compare_two_samples(data_list=[cg_D1_A_cc, cg_D1_B_cc], x_label='cc', color_list= ['salmon', 'turquoise'], show_plot=True)
+
+
+#%% Benchmarking with Preprocess class

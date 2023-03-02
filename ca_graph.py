@@ -1,3 +1,4 @@
+# CaGraph imports
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -6,6 +7,20 @@ from pynwb import NWBHDF5IO
 from statsmodels.tsa.stattools import grangercausalitytests
 from scipy import stats
 
+# Visualization imports
+from bokeh.io import show, save
+from bokeh.models import Range1d, Circle, MultiLine
+from bokeh.plotting import figure
+from bokeh.plotting import from_networkx
+from bokeh.palettes import Blues8
+from bokeh.transform import linear_cmap
+import scipy
+import pandas as pd
+import os
+
+# Benchmarking imports
+
+#%% CaGraph class
 
 class CaGraph:
     """
@@ -40,16 +55,10 @@ class CaGraph:
         ...
     Todo: Add additional graph theoretical analyses (path length, rich club, motifs...)
     Todo: Add additional correlation metrics and allow user to pass them (currently only Pearson)
-    Todo: Add documentation to all methods using docstrings
-    Todo: Add all methods to Class docstring
-    Todo: update description of all functions
     Todo: Determine the distribution of eigenvector centrality scores in connected modules/subnetworks
-    Todo: Add citations as justification for for r=0.3 threshold
     Todo: Implement shuffle distribution r value correction: https://www.nature.com/articles/s41467-020-17270-w#MOESM1
     Todo: Add threshold setting utilties which evaluate whether a given dataset is a good candidate
      --- Eventually you will need to add to this so it includes event detection --- ask for this code
-    Todo: add threshold as a class object, to be passed or created at construction
-    Todo: check all parameters have appropriate type
 
     """
 
@@ -263,7 +272,7 @@ class CaGraph:
             palette = sns.color_palette('husl', len(neuron_trace_numbers))
         for idx, neuron in enumerate(neuron_trace_numbers):
             y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
-            y = [x + 1.05*count for x in y]
+            y = [x + 1.05 * count for x in y]
             plt.plot(self.time, y, c=palette[idx], linewidth=1)
             plt.xticks([])
             plt.yticks([])
@@ -272,7 +281,6 @@ class CaGraph:
         plt.xlabel('Time (s)')
         if title: plt.title(title)
         if show: plt.show()
-
 
     # Todo: plot stacked timecourses based on input neuron indices from graph theory analyses
     # Todo: adjust y axis title for normalization
@@ -288,7 +296,6 @@ class CaGraph:
         """
         subnetworks = self.get_subnetworks(graph=graph, threshold=threshold)
         if palette is None:
-
             palette = sns.color_palette('husl', self.num_neurons)
         for idx, subnetwork in enumerate(subnetworks):
             count = 0
@@ -463,7 +470,6 @@ class CaGraph:
                 omega_list.append(omega)
         return omega_list
 
-
     # Todo: define hits_threshold based on tail of powerlaw distribution
     # Todo: determine best practices for setting threshold of powerlaw distribution to find hubs
     def get_hubs(self, graph=None, threshold=0.3):
@@ -547,9 +553,9 @@ class CaGraph:
             return graph.degree
 
     # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
-    def get_correlated_pair_ratio(self, threshold=0.3, graph=None):
+    def get_correlated_pair_ratio(self, graph=None, threshold=0.3, ):
         """
-        # pairs/ total # cells in FOV
+        Computes the number of connections each neuron has, divided by the nuber of cells in the field of view.
 
         :param graph:
         :param threshold:
@@ -622,6 +628,120 @@ class CaGraph:
             graph = self.get_network_graph()
         nx.draw(graph, pos=nx.spring_layout(graph), node_size=node_size, node_color=node_color, alpha=alpha)
 
+
+#%% Functionality to preprocess the dataset and validate the choice of parameters.
+
+class Visualization:
+    def __init__(self):
+        pass
+
+    def interactive_network(self, ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
+                            adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
+                            palette=Blues8,
+                            hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'], title=None,
+                            show_plot=True, save_plot=False, save_path=None):
+        """
+        Generates an interactived Bokeh.io plot of the graph network.
+
+        palette: a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
+
+        """
+        # initialize graph information
+        cg = ca_graph_obj
+        if graph is None:
+            G = cg.get_network_graph()
+        else:
+            G = graph
+        label_keys = list(map(str, list(cg.labels)))
+
+        #  Build attributes dictionary
+        attribute_dict = {}
+        for attribute in attributes:
+            if attribute == 'degree':
+                # Compute the degree of each node and add attribute
+                attribute_dict['degree'] = dict(nx.degree(G))
+            elif attribute == 'HITS':
+                # Add HITS attribute
+                hub_list, hit_vals = cg.get_hubs(graph=G)
+                attribute_dict['HITS'] = hit_vals
+            elif attribute == 'hubs':
+                # Add hubs attribute
+                attribute_dict['hubs'] = {i: 1 if i in list(set(hub_list) & set(label_keys)) else 0 for i in
+                                          label_keys}
+            elif attribute == 'CPR':
+                # Add correlated pairs attribute
+                corr_pair = cg.get_correlated_pair_ratio(graph=G)
+                attribute_dict['CPR'] = {i: j for i, j in zip(label_keys, corr_pair)}
+            elif attribute == 'communities':
+                # Add communities
+                c = list(nx.algorithms.community.greedy_modularity_communities(G))
+                sorted(c)
+                community_id = {}
+                for i in range(len(c)):
+                    for j in list(c[i]):
+                        community_id[j] = i
+                attribute_dict['communities'] = community_id
+            else:
+                raise AttributeError('Invalid attribute key entered.')
+
+        # Set node attributes
+        for key, value in attribute_dict.items():
+            nx.set_node_attributes(G, name=key, values=value)
+
+        # Todo: make this flexible for labeled conditions
+        # # Add context active attribute
+        # con_act = list(np.genfromtxt(mouse_id + '_neuron_context_active.csv', delimiter=','))  # load context active designations
+        # con_act_dict: dict = {i: j for i, j in zip(label_keys, con_act)}
+        # networkx.set_node_attributes(G, name='context_activity', values=con_act_dict)
+
+        # Adjusted node size
+        if adjust_node_size is not None:
+            # Adjust node size
+            adjusted_node_size = dict(
+                [(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by].items()])
+            nx.set_node_attributes(G, name='adjusted_node_size', values=adjusted_node_size)
+            size_by_this_attribute = 'adjusted_node_size'
+
+        # Adjust node color
+        color_by_this_attribute = adjust_color_by
+
+        # Pick a color palette — Blues8, Reds8, Purples8, Oranges8, Viridis8
+        color_palette = palette
+
+        # Establish which categories will appear when hovering over each node
+        HOVER_TOOLTIPS = [("Neuron", "@index")]
+        for value in hover_attributes:
+            HOVER_TOOLTIPS.append((value, "@" + value))
+
+        # Create a plot with set dimensions, toolbar, and title
+        plot = figure(tooltips=HOVER_TOOLTIPS,
+                      tools="pan,wheel_zoom,save,reset", active_scroll='wheel_zoom',
+                      x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), title=title)
+
+        # Create a network graph object
+        position = nx.spring_layout(G)
+        network_graph = from_networkx(G, position, scale=10, center=(0, 0))
+
+        # Set node sizes and colors according to node degree (color as spectrum of color palette)
+        minimum_value_color = min(network_graph.node_renderer.data_source.data[color_by_this_attribute])
+        maximum_value_color = max(network_graph.node_renderer.data_source.data[color_by_this_attribute])
+        network_graph.node_renderer.glyph = Circle(size=size_by_this_attribute,
+                                                   fill_color=linear_cmap(color_by_this_attribute, color_palette,
+                                                                          minimum_value_color, maximum_value_color))
+
+        # Set edge opacity and width
+        network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)
+
+        plot.renderers.append(network_graph)
+        if show_plot:
+            show(plot)
+
+        if save_plot:
+            if save_path is not None:
+                save(plot, filename=save_path)
+            else:
+                save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
+
     def plot_CDF(self, data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=False):
         """
         Plots the cumulative distribution function of the provided list of data.
@@ -648,8 +768,8 @@ class CaGraph:
         if show_plot:
             plt.show()
 
-
-    def plot_CDF_compare_two_samples(self, data_list=None, color_list=['black', 'black'], marker='o', x_label='', y_label='CDF', show_plot=False):
+    def plot_CDF_compare_two_samples(self, data_list=None, color_list=['black', 'black'], marker='o', x_label='',
+                                     y_label='CDF', show_plot=False):
 
         """
         Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
@@ -676,11 +796,217 @@ class CaGraph:
             # plotting
             plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
 
-        plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.title(f'P value: {stat_level.pvalue:.2e}')
 
         if show_plot:
             plt.show()
+        plt.xlabel(x_label)
+
+    def plot_matched_data(set1, set2, labels, colors):
+
+        # Put into dataframe
+        df = pd.DataFrame({labels[0]: set1, labels[1]: set2})
+        data = pd.melt(df)
+
+        # Plot
+        fig, ax = plt.subplots()
+        sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
+
+        # Find idx0 and idx1 by inspecting the elements returned from ax.get_children()
+        idx0 = 0
+        idx1 = 1
+        locs1 = ax.get_children()[idx0].get_offsets()
+        locs2 = ax.get_children()[idx1].get_offsets()
+
+        y_all = np.zeros(2)
+        for i in range(locs1.shape[0]):
+            x = [locs1[i, 0], locs2[i, 0]]
+            y = [locs1[i, 1], locs2[i, 1]]
+            ax.plot(x, y, color='lightgrey', linewidth=0.5)
+            ax.plot(locs1[i, 0], locs1[i, 1], '.', color=colors[0])
+            ax.plot(locs2[i, 0], locs2[i, 1], '.', color=colors[1])
+            data = [locs1[:, 1], locs2[:, 1]]
+            ax.boxplot(data, positions=[0, 1], capprops=dict(linewidth=0.5, color='k'),
+                       whiskerprops=dict(linewidth=0.5, color='k'),
+                       boxprops=dict(linewidth=0.5, color='k'),
+                       medianprops=dict(color='k'))
+            plt.xticks([])
+            y_all = np.vstack((y_all, y))
+
+        plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
 
 
+#%% Functionality to preprocess the dataset and validate the choice of parameters.
+
+class Preprocess:
+    def __init__(self):
+        pass
+
+    # Preprocess data if not completed
+    # Todo: look up smoothing algorithm for calcium data
+    def smooth(self, data):
+        """
+        Smooth unprocessed data to remove noise.
+        """
+        smoothed_data = data
+        return smoothed_data
+
+    # Todo: make auto-clean option for those that don't have experience
+    def auto_preprocess(self, data):
+
+        preprocessed_data = self.smooth(data)
+        return preprocessed_data
+
+    # Clean up data
+    def remove_quiescent(self, data, event_data, event_num_threshold=5):
+        """
+        data: numpy.ndarray
+        event_bins: numpy.ndarray
+
+        Removes inactive neurons from the dataset
+        """
+        binarized_event_data = np.where(event_data > 0.0005, 1, 0)
+        new_event_data = np.zeros((1, np.shape(event_data)[1]))
+        new_data = np.zeros((1, np.shape(data)[1]))
+        for row in range(np.shape(binarized_event_data)[0]):
+            if np.sum(binarized_event_data[row, :]) <= event_num_threshold:
+                continue
+            else:
+                new_event_data = np.vstack((new_event_data, event_data[row,:]))
+                new_data = np.vstack((new_data, data[row,:]))
+        return new_data[1:, :], new_event_data[1:,:]
+
+    def __count_sign_switch(self, row_data):
+        subtract = row_data[0:len(row_data)-1] - row_data[1:]
+        a = subtract
+        asign = np.sign(a)
+        signchange = ((np.roll(asign, 1) - asign) != 0).astype(int)
+        return np.sum(signchange)
+
+    def remove_low_activity(self, data, event_data, event_num_threshold=5):
+
+        #apply activity treshold
+        new_event_data = np.zeros((1, np.shape(event_data)[1]))
+        new_data = np.zeros((1, np.shape(data)[1]))
+        for row in range(np.shape(data)[0]):
+            if self.__count_sign_switch(row_data = data[row,:]) <= 5 and not row == 0:
+                continue
+            else:
+                new_event_data = np.vstack((new_event_data, event_data[row,:]))
+                new_data = np.vstack((new_data, data[row,:]))
+        return new_data[1:, :], new_event_data[1:,:]
+
+    # Suitability for graph theory analysis
+    def __bins(self, lst, n):
+        """
+        Yield successive n-sized chunks from lst.
+        """
+        lst = list(lst)
+        build_binned_list = []
+        for i in range(0, len(lst), n):
+            build_binned_list.append(lst[i:i + n])
+        return build_binned_list
+
+    def generate_randomized_timeseries_matrix(self, data: list) -> np.ndarray:
+        """
+        data: list
+
+        Parameter data should contain a list of np.ndarray objects.
+
+        Return a numpy array or NWB file.
+        """
+        time = data[0, :].copy()
+        for row in range(np.shape(data)[0]):
+            np.random.shuffle(data[row, :])
+        data[0, :] = time.copy()
+        return data
+
+    def generate_randomized_timeseries_binned(self, data: list, bin_size: int) -> np.ndarray:
+        """
+        data: list
+
+        Parameter data should contain a list of np.ndarray objects.
+
+        Return a numpy array or NWB file.
+        """
+        time = data[0, :].copy()
+        build_new_array = np.array(self.__bins(lst=data[1, :], n=bin_size))
+
+        # build binned dist
+        for row in range(np.shape(data[2:, :])[0]):
+            binned_row = self.__bins(lst=data[row + 2, :], n=bin_size)
+            build_new_array = np.vstack([build_new_array, binned_row])
+
+        for row in range(np.shape(build_new_array)[0]):
+            np.random.shuffle(build_new_array[row, :])
+
+        flatten_array = time.copy()
+        for row in range(np.shape(build_new_array)[0]):
+            flat_row = [item for sublist in build_new_array[row, :] for item in sublist]
+            flatten_array = np.vstack([flatten_array, flat_row])
+
+        return flatten_array
+
+    def __event_bins(self, data, events):
+        """
+        :param data:
+        :param events: single events timecourse
+        :return:
+        """
+        data = list(data)
+        build_binned_list = []
+        event_idx = list(np.nonzero(events)[0])
+        if event_idx[-1] != len(data):
+            event_idx.append(len(data))
+        start_val = 0
+        for idx in event_idx:
+            build_binned_list.append(data[start_val:idx])
+            start_val = idx
+        np.random.shuffle(build_binned_list)
+        flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
+        threshold = 0.01
+        flat_random_binned_list = [0 if value < threshold else value for value in flat_random_binned_list]
+        return flat_random_binned_list
+
+    def generate_event_segmented(self, data: list, event_data: list) -> np.ndarray:
+        """
+        data: list
+
+        Parameter data should contain a list of np.ndarray objects.
+
+        Return a numpy array or NWB file.
+        """
+        time = data[0, :].copy()
+
+        # build binned dist
+        flatten_array = time.copy()
+        for row in range(np.shape(data[1:, :])[0]):
+            binned_row = self.__event_bins(data=data[row + 1, :], events=event_data[row + 1, :])
+            flatten_array = np.vstack([flatten_array, binned_row])
+
+        return flatten_array
+
+    def generate_randomized(self, data: list, bin_size: int) -> np.ndarray:
+        """
+        data: list
+
+        Parameter data should contain a list of np.ndarray objects.
+
+        Return a numpy array or NWB file.
+        """
+        time = data[0, :].copy()
+
+        # build binned dist
+        flatten_array = time.copy()
+        for row in range(np.shape(data[2:, :])[0]):
+            binned_row = self.__bins(lst=data[row + 2, :], n=bin_size)
+            flatten_array = np.vstack([flatten_array, binned_row])
+
+        return flatten_array
+
+
+    def generate_randomized_across_population(self, data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
+
+        # First split all the data and make a long list of
+        return

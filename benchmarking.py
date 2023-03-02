@@ -184,7 +184,7 @@ def generate_randomized(data: list, bin_size: int) -> np.ndarray:
     return flatten_array
 
 
-#%% Randomize across all
+
 
 def generate_randomized_across_population(data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
 

@@ -20,7 +20,6 @@ import scipy
 pal = sns.color_palette('husl', 9)
 # plt.style.use('/nng.mplstyle') #Commmented out because BLA analysis is trying to use this and cannot find the reference
 
-
 def plot_matched_data(set1, set2, labels, colors):
 
     # Put into dataframe
@@ -53,3 +52,4 @@ def plot_matched_data(set1, set2, labels, colors):
         y_all = np.vstack((y_all, y))
 
     plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+
