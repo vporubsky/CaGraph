@@ -820,7 +820,7 @@ class Visualization:
         plt.xlabel(x_label)
 
     # Todo: check functionality
-    def plot_matched_data(self, sample_1, sample_2, labels, colors):
+    def plot_matched_data(self, sample_1, sample_2, labels, colors, show_plot=True):
         """
         Plots two samples of matched data with each sample
 
@@ -855,6 +855,9 @@ class Visualization:
             y_all = np.vstack((y_all, y))
 
         plt.xlabel(f'P-value = {scipy.stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
+
+        if show_plot:
+            plt.show()
 
 
 #%% Functionality to preprocess the dataset and validate the choice of parameters.
