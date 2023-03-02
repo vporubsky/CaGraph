@@ -819,6 +819,35 @@ class Visualization:
             plt.show()
         plt.xlabel(x_label)
 
+    def plot_histograms(self, data_list=None, color_list=['black', 'black'], x_label='',
+                                     y_label='CDF', bin_size=20, show_plot=True):
+
+        """
+        Plots histograms of the provided data and prints the associated P-value for assessing
+        the Kolmogorov-Smirnov distance between the distributions.
+
+        :param data_list: list of lists containing float values to compare with KS-test
+        :param color_list: list of str containing matplotlib color styles
+        :param marker: str matplotlib marker style
+        :param x_label: str
+        :param y_label: str
+        :param show_plot: bool
+        """
+
+        # Evaluate KS-test statistic
+        stat_level = stats.ks_2samp(data_list[0], data_list[1])
+
+        for idx, data in enumerate(data_list):
+            # plotting
+            plt.hist(data, color=color_list[idx], bins=bin_size, alpha=0.4)
+
+        plt.ylabel(y_label)
+        plt.title(f'P value: {stat_level.pvalue:.2e}')
+
+        if show_plot:
+            plt.show()
+        plt.xlabel(x_label)
+
     # Todo: check functionality
     def plot_matched_data(self, sample_1, sample_2, labels, colors, show_plot=True):
         """
@@ -1063,3 +1092,65 @@ class Preprocess:
 
         return
 
+    # Todo: randomly select neuron to plot
+    def plot_shuffle_example(self, data, event_data, show_plot = True):
+        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        plt.figure(figsize=(10, 5))
+        plt.subplot(211)
+        plt.plot(data[0, :], data[4, :], c='blue', label='ground truth')
+        plt.ylabel('ΔF/F')
+        plt.legend()
+        plt.subplot(212)
+        plt.plot(shuffled_data[0, :], shuffled_data[4, :], c='grey', label='shuffled')
+        plt.ylabel('')
+        plt.ylabel('ΔF/F')
+        plt.xlabel('Time')
+        plt.legend()
+        if show_plot:
+            plt.show()
+
+    def generate_threshold(self, data, event_data):
+        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        random_cg = CaGraph(shuffled_data)
+        x = random_cg.pearsons_correlation_matrix
+        np.fill_diagonal(x, 0)
+        Q1 = np.percentile(x, 25, interpolation='midpoint')
+        Q3 = np.percentile(x, 75, interpolation='midpoint')
+
+        IQR = Q3 - Q1
+        outlier_threshold = Q3 + 1.5 * IQR
+
+        ground_truth_cg = CaGraph(data)
+        y = ground_truth_cg.pearsons_correlation_matrix
+        np.fill_diagonal(y, 0)
+
+        random_vals = np.tril(x).flatten()
+        data_vals = np.tril(y).flatten()
+        print(f"KS-statistic: {scipy.stats.ks_2samp(random_vals, data_vals)}")
+        print(f"The threshold is: {outlier_threshold}")
+        return outlier_threshold
+
+    def plot_threshold(self, data, event_data, show_plot=True):
+        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        random_cg = CaGraph(shuffled_data)
+        x = random_cg.pearsons_correlation_matrix
+        np.fill_diagonal(x, 0)
+        Q1 = np.percentile(x, 25, interpolation='midpoint')
+        Q3 = np.percentile(x, 75, interpolation='midpoint')
+
+        IQR = Q3 - Q1
+        outlier_threshold = Q3 + 1.5 * IQR
+
+        ground_truth_cg = CaGraph(data)
+        y = ground_truth_cg.pearsons_correlation_matrix
+        np.fill_diagonal(y, 0)
+
+        plt.ylim(0, 100)
+        plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
+        plt.hist(np.tril(y).flatten(), bins=50, color='blue', alpha=0.3)
+        plt.axvline(x=outlier_threshold, color='red')
+        plt.legend(['threshold (Q3 + 1.5*IQR)', 'shuffled', 'ground truth', ])
+        plt.xlabel("Pearson's r-value")
+        plt.ylabel("Frequency")
+        if show_plot:
+            plt.show()
