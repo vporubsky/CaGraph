@@ -82,7 +82,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes = ['degree', 'HITS'
     if adjust_node_size is not None:
         # Adjust node size
         # Todo: adjusted node size not working
-        adjusted_node_size = dict([(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by]])
+        adjusted_node_size = dict([(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by].items()])
         networkx.set_node_attributes(G, name='adjusted_node_size', values=adjusted_node_size)
         size_by_this_attribute = 'adjusted_node_size'
 
