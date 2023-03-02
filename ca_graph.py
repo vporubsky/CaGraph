@@ -36,7 +36,7 @@ class CaGraph:
     There are several graph theoretical metrics for further analysis of
     neuronal network connectivity patterns.
 
-    Most analyses are computed using a graph generated based on Pearson's correlation coefficient values computed
+    Most test_analyses are computed using a graph generated based on Pearson's correlation coefficient values computed
     between neuron timeseries data. A threshold for Pearson's correlation coefficient is typically set edges added
     when R>0.3. https://www.nature.com/articles/s41467-020-17270-w#MOESM1 https://www.nature.com/articles/nature15389
     ...
@@ -53,7 +53,7 @@ class CaGraph:
     -------
     get_laplacian_matrix()
         ...
-    Todo: Add additional graph theoretical analyses (path length, rich club, motifs...)
+    Todo: Add additional graph theoretical test_analyses (path length, rich club, motifs...)
     Todo: Add additional correlation metrics and allow user to pass them (currently only Pearson)
     Todo: Determine the distribution of eigenvector centrality scores in connected modules/subnetworks
     Todo: Implement shuffle distribution r value correction: https://www.nature.com/articles/s41467-020-17270-w#MOESM1
@@ -282,7 +282,7 @@ class CaGraph:
         if title: plt.title(title)
         if show: plt.show()
 
-    # Todo: plot stacked timecourses based on input neuron indices from graph theory analyses
+    # Todo: plot stacked timecourses based on input neuron indices from graph theory test_analyses
     # Todo: adjust y axis title for normalization
     # Todo: add time ticks
     # Todo: check that the self.num_neurons is not too many for color_palette
@@ -669,6 +669,7 @@ class Visualization:
             G = graph
         label_keys = list(map(str, list(cg.labels)))
 
+        ## Todo: add additional attributes
         #  Build attributes dictionary
         attribute_dict = {}
         for attribute in attributes:
@@ -862,7 +863,7 @@ class Preprocess:
     def __init__(self):
         pass
 
-    # Preprocess data if not completed
+    # ---------------- Clean data --------------------------------------
     # Todo: look up smoothing algorithm for calcium data
     def smooth(self, data):
         """
@@ -879,13 +880,23 @@ class Preprocess:
         preprocessed_data = self.smooth(data)
         return preprocessed_data
 
-    # Clean up data
+    # Todo: write event_detection code
+    def event_detection(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        event_data = data
+        return event_data
+
+    # Todo: create function to generate event_data
     def remove_quiescent(self, data, event_data, event_num_threshold=5):
         """
         data: numpy.ndarray
         event_bins: numpy.ndarray
 
-        Removes inactive neurons from the dataset
+        Removes inactive neurons from the dataset using event_data which the user must pass.
         """
         binarized_event_data = np.where(event_data > 0.0005, 1, 0)
         new_event_data = np.zeros((1, np.shape(event_data)[1]))
@@ -910,7 +921,9 @@ class Preprocess:
 
     def remove_low_activity(self, data, event_data, event_num_threshold=5):
         """
+        Removes neurons who have fewer than event_num_threshold events.
 
+        Returns a new array of data without neurons that have low activity.
         """
         #apply activity treshold
         new_event_data = np.zeros((1, np.shape(event_data)[1]))
@@ -1031,8 +1044,19 @@ class Preprocess:
 
         return flatten_array
 
-
+    #  Todo: write function
     def generate_randomized_across_population(self, data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
 
         # First split all the data and make a long list of
         return
+
+
+    # Todo: function to find outlier subjects in a batch
+
+
+
+    # Todo: function to test sensitivity analysis
+    def sensitivity_analysis(self):
+
+        return
+

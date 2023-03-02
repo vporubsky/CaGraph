@@ -1,10 +1,3 @@
-
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** vporubsky, DG_fear_conditioning_graph_theory, twitter_handle, verosky@uw.edu, project_title, project_description
--->
-
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -25,14 +18,15 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory">
+  <a href="https://github.com/vporubsky/CaGraph">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">DG_fear_conditioning_graph_theory</h3>
+  <h3 align="center">CaGraph</h3>
 
   <p align="center">
-    Application of graph theory to summarize network behavior of neurons in the dentate gyrus (DG) recorded using calcium fluorescence imaging during fear conditioning and extinction.
+    Graph theory analysis and visualization package for calcium imaging timeseries data. The package makes it simple for experimental researchers to generate graphs 
+    of functional networks and inspect their topology, using NetworkX to compute useful graph theory metrics. Bokeh is used to assist with interactive plotting of graph networks.
     <br />
     <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory"><strong>Explore the docs »</strong></a>
     <br />
@@ -80,10 +74,6 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`vporubsky`, `DG_fear_conditioning_graph_theory`, `twitter_handle`, `verosky@uw.edu`, `project_title`, `project_description`
-
 
 ### Built With
 
@@ -101,20 +91,25 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* networkx
   ```sh
-  npm install npm@latest -g
+  pip install networkx
   ```
+* bokeh
+  ```sh
+  pip install bokeh
+  ```  
+
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/vporubsky/DG_fear_conditioning_graph_theory.git
+   git clone https://github.com/vporubsky/CaGraph.git
    ```
-2. Install NPM packages
+2. Install packages
    ```sh
-   npm install
+   pip install
    ```
 
 
@@ -139,7 +134,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Veronica Porubksy - verosky@uw.edu
 
-Project Link: [https://github.com/vporubsky/DG_fear_conditioning_graph_theory](https://github.com/vporubsky/DG_fear_conditioning_graph_theory)
+Project Link: [https://github.com/vporubsky/CaGraph](https://github.com/vporubsky/CaGraph)
 
 
 
