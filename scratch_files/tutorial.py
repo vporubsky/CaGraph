@@ -31,7 +31,7 @@ THRESHOLD = 0.3
 
 #%% Generate graph object, called "cg" from CSV file
 # visualize CSV file in notebook
-cg = CaGraph(DATA_PATH + FILENAME, dataset_id = '1055-1', threshold=THRESHOLD) # build CaGraph object
+cg = CaGraph(DATA_PATH + FILENAME, dataset_id = '1055-1') # build CaGraph object
 cg_graph = cg.get_network_graph(threshold=THRESHOLD) # Construct a graph
 
 #%% Generate graph object from numpy.ndarray
