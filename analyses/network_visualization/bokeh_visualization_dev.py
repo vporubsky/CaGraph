@@ -14,7 +14,8 @@ from visualization import interactive_network
 
 # Todo: figure out how the color palettes work
 from dg_graph import DGGraph as nng
-FC_DATA_PATH = '/Users/veronica_porubsky/GitHub/DG_fear_conditioning_graph_theory/LC-DG-FC-data/'
+FC_DATA_PATH = '/LC-DG-FC-data/'
+
 #%%
 # WT Data
 subject_1 = ['1055-1_D1_smoothed_calcium_traces.csv', '1055-1_D9_smoothed_calcium_traces.csv']

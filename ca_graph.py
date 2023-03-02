@@ -632,6 +632,21 @@ class CaGraph:
 #%% Functionality to preprocess the dataset and validate the choice of parameters.
 
 class Visualization:
+    """
+    Published: XX/XX/XXXX
+    Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
+
+    Class: Visualization()
+    =====================
+
+    This class provides functionality to easily visualize graphs computed using the CaGraph class.
+
+
+    Attributes
+    ----------
+
+
+    """
     def __init__(self):
         pass
 
@@ -803,10 +818,14 @@ class Visualization:
             plt.show()
         plt.xlabel(x_label)
 
-    def plot_matched_data(set1, set2, labels, colors):
+    # Todo: check functionality
+    def plot_matched_data(self, sample_1, sample_2, labels, colors):
+        """
+        Plots two samples of matched data with each sample
 
+        """
         # Put into dataframe
-        df = pd.DataFrame({labels[0]: set1, labels[1]: set2})
+        df = pd.DataFrame({labels[0]: sample_1, labels[1]: sample_2})
         data = pd.melt(df)
 
         # Plot
@@ -834,7 +853,7 @@ class Visualization:
             plt.xticks([])
             y_all = np.vstack((y_all, y))
 
-        plt.xlabel(f'P-value = {scipy.stats.ttest_rel(set1, set2).pvalue:.3}')
+        plt.xlabel(f'P-value = {scipy.stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
 
 
 #%% Functionality to preprocess the dataset and validate the choice of parameters.
@@ -854,7 +873,9 @@ class Preprocess:
 
     # Todo: make auto-clean option for those that don't have experience
     def auto_preprocess(self, data):
+        """
 
+        """
         preprocessed_data = self.smooth(data)
         return preprocessed_data
 
@@ -878,6 +899,9 @@ class Preprocess:
         return new_data[1:, :], new_event_data[1:,:]
 
     def __count_sign_switch(self, row_data):
+        """
+
+        """
         subtract = row_data[0:len(row_data)-1] - row_data[1:]
         a = subtract
         asign = np.sign(a)
@@ -885,7 +909,9 @@ class Preprocess:
         return np.sum(signchange)
 
     def remove_low_activity(self, data, event_data, event_num_threshold=5):
+        """
 
+        """
         #apply activity treshold
         new_event_data = np.zeros((1, np.shape(event_data)[1]))
         new_data = np.zeros((1, np.shape(data)[1]))
