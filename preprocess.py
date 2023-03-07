@@ -322,7 +322,7 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        raise AttributeError
+        raise AttributeError('Must provide either a pre-processed shuffled dataset or event data to perform the shuffle.')
     random_cg = CaGraph(shuffled_data)
     x = random_cg.pearsons_correlation_matrix
     np.fill_diagonal(x, 0)
