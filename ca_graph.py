@@ -19,6 +19,7 @@ import pandas as pd
 import os
 
 # Benchmarking imports
+import random
 
 #%% CaGraph class
 
@@ -943,6 +944,8 @@ class Preprocess:
 
     def __count_sign_switch(self, row_data):
         """
+        Searches time-series data for points at which the time-series changes from increasing to
+        decreasing or from decreasing to increasing.
 
         """
         subtract = row_data[0:len(row_data)-1] - row_data[1:]
@@ -953,7 +956,7 @@ class Preprocess:
 
     def remove_low_activity(self, data, event_data, event_num_threshold=5):
         """
-        Removes neurons who have fewer than event_num_threshold events.
+        Removes neurons with fewer than event_num_threshold events.
 
         Returns a new array of data without neurons that have low activity.
         """
@@ -1040,7 +1043,7 @@ class Preprocess:
         flat_random_binned_list = [0 if value < threshold else value for value in flat_random_binned_list]
         return flat_random_binned_list
 
-    def generate_event_segmented(self, data: list, event_data: list) -> np.ndarray:
+    def generate_event_shuffle(self, data: list, event_data: list) -> np.ndarray:
         """
         data: list
 
@@ -1076,11 +1079,42 @@ class Preprocess:
 
         return flatten_array
 
-    #  Todo: write function
-    def generate_randomized_across_population(self, data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
+    def generate_population_event_shuffle(self, data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
+        """
 
+        :param data:
+        :param event_data:
+        :return:
+        """
+        time = data[0, :].copy()
+
+        # Build long list of all neurons time bins, then shuffle and flatten
+        build_binned_list = []
+        for row in range(1, np.shape(data)[0]):
+            data_row = list(data[row, :])
+            event_idx = list(np.nonzero(event_data[row, :])[0])
+            if event_idx[-1] != len(data_row):
+                event_idx.append(len(data_row))
+            start_val = 0
+            for idx in event_idx:
+                build_binned_list.append(data[start_val:idx])
+                start_val = idx
+        flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
+        np.random.shuffle(flat_random_binned_list) # shuffles list of all neural data
+
+        flat_random_binned_list = [item for sublist in flat_random_binned_list for item in sublist]
+
+        # Rebuild a shuffled data matrix the size of original data matrix
+        shuffled_data = time.copy()
+        start_idx = 0
+        end_idx = len(time)
+        for row in range(np.shape(data[1:, :])[0]):
+            binned_row = flat_random_binned_list[start_idx: end_idx]
+            shuffled_data = np.vstack([shuffled_data, binned_row])
+            start_idx = end_idx
+            end_idx += len(time)
         # First split all the data and make a long list of
-        return
+        return shuffled_data
 
 
     # Todo: function to find outlier subjects in a batch
@@ -1092,16 +1126,27 @@ class Preprocess:
 
         return
 
-    # Todo: randomly select neuron to plot
-    def plot_shuffle_example(self, data, event_data, show_plot = True):
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+    def plot_shuffle_example(self, data, shuffled_data=None, event_data=None, show_plot = True):
+        """
+
+        :param shuffled_data:
+        :param data:
+        :param event_data:
+        :param show_plot:
+        :return:
+        """
+        if shuffled_data is None and event_data is not None:
+            shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        elif shuffled_data is None and event_data is None:
+            raise AttributeError
+        neuron_idx =  random.randint(1, np.shape(data)[0])
         plt.figure(figsize=(10, 5))
         plt.subplot(211)
-        plt.plot(data[0, :], data[4, :], c='blue', label='ground truth')
+        plt.plot(data[0, :], data[neuron_idx, :], c='blue', label='ground truth')
         plt.ylabel('ΔF/F')
         plt.legend()
         plt.subplot(212)
-        plt.plot(shuffled_data[0, :], shuffled_data[4, :], c='grey', label='shuffled')
+        plt.plot(shuffled_data[0, :], shuffled_data[neuron_idx, :], c='grey', label='shuffled')
         plt.ylabel('')
         plt.ylabel('ΔF/F')
         plt.xlabel('Time')
@@ -1109,8 +1154,18 @@ class Preprocess:
         if show_plot:
             plt.show()
 
-    def generate_threshold(self, data, event_data):
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+    def generate_threshold(self, data, shuffled_data=None, event_data=None):
+        """
+
+        :param data:
+        :param shuffled_data:
+        :param event_data:
+        :return:
+        """
+        if shuffled_data is None and event_data is not None:
+            shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        elif shuffled_data is None and event_data is None:
+            raise AttributeError
         random_cg = CaGraph(shuffled_data)
         x = random_cg.pearsons_correlation_matrix
         np.fill_diagonal(x, 0)
@@ -1130,8 +1185,19 @@ class Preprocess:
         print(f"The threshold is: {outlier_threshold}")
         return outlier_threshold
 
-    def plot_threshold(self, data, event_data, show_plot=True):
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+    def plot_threshold(self, data, shuffled_data=None, event_data = None, show_plot=True):
+        """
+
+        :param data:
+        :param shuffled_data:
+        :param event_data:
+        :param show_plot:
+        :return:
+        """
+        if shuffled_data is None and event_data is not None:
+            shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        elif shuffled_data is None and event_data is None:
+            raise AttributeError
         random_cg = CaGraph(shuffled_data)
         x = random_cg.pearsons_correlation_matrix
         np.fill_diagonal(x, 0)
@@ -1154,3 +1220,4 @@ class Preprocess:
         plt.ylabel("Frequency")
         if show_plot:
             plt.show()
+

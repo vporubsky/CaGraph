@@ -100,8 +100,20 @@ Visualization().plot_matched_data(sample_1=cg_A_cc,
 
 #%% Benchmarking with Preprocess class
 
-#%% Generate shuffled dataset
+#Generate shuffled dataset
 # Todo: add BLA dataset to test_data
+DATA_PATH = "/Users/veronica_porubsky/GitHub/BLA_graph_theory/OFT/data/"
+data = np.genfromtxt(DATA_PATH + f'658-0_deconTrace.csv', delimiter=',')
+event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',')
+
+# Shuffle the data using identified events
+shuffled_data = Preprocess().generate_population_event_shuffle(data=data.copy(), event_data=event_data)
+
+#%% Plot shuffled trace
+Preprocess().plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
+
+
+#%% Shuffle across population
 DATA_PATH = "/Users/veronica_porubsky/GitHub/BLA_graph_theory/OFT/data/"
 data = np.genfromtxt(DATA_PATH + f'658-0_deconTrace.csv', delimiter=',')
 event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',')
@@ -109,14 +121,13 @@ event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',
 # Shuffle the data using identified events
 shuffled_data = Preprocess().generate_event_segmented(data=data.copy(), event_data=event_data)
 
-# Plot shuffled trace
-Preprocess().plot_shuffle_example(data=data.copy(), event_data=event_data)
-
+#%% Plot shuffled trace
+Preprocess().plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 #%% Generate proposed threshold
-threshold = Preprocess().generate_threshold(data=data.copy(), event_data=event_data)
+threshold = Preprocess().generate_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 # plot threshold
-Preprocess().plot_threshold(data=data.copy(), event_data=event_data)
+Preprocess().plot_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 
 #%% Batched analyses
