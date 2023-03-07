@@ -18,8 +18,6 @@ import scipy
 import pandas as pd
 import os
 
-# Benchmarking imports
-import random
 
 #%% CaGraph class
 
@@ -106,35 +104,34 @@ class CaGraph:
         else:
             self.threshold = self.__generate_threshold()
 
+    # Write function
     def __generate_threshold(self):
         """
 
         """
         return 0.3
 
-    def get_laplacian_matrix(self, graph=None, threshold=0.3):
+    def get_laplacian_matrix(self, graph=None):
         """
         Returns the Laplacian matrix of the specified graph.
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix(threshold=threshold)
+            graph = self.get_network_graph_from_matrix()
         return nx.laplacian_matrix(graph)
 
-    def get_network_graph_from_matrix(self, threshold=0.3, weight_matrix=None):
+    def get_network_graph_from_matrix(self, weight_matrix=None):
         """
         Automatically generate graph object from numpy adjacency matrix.
 
         :param weight_matrix:
-        :param threshold:
         :param weighted:
         :return:
         """
         if weight_matrix is None:
-            return nx.from_numpy_array(self.get_adjacency_matrix(threshold=threshold))
+            return nx.from_numpy_array(self.get_adjacency_matrix())
         return nx.from_numpy_array(self.get_weight_matrix(weight_matrix=weight_matrix))
 
     def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
@@ -151,25 +148,24 @@ class CaGraph:
             data_matrix = data_matrix[:, time_points[0]:time_points[1]]
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
 
-    def get_time_subsampled_graphs(self, subsample_indices, threshold=0.3, weighted=False):
+    def get_time_subsampled_graphs(self, subsample_indices, weighted=False):
         """
 
         :param subsample_indices: list of tuples
-        :param threshold:
         :return:
         """
         subsampled_graphs = []
         for time_idx in subsample_indices:
             subsampled_graphs.append(
-                self.get_network_graph(corr_mat=self.get_pearsons_correlation_matrix(time_points=time_idx),
-                                       threshold=threshold, weighted=weighted))
+                self.get_network_graph(corr_mat=self.get_pearsons_correlation_matrix(time_points=time_idx), weighted=weighted))
         return subsampled_graphs
 
-    def get_time_subsampled_correlation_matrix(self, subsample_indices, threshold=0.3):
+    def get_time_subsampled_correlation_matrices(self, subsample_indices):
         """
+        Samples the timeseries using provided indices to generate correlation matrices for
+        defined periods.
 
         :param subsample_indices: list of tuples
-        :param threshold:
         :return:
         """
         subsampled_corr_mat = []
@@ -179,6 +175,7 @@ class CaGraph:
 
     def get_granger_causality_scores_matrix(self):
         """
+        Returns Granger causality chi-square values.
 
         :return:
         """
@@ -191,19 +188,21 @@ class CaGraph:
                 gc_matrix[row, col] = gc_test_dict['ssr_chi2test'][1]
         return gc_matrix
 
-    def get_adjacency_matrix(self, threshold=0.3):
+    def get_adjacency_matrix(self):
         """
+        Returns the adjacency matrix.
 
-        :param threshold:
         :return:
         """
-        adj_mat = (self.pearsons_correlation_matrix > threshold)
+        adj_mat = (self.pearsons_correlation_matrix > self.threshold)
         np.fill_diagonal(adj_mat, 0)
         return adj_mat.astype(int)
 
     def get_weight_matrix(self, weight_matrix=None):
-        """Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
-        :param weight_matrix: numpy.ndarray containing weights
+        """
+        Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
+
+        :param weight_matrix: numpy.ndarray
         :return:
         """
         if weight_matrix is None:
@@ -211,8 +210,9 @@ class CaGraph:
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
-    def plot_correlation_heatmap(self, correlation_matrix=None):
+    def plot_correlation_heatmap(self, correlation_matrix=None, show_plot = True):
         """
+        Plots a heatmap of the correlation matrix.
 
         :param correlation_matrix:
         :return:
@@ -220,6 +220,8 @@ class CaGraph:
         if correlation_matrix is None:
             correlation_matrix = self.get_pearsons_correlation_matrix()
         sns.heatmap(correlation_matrix, vmin=0, vmax=1)
+        if show_plot:
+            plt.show()
         return
 
     def get_single_neuron_timecourse(self, neuron_trace_number):
@@ -259,19 +261,18 @@ class CaGraph:
             plt.title(title)
         plt.show()
 
-    def plot_multi_neuron_timecourse(self, neuron_trace_numbers, title=None, palette=None, show=False):
+    def plot_multi_neuron_timecourse(self, neuron_trace_labels, title=None, palette=None, show=False):
         """
         Plots multiple individual calcium fluorescence traces, stacked vertically.
 
         :param graph:
-        :param threshold:
         :param title:
         :return:
         """
         count = 0
         if palette is None:
-            palette = sns.color_palette('husl', len(neuron_trace_numbers))
-        for idx, neuron in enumerate(neuron_trace_numbers):
+            palette = sns.color_palette('husl', len(neuron_trace_labels))
+        for idx, neuron in enumerate(neuron_trace_labels):
             y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
             y = [x + 1.05 * count for x in y]
             plt.plot(self.time, y, c=palette[idx], linewidth=1)
@@ -287,15 +288,14 @@ class CaGraph:
     # Todo: adjust y axis title for normalization
     # Todo: add time ticks
     # Todo: check that the self.num_neurons is not too many for color_palette
-    def plot_subnetworks_timecourses(self, graph=None, threshold=0.3, palette=None, title=None):
+    def plot_subnetworks_timecourses(self, graph=None, palette=None, title=None):
         """
 
         :param graph:
-        :param threshold:
         :param title:
         :return:
         """
-        subnetworks = self.get_subnetworks(graph=graph, threshold=threshold)
+        subnetworks = self.get_subnetworks(graph=graph)
         if palette is None:
             palette = sns.color_palette('husl', self.num_neurons)
         for idx, subnetwork in enumerate(subnetworks):
@@ -313,15 +313,14 @@ class CaGraph:
             if title: plt.title(title)
             plt.show()
 
-    def plot_multi_neurons_timecourses(self, graph=None, threshold=0.3, title=None):
+    def plot_multi_neurons_timecourses(self, graph=None, title=None):
         """
 
         :param graph:
-        :param threshold:
         :param title:
         :return:
         """
-        subnetworks = self.get_subnetworks(graph=graph, threshold=threshold)
+        subnetworks = self.get_subnetworks(graph=graph)
         for subnetwork in subnetworks:
             count = 0
             for neuron in subnetwork:
@@ -359,13 +358,12 @@ class CaGraph:
 
     # Todo: ensure the binary and weighted graphs are built correctly
     # Todo: ensure this is the most efficient graph building method
-    def get_network_graph(self, corr_mat=None, threshold=0.3, weighted=False):
+    def get_network_graph(self, corr_mat=None, weighted=False):
         """
         Must pass a np.ndarray type object to corr_mat, or the Pearsons
         correlation matrix for the full dataset will be used.
 
         :param corr_mat:
-        :param threshold:
         :param weighted:
         :return:
         """
@@ -382,35 +380,34 @@ class CaGraph:
             for i in range(len(self.labels)):
                 G.add_node(str(self.labels[i]))
                 for j in range(len(self.labels)):
-                    if not i == j and corr_mat[i, j] > threshold:
+                    if not i == j and corr_mat[i, j] > self.threshold:
                         G.add_edge(str(self.labels[i]), str(self.labels[j]))
         return G
 
-    # Todo: update to be able to pass a graph for randomization
-    def get_random_graph(self, threshold=0.3):
+    def get_random_graph(self, graph=None):
         """
-        nx.algorithms.smallworld.random_reference is adapted from the Maslov and Sneppen (2002) algorithm.
-        It randomizes the existing graph.
+        Generates a random grpah. The nx.algorithms.smallworld.random_reference is adapted from the
+        Maslov and Sneppen (2002) algorithm. It randomizes the existing graph.
 
-        :param threshold:
         :return:
         """
-        G = self.get_network_graph(threshold=threshold)
+        if graph is None:
+            G = self.get_network_graph()
+        else:
+            G = graph
         G = nx.algorithms.smallworld.random_reference(G)
         return G
 
-    def get_erdos_renyi_graph(self, graph=None, threshold=0.3):
+    def get_erdos_renyi_graph(self, graph=None):
         """
-        Generates an Erdos-Renyi random graph using a network edge coverage
-        metric computed from the graph to be randomized.
+        Generates an Erdos-Renyi random graph using a network edge coverage metric computed from the graph to be randomized.
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
             num_nodes = self.num_neurons
-            con_probability = self.get_network_coverage(threshold=threshold)
+            con_probability = self.get_network_coverage()
         else:
             num_nodes = len(graph.nodes)
             con_probability = self.get_network_coverage(graph=graph)
@@ -434,34 +431,31 @@ class CaGraph:
 
     # Todo: getting stuck on small world analysis when computing sigma -- infinite loop
     # Todo: this^ may be due to computing the average clustering coefficient or the average shortest path length -- test
-    def get_smallworld_largest_subnetwork(self, graph=None, threshold=0.3):
+    def get_smallworld_largest_subnetwork(self, graph=None):
         """
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            graph = self.get_largest_subnetwork_graph(threshold=threshold)
+            graph = self.get_largest_subnetwork_graph()
         else:
-            graph = self.get_largest_subnetwork_graph(graph=graph, threshold=threshold)
+            graph = self.get_largest_subnetwork_graph(graph=graph)
         if len(graph.nodes()) >= 4:
             return nx.algorithms.smallworld.sigma(graph)
         else:
-            raise RuntimeError(
-                'Largest subnetwork has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
+            raise RuntimeError('Largest subnetwork has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
     # Todo: DO NOT USE FUNCTION, NOT UPDATED
-    def get_smallworld_all_subnetworks(self, corr_matrix, graph=None, threshold=0.3):
+    def get_smallworld_all_subnetworks(self, corr_matrix, graph=None):
         """
 
         :param corr_matrix:
         :param G:
-        :param threshold:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph(corr_matrix, threshold)
+            graph = self.get_network_graph(corr_matrix)
         graph_max_subgraph_generator = sorted(nx.connected_components(graph), key=len, reverse=True)
         omega_list = []
         for i, val in enumerate(graph_max_subgraph_generator):
@@ -473,15 +467,14 @@ class CaGraph:
 
     # Todo: define hits_threshold based on tail of powerlaw distribution
     # Todo: determine best practices for setting threshold of powerlaw distribution to find hubs
-    def get_hubs(self, graph=None, threshold=0.3):
+    def get_hubs(self, graph=None):
         """
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            hubs, authorities = nx.hits(self.get_network_graph(threshold=threshold))
+            hubs, authorities = nx.hits(self.get_network_graph())
         else:
             hubs, authorities = nx.hits(graph)
         med_hubs = np.median(list(hubs.values()))
@@ -491,30 +484,28 @@ class CaGraph:
         [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
         return hubs_list, hubs
 
-    def get_subnetworks(self, graph=None, threshold=0.3):
+    def get_subnetworks(self, graph=None):
         """
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            connected_components = list(nx.connected_components(self.get_network_graph(threshold=threshold)))
+            connected_components = list(nx.connected_components(self.get_network_graph()))
         else:
             connected_components = list(nx.connected_components(graph))
         subnetworks = []
         [subnetworks.append(list(map(int, x))) for x in connected_components if len(x) > 1]
         return subnetworks
 
-    def get_largest_subnetwork_graph(self, graph=None, threshold=0.3):
+    def get_largest_subnetwork_graph(self, graph=None):
         """
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph(threshold=threshold)
+            graph = self.get_network_graph()
         largest_component = max(nx.connected_components(graph), key=len)
         return graph.subgraph(largest_component)
 
@@ -527,99 +518,97 @@ class CaGraph:
         """
         return
 
-    def get_clustering_coefficient(self, threshold=0.3, graph=None):
+    def get_clustering_coefficient(self, graph=None) -> list:
         """
-
-        :param threshold:
-        :param G:
+        Returns a list of clustering coefficient values for each node.
+        
+        :param graph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix(threshold=threshold)
+            graph = self.get_network_graph_from_matrix()
         degree_view = nx.clustering(graph)
         clustering_coefficient = []
         [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
         return clustering_coefficient
 
-    def get_degree(self, graph=None, threshold=0.3):
+    # Todo: make this match the clustering coefficient
+    def get_degree(self, graph=None):
         """
         Returns iterator object of (node, degree) pairs.
 
-        :param threshold:
         :return:
         """
         if graph is None:
-            return self.get_network_graph_from_matrix(threshold=threshold)
+            return self.get_network_graph_from_matrix()
         else:
             return graph.degree
 
-    # Todo: note that description is from https://www.nature.com/articles/s41467-020-17270-w#Sec8
-    def get_correlated_pair_ratio(self, graph=None, threshold=0.3, ):
+    # Todo: note that description is from
+    def get_correlated_pair_ratio(self, graph=None):
         """
         Computes the number of connections each neuron has, divided by the nuber of cells in the field of view.
+        This method is described in: https://www.nature.com/articles/s41467-020-17270-w#Sec8
 
         :param graph:
-        :param threshold:
-        :param G:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix(threshold=threshold)
+            graph = self.get_network_graph_from_matrix()
         degree_view = self.get_degree(graph)
         correlated_pair_ratio = []
         [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
         return correlated_pair_ratio
 
     # Todo: adapt for directed - current total possible edges is for undirected
-    def get_network_coverage(self, graph=None, threshold=0.3):
+    def get_network_coverage(self, graph=None):
         """
-        Returns the percentage of edges present in the network
-        out of the total possible edges.
+        Returns the percentage of edges present in the network out of the total possible edges.
 
         :param graph:
-        :param threshold:
         :return:
         """
         possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
         if graph is None:
-            graph = self.get_network_graph(threshold=threshold)
+            graph = self.get_network_graph()
         return len(graph.edges) / possible_edges
 
     # Todo: check form of centrality
-    def get_eigenvector_centrality(self, graph=None, threshold=0.3):
+    def get_eigenvector_centrality(self, graph=None):
         """
         Compute the eigenvector centrality of all network nodes, the
         measure of influence each node has on the network.
 
         :param graph:
-        :param threshold:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix(threshold=threshold)
+            graph = self.get_network_graph_from_matrix()
         centrality = nx.eigenvector_centrality(graph)
         return centrality
 
-    def get_communities(self, graph=None, threshold=0.3):
+    def get_communities(self, graph=None) -> list:
         """
+        Returns a list of communities, composed of a group of nodes.
 
         :param graph:
-        :param threshold:
         :return: node_groups:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix(threshold=threshold)
+            graph = self.get_network_graph_from_matrix()
         communities = nx.algorithms.community.centrality.girvan_newman(graph)
         node_groups = []
         for community in next(communities):
             node_groups.append(list(community))
         return node_groups
 
-    # Todo: add additional arguments
-    def draw_network(self, graph=None, node_size=25, node_color='b', alpha=0.5):
+    # Todo: add additional arguments to expand functionality
+    def draw_network(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5):
         """
+        Draws a simple network.
 
         :param graph:
+        :param position:
         :param node_size:
         :param node_color:
         :param alpha:
@@ -627,7 +616,9 @@ class CaGraph:
         """
         if graph is None:
             graph = self.get_network_graph()
-        nx.draw(graph, pos=nx.spring_layout(graph), node_size=node_size, node_color=node_color, alpha=alpha)
+        if position is None:
+            position = nx.spring_layout(graph)
+        nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
 
 
 #%% Functionality to preprocess the dataset and validate the choice of parameters.
@@ -897,7 +888,7 @@ class Preprocess:
         pass
 
     # ---------------- Clean data --------------------------------------
-    # Todo: look up smoothing algorithm for calcium data
+    # Todo: add smoothing algorithm for calcium imaging data
     def smooth(self, data):
         """
         Smooth unprocessed data to remove noise.
@@ -905,7 +896,7 @@ class Preprocess:
         smoothed_data = data
         return smoothed_data
 
-    # Todo: make auto-clean option for those that don't have experience
+    # Todo: add auto-clean option for raw extracted calcium imaging time-series
     def auto_preprocess(self, data):
         """
 
@@ -1113,18 +1104,8 @@ class Preprocess:
             shuffled_data = np.vstack([shuffled_data, binned_row])
             start_idx = end_idx
             end_idx += len(time)
-        # First split all the data and make a long list of
+
         return shuffled_data
-
-
-    # Todo: function to find outlier subjects in a batch
-
-
-
-    # Todo: function to test sensitivity analysis
-    def sensitivity_analysis(self):
-
-        return
 
     def plot_shuffle_example(self, data, shuffled_data=None, event_data=None, show_plot = True):
         """
@@ -1139,7 +1120,7 @@ class Preprocess:
             shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
         elif shuffled_data is None and event_data is None:
             raise AttributeError
-        neuron_idx =  random.randint(1, np.shape(data)[0])
+        neuron_idx = random.randint(1, np.shape(data)[0] - 1)
         plt.figure(figsize=(10, 5))
         plt.subplot(211)
         plt.plot(data[0, :], data[neuron_idx, :], c='blue', label='ground truth')
@@ -1156,6 +1137,7 @@ class Preprocess:
 
     def generate_threshold(self, data, shuffled_data=None, event_data=None):
         """
+        Analyzes a shuffled dataset to propose a threshold to use to construct graph objects.
 
         :param data:
         :param shuffled_data:
@@ -1221,3 +1203,7 @@ class Preprocess:
         if show_plot:
             plt.show()
 
+    # Todo: function to test sensitivity analysis
+    def sensitivity_analysis(self):
+
+        return

@@ -1,5 +1,5 @@
 import unittest
-from ca_graph import CaGraph
+from cagraph import CaGraph
 import os
 
 class NeuronalNetworkGraphTestSuite(unittest.TestCase):
@@ -11,7 +11,7 @@ class NeuronalNetworkGraphTestSuite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Runs before any tests have been executed."""
-        cls.nng = CaGraph(data_file=os.getcwd() + '/test_data/2-1_D1_smoothed_calcium_traces.csv')
+        cls.nng = CaGraph(data_file=os.getcwd() + '/datasets/2-1_D1_smoothed_calcium_traces.csv')
         pass
 
     @classmethod

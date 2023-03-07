@@ -10,17 +10,11 @@ Description: Short tutorial using ca_graph functionality.
 """
 # Import packages
 from cagraph import CaGraph
-import visualization as viz
-import preprocess as prep
+from cagraph import Visualization
+from cagraph import Preprocess
 import numpy as np
-import os
 
-# import cagraph.cagraph as cg
-# import cagraph.visualization as viz
-# import cagraph.preprocess as prep
-# cg.CaGraph(data = ...)
-
-DATA_PATH = os.getcwd() + '/datasets/'
+DATA_PATH = '/datasets/'
 # Todo: convert to Jupyter notebook for better organization/ flow
 
 #%% Dataset and paths
@@ -37,8 +31,8 @@ THRESHOLD = 0.3
 
 #%% Generate graph object, called "cg" from CSV file
 # visualize CSV file in notebook
-cg = CaGraph(DATA_PATH + FILENAME, dataset_id = '1055-1', threshold=THRESHOLD) # build CaGraph object
-cg_graph = cg.get_network_graph() # Construct a graph
+cg = CaGraph(DATA_PATH + FILENAME, dataset_id = '1055-1') # build CaGraph object
+cg_graph = cg.get_network_graph(threshold=THRESHOLD) # Construct a graph
 
 #%% Generate graph object from numpy.ndarray
 data = np.genfromtxt(DATA_PATH + FILENAME, delimiter=',')
@@ -55,22 +49,22 @@ print(f"Subject is {cg.data_id}")
 
 #%% Analyze graph topology
 # compute the clustering coefficient for all nodes
-cg_cc = cg.get_clustering_coefficient()
+cg_cc = cg.get_clustering_coefficient(threshold=THRESHOLD)
 
 # compute the correlated pairs ratio for all nodes
-cg_cr = cg.get_correlated_pair_ratio()
+cg_cr = cg.get_correlated_pair_ratio(threshold=THRESHOLD)
 
 # compute the hubs in the graph
-cg_hubs = cg.get_hubs()
+cg_hubs = cg.get_hubs(threshold=THRESHOLD)
 
 #%% Standard graph visualization with NetworkX
 cg.plot_graph_network(graph=cg_graph) # Plot the graph (simplistic version)
 
 #%% interactive plotting with Bokeh integration
 # generate interactive graph
-viz.interactive_network(ca_graph_obj=cg,
-                        adjust_size_by='degree',
-                        adjust_color_by='communities')
+Visualization().interactive_network(ca_graph_obj=cg,
+                                    adjust_size_by='degree',
+                                    adjust_color_by='communities')
 
 # Todo: Add demo for coloring by cell identifiers
 
@@ -85,20 +79,20 @@ cg_B = CaGraph(np.genfromtxt(DATA_PATH+ FILENAME, delimiter=',')[:,0:1800], thre
 cg_B_cc = cg_B.get_clustering_coefficient()
 
 # plot histogram of distributions
-viz.plot_histograms(data_list=[cg_A_cc, cg_B_cc],
+Visualization().plot_histograms(data_list=[cg_A_cc, cg_B_cc],
                                 x_label='cc',
                                 color_list=['salmon','turquoise'],
                                 bin_size=30,
                                 show_plot=True)
 
 # plot cumulative distribution function
-viz.plot_CDF_compare_two_samples(data_list=[cg_A_cc, cg_B_cc],
+Visualization().plot_CDF_compare_two_samples(data_list=[cg_A_cc, cg_B_cc],
                                              x_label='cc',
                                              color_list=['salmon', 'turquoise'],
                                              show_plot=True)
 
 #%% Plotting matched samples
-viz.plot_matched_data(sample_1=cg_A_cc,
+Visualization().plot_matched_data(sample_1=cg_A_cc,
                                   sample_2=cg_B_cc,
                                   labels=['A', 'B'],
                                   colors=['salmon','turquoise'],
@@ -111,10 +105,10 @@ data = np.genfromtxt(DATA_PATH + f'658-0_deconTrace.csv', delimiter=',')
 event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',')
 
 # Shuffle the data using identified events
-shuffled_data = prep.generate_event_shuffle(data=data.copy(), event_data=event_data)
+shuffled_data = Preprocess().generate_event_shuffle(data=data.copy(), event_data=event_data)
 
 #%% Plot shuffled trace
-prep.plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
+Preprocess().plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 
 #%% Shuffle across population
@@ -123,15 +117,15 @@ data = np.genfromtxt(DATA_PATH + f'658-0_deconTrace.csv', delimiter=',')
 event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',')
 
 # Shuffle the data using identified events
-shuffled_data = prep.generate_event_segmented(data=data.copy(), event_data=event_data)
+shuffled_data = Preprocess().generate_event_segmented(data=data.copy(), event_data=event_data)
 
 #%% Plot shuffled trace
-prep.plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
+Preprocess().plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 #%% Generate proposed threshold
-threshold = prep.generate_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
+threshold = Preprocess().generate_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 # plot threshold
-prep.plot_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
+Preprocess().plot_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 
 #%% Batched analyses
