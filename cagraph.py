@@ -53,7 +53,7 @@ class CaGraph:
     get_laplacian_matrix()
         ...
     Todo: Add additional graph theoretical test_analyses (path length, rich club, motifs...)
-    Todo: Add additional correlation metrics and allow user to pass them (currently only Pearson)
+    Todo: Future Add additional correlation metrics and allow user to pass them (currently only Pearson)
     Todo: Determine the distribution of eigenvector centrality scores in connected modules/subnetworks
     Todo: Implement shuffle distribution r value correction: https://www.nature.com/articles/s41467-020-17270-w#MOESM1
     Todo: Add threshold setting utilties which evaluate whether a given dataset is a good candidate
@@ -84,7 +84,7 @@ class CaGraph:
                 self.neuron_dynamics = ca_from_nwb.data[:]
                 self.time = ca_from_nwb.timestamps[:]
         else:
-            print('Data must be passed as a .csv or .nwb file.')
+            print('Data must be passed as a .csv or .nwb file, or as numpy.ndarray.')
             raise TypeError
         if dataset_id is not None:
             self.data_id = dataset_id
@@ -805,11 +805,12 @@ class Visualization:
             plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
 
         plt.ylabel(y_label)
+        plt.xlabel(x_label)
         plt.title(f'P value: {stat_level.pvalue:.2e}')
 
         if show_plot:
             plt.show()
-        plt.xlabel(x_label)
+
 
     def plot_histograms(self, data_list=None, color_list=['black', 'black'], x_label='',
                                      y_label='CDF', bin_size=20, show_plot=True):

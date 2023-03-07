@@ -72,6 +72,13 @@ viz.interactive_network(ca_graph_obj=cg,
                         adjust_size_by='degree',
                         adjust_color_by='communities')
 
+
+#%% Change threshold and visualize graph
+cg.threshold = 0.4
+viz.interactive_network(ca_graph_obj=cg,
+                        adjust_size_by='degree',
+                        adjust_color_by='communities')
+
 # Todo: Add demo for coloring by cell identifiers
 
 #%% Plotting CDF to compare two conditions
@@ -98,6 +105,7 @@ viz.plot_CDF_compare_two_samples(data_list=[cg_A_cc, cg_B_cc],
                                              show_plot=True)
 
 #%% Plotting matched samples
+# Todo: check where additional figure canvas is appearing from
 viz.plot_matched_data(sample_1=cg_A_cc,
                                   sample_2=cg_B_cc,
                                   labels=['A', 'B'],
@@ -117,16 +125,6 @@ shuffled_data = prep.generate_event_shuffle(data=data.copy(), event_data=event_d
 prep.plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 
 
-#%% Shuffle across population
-DATA_PATH = "/Users/veronica_porubsky/GitHub/BLA_graph_theory/OFT/data/"
-data = np.genfromtxt(DATA_PATH + f'658-0_deconTrace.csv', delimiter=',')
-event_data = np.genfromtxt(DATA_PATH + '658-0' + '_eventTrace.csv', delimiter=',')
-
-# Shuffle the data using identified events
-shuffled_data = prep.generate_event_segmented(data=data.copy(), event_data=event_data)
-
-#%% Plot shuffled trace
-prep.plot_shuffle_example(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 #%% Generate proposed threshold
 threshold = prep.generate_threshold(data=data.copy(), shuffled_data=shuffled_data, event_data=event_data)
 

@@ -9,9 +9,11 @@ File Creation Date:
 Description: 
 """
 # Imports
+from cagraph import CaGraph
 import random
 import numpy as np
-
+import matplotlib.pyplot as plt
+import scipy
 
 # ---------------- Clean data --------------------------------------
 # Todo: add smoothing algorithm for calcium imaging data
@@ -95,7 +97,7 @@ def remove_low_activity(data, event_data, event_num_threshold=5):
 
 
 # Suitability for graph theory analysis
-def __bins(self, lst, n):
+def __bins(lst, n):
     """
     Yield successive n-sized chunks from lst.
     """
@@ -106,7 +108,7 @@ def __bins(self, lst, n):
     return build_binned_list
 
 
-def generate_randomized_timeseries_matrix(self, data: list) -> np.ndarray:
+def generate_randomized_timeseries_matrix(data: list) -> np.ndarray:
     """
     data: list
 
@@ -121,7 +123,7 @@ def generate_randomized_timeseries_matrix(self, data: list) -> np.ndarray:
     return data
 
 
-def generate_randomized_timeseries_binned(self, data: list, bin_size: int) -> np.ndarray:
+def generate_randomized_timeseries_binned(data: list, bin_size: int) -> np.ndarray:
     """
     data: list
 
@@ -130,11 +132,11 @@ def generate_randomized_timeseries_binned(self, data: list, bin_size: int) -> np
     Return a numpy array or NWB file.
     """
     time = data[0, :].copy()
-    build_new_array = np.array(self.__bins(lst=data[1, :], n=bin_size))
+    build_new_array = np.array(__bins(lst=data[1, :], n=bin_size))
 
     # build binned dist
     for row in range(np.shape(data[2:, :])[0]):
-        binned_row = self.__bins(lst=data[row + 2, :], n=bin_size)
+        binned_row = __bins(lst=data[row + 2, :], n=bin_size)
         build_new_array = np.vstack([build_new_array, binned_row])
 
     for row in range(np.shape(build_new_array)[0]):
@@ -148,7 +150,7 @@ def generate_randomized_timeseries_binned(self, data: list, bin_size: int) -> np
     return flatten_array
 
 
-def __event_bins(self, data, events):
+def __event_bins(data, events):
     """
     :param data:
     :param events: single events timecourse
@@ -170,7 +172,7 @@ def __event_bins(self, data, events):
     return flat_random_binned_list
 
 
-def generate_event_shuffle(self, data: list, event_data: list) -> np.ndarray:
+def generate_event_shuffle(data: list, event_data: list) -> np.ndarray:
     """
     data: list
 
@@ -183,13 +185,13 @@ def generate_event_shuffle(self, data: list, event_data: list) -> np.ndarray:
     # build binned dist
     flatten_array = time.copy()
     for row in range(np.shape(data[1:, :])[0]):
-        binned_row = self.__event_bins(data=data[row + 1, :], events=event_data[row + 1, :])
+        binned_row = __event_bins(data=data[row + 1, :], events=event_data[row + 1, :])
         flatten_array = np.vstack([flatten_array, binned_row])
 
     return flatten_array
 
 
-def generate_randomized(self, data: list, bin_size: int) -> np.ndarray:
+def generate_randomized(data: list, bin_size: int) -> np.ndarray:
     """
     data: list
 
@@ -202,13 +204,13 @@ def generate_randomized(self, data: list, bin_size: int) -> np.ndarray:
     # build binned dist
     flatten_array = time.copy()
     for row in range(np.shape(data[2:, :])[0]):
-        binned_row = self.__bins(lst=data[row + 2, :], n=bin_size)
+        binned_row = __bins(lst=data[row + 2, :], n=bin_size)
         flatten_array = np.vstack([flatten_array, binned_row])
 
     return flatten_array
 
 
-def generate_population_event_shuffle(self, data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
+def generate_population_event_shuffle(data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
     """
 
     :param data:
@@ -246,7 +248,7 @@ def generate_population_event_shuffle(self, data: np.ndarray, event_data: np.nda
     return shuffled_data
 
 
-def plot_shuffle_example(self, data, shuffled_data=None, event_data=None, show_plot=True):
+def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=True):
     """
 
     :param shuffled_data:
@@ -256,7 +258,7 @@ def plot_shuffle_example(self, data, shuffled_data=None, event_data=None, show_p
     :return:
     """
     if shuffled_data is None and event_data is not None:
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
         raise AttributeError
     neuron_idx = random.randint(1, np.shape(data)[0] - 1)
@@ -275,7 +277,7 @@ def plot_shuffle_example(self, data, shuffled_data=None, event_data=None, show_p
         plt.show()
 
 
-def generate_threshold(self, data, shuffled_data=None, event_data=None):
+def generate_threshold(data, shuffled_data=None, event_data=None):
     """
     Analyzes a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -285,7 +287,7 @@ def generate_threshold(self, data, shuffled_data=None, event_data=None):
     :return:
     """
     if shuffled_data is None and event_data is not None:
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
         raise AttributeError
     random_cg = CaGraph(shuffled_data)
@@ -308,7 +310,7 @@ def generate_threshold(self, data, shuffled_data=None, event_data=None):
     return outlier_threshold
 
 
-def plot_threshold(self, data, shuffled_data=None, event_data=None, show_plot=True):
+def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     """
 
     :param data:
@@ -318,7 +320,7 @@ def plot_threshold(self, data, shuffled_data=None, event_data=None, show_plot=Tr
     :return:
     """
     if shuffled_data is None and event_data is not None:
-        shuffled_data = self.generate_event_segmented(data=data, event_data=event_data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
         raise AttributeError
     random_cg = CaGraph(shuffled_data)
@@ -346,5 +348,5 @@ def plot_threshold(self, data, shuffled_data=None, event_data=None, show_plot=Tr
 
 
 # Todo: function to test sensitivity analysis
-def sensitivity_analysis(self):
+def sensitivity_analysis():
     return

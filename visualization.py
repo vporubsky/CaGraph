@@ -8,28 +8,31 @@ File Creation Date:
 
 Description: 
 """
-# Imports
+# General mports
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+plt.style.use('CaGraph.mplstyle')
 import seaborn as sns
 from scipy import stats
-from bokeh.io import show, save
+import pandas as pd
+import os
+
+# Bokeh imports
+from bokeh.io import show, save, output_notebook
 from bokeh.models import Range1d, Circle, MultiLine
 from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.palettes import Blues8
 from bokeh.transform import linear_cmap
-import scipy
-import pandas as pd
-import os
+
 
 
 def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
                         palette=Blues8,
                         hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'], title=None,
-                        show_plot=True, save_plot=False, save_path=None):
+                        show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
     Generates an interactived Bokeh.io plot of the graph network.
 
@@ -124,7 +127,10 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)
 
     plot.renderers.append(network_graph)
-    if show_plot:
+    if show_in_notebook:
+        output_notebook()
+        show(plot)
+    elif show_plot:
         show(plot)
 
     if save_plot:
@@ -189,15 +195,16 @@ def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], 
         plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
 
     plt.ylabel(y_label)
+    plt.xlabel(x_label)
     plt.title(f'P value: {stat_level.pvalue:.2e}')
 
     if show_plot:
         plt.show()
-    plt.xlabel(x_label)
+
 
 
 def plot_histograms(data_list=None, color_list=['black', 'black'], x_label='',
-                    y_label='CDF', bin_size=20, show_plot=True):
+                    y_label='count', bin_size=20, show_plot=True):
     """
     Plots histograms of the provided data and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
@@ -218,17 +225,17 @@ def plot_histograms(data_list=None, color_list=['black', 'black'], x_label='',
         plt.hist(data, color=color_list[idx], bins=bin_size, alpha=0.4)
 
     plt.ylabel(y_label)
+    plt.xlabel(x_label)
     plt.title(f'P value: {stat_level.pvalue:.2e}')
 
     if show_plot:
         plt.show()
-    plt.xlabel(x_label)
 
 
-# Todo: check functionality
-def plot_matched_data(sample_1, sample_2, labels, colors, show_plot=True):
+def plot_matched_data(sample_1, sample_2, labels, value_label=None, colors=['grey', 'grey'], show_plot=True):
     """
-    Plots two samples of matched data with each sample
+    Plots two samples of matched data. Each sample will be plotted as points stacked vertically within condition.
+    Lines will be drawn to connect the matching pairs.
 
     """
     # Put into dataframe
@@ -259,8 +266,9 @@ def plot_matched_data(sample_1, sample_2, labels, colors, show_plot=True):
                    medianprops=dict(color='k'))
         plt.xticks([])
         y_all = np.vstack((y_all, y))
-
-    plt.xlabel(f'P-value = {scipy.stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
+    if value_label is not None:
+        plt.ylabel(value_label)
+    plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
 
     if show_plot:
         plt.show()
