@@ -168,7 +168,7 @@ def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', sh
 
 
 def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], marker='o', x_label='',
-                                 y_label='CDF', show_plot=False):
+                                 y_label='CDF', legend=None, show_plot=False):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
@@ -194,6 +194,8 @@ def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], 
         # plotting
         plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
 
+    if legend is not None:
+        plt.legend([legend[0], legend[1]])
     plt.ylabel(y_label)
     plt.xlabel(x_label)
     plt.title(f'P value: {stat_level.pvalue:.2e}')

@@ -60,7 +60,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![CaGraph Screen Shot][product-screenshot]](https://raw.githubusercontent.com/vporubsky/CaGraph/main/figures/figure_1.png)
 
 
 <!-- GETTING STARTED -->
@@ -154,15 +154,16 @@ Project Link: [https://github.com/vporubsky/CaGraph](https://github.com/vporubsk
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/vporubsky/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/vporubsky/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/vporubsky/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/vporubsky/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/vporubsky/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/vporubsky/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/vporubsky/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/vporubsky/repo/issues
-[license-shield]: https://img.shields.io/github/license/vporubsky/repo.svg?style=for-the-badge
-[license-url]: https://github.com/vporubsky/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/vporubsky/CaGraph.svg?style=for-the-badge
+[contributors-url]: https://github.com/vporubsky/CaGraph/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/vporubsky/CaGraph.svg?style=for-the-badge
+[forks-url]: https://github.com/vporubsky/CaGraph/network/members
+[stars-shield]: https://img.shields.io/github/stars/vporubsky/CaGraph.svg?style=for-the-badge
+[stars-url]: https://github.com/vporubsky/CaGraph/stargazers
+[issues-shield]: https://img.shields.io/github/issues/vporubsky/CaGraph.svg?style=for-the-badge
+[issues-url]: https://github.com/vporubsky/CaGraph/issues
+[license-shield]: https://img.shields.io/github/license/vporubsky/CaGraph.svg?style=for-the-badge
+[license-url]: https://github.com/vporubsky/CaGraph/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/vporubsky
+[product-screenshot]: https://raw.githubusercontent.com/vporubsky/CaGraph/main/figures/figure_1.png
