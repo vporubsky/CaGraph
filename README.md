@@ -1,11 +1,4 @@
 <!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -19,7 +12,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/vporubsky/CaGraph">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="figures/icon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">CaGraph</h3>
@@ -28,14 +21,14 @@
     Graph theory analysis and visualization package for calcium imaging timeseries data. The package makes it simple for experimental researchers to generate graphs 
     of functional networks and inspect their topology, using NetworkX to compute useful graph theory metrics. Bokeh is used to assist with interactive plotting of graph networks.
     <br />
-    <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/vporubsky/CaGraph"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory">View Demo</a>
+    <a href="https://github.com/vporubsky/CaGraph">View Demo</a>
     ·
-    <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory/issues">Report Bug</a>
+    <a href="https://github.com/vporubsky/CaGraph/issues">Report Bug</a>
     ·
-    <a href="https://github.com/vporubsky/DG_fear_conditioning_graph_theory/issues">Request Feature</a>
+    <a href="https://github.com/vporubsky/CaGraph/issues">Request Feature</a>
   </p>
 </p>
 
@@ -47,9 +40,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -59,8 +49,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -75,14 +63,6 @@
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 
-### Built With
-
-* []()
-* []()
-* []()
-
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -90,7 +70,8 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+A list of software required for the CaGraph project and how to install the packages.
+
 * networkx
   ```sh
   pip install networkx
@@ -99,17 +80,39 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   pip install bokeh
   ```  
-
-
+* numpy
+  ```sh
+  pip install numpy
+  ```  
+* matplotlib
+  ```sh
+  pip install matplotlib
+  ```  
+* pynwb
+  ```sh
+  pip install pynwb
+  ```  
+* scipy
+  ```sh
+  pip install scipy
+  ```  
+* seaborn
+  ```sh
+  pip install seaborn
+  ```  
+* statsmodels
+  ```sh
+  pip install statsmodels
+  ```  
 ### Installation
 
 1. Clone the repo
    ```sh
    git clone https://github.com/vporubsky/CaGraph.git
    ```
-2. Install packages
+2. Install via PyPI
    ```sh
-   pip install
+   pip install cagraph
    ```
 
 
@@ -117,9 +120,9 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Examples of using the package will be added here. Additional screenshots, code examples and demos will be included formally in documentation.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+Documentation to be added.
 
 
 <!-- LICENSE -->
@@ -141,9 +144,9 @@ Project Link: [https://github.com/vporubsky/CaGraph](https://github.com/vporubsk
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
-* []()
+* [Sauro Lab at the University of Washington](https://sites.google.com/uw.edu/systems-biology-lab/home?authuser=1)
+* [Bruchas Lab at the University of Washington](http://www.bruchaslab.org/)
+
 
 
 
