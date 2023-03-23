@@ -140,7 +140,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
             save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
 
 
-def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=False):
+def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the cumulative distribution function of the provided list of data.
 
@@ -166,15 +166,20 @@ def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', sh
     if show_plot:
         plt.show()
 
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], marker='o', x_label='',
-                                 y_label='CDF', legend=None, show_plot=False):
+
+def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
+                                 y_label='CDF', legend=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
 
     :param data_list: list of lists containing float values to compare with KS-test
-    :param color_list: list of str containing matplotlib color styles
+    :param colors: list of str containing matplotlib color styles
     :param marker: str matplotlib marker style
     :param x_label: str
     :param y_label: str
@@ -192,7 +197,7 @@ def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], 
         cdf = np.arange(len(data)) / float(len(data))
 
         # plotting
-        plt.plot(sorted_data, cdf, color=color_list[idx], marker=marker)
+        plt.plot(sorted_data, cdf, color=colors[idx], marker=marker)
 
     if legend is not None:
         plt.legend([legend[0], legend[1]])
@@ -203,16 +208,21 @@ def plot_CDF_compare_two_samples(data_list=None, color_list=['black', 'black'], 
     if show_plot:
         plt.show()
 
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
 
 
-def plot_histograms(data_list=None, color_list=['black', 'black'], x_label='',
-                    y_label='count', bin_size=20, show_plot=True):
+
+def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
+                    y_label='count', bin_size=20, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots histograms of the provided data and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
 
     :param data_list: list of lists containing float values to compare with KS-test
-    :param color_list: list of str containing matplotlib color styles
+    :param colors: list of str containing matplotlib color styles
     :param marker: str matplotlib marker style
     :param x_label: str
     :param y_label: str
@@ -224,7 +234,7 @@ def plot_histograms(data_list=None, color_list=['black', 'black'], x_label='',
 
     for idx, data in enumerate(data_list):
         # plotting
-        plt.hist(data, color=color_list[idx], bins=bin_size, alpha=0.4)
+        plt.hist(data, color=colors[idx], bins=bin_size, alpha=0.4)
 
     plt.ylabel(y_label)
     plt.xlabel(x_label)
@@ -232,13 +242,25 @@ def plot_histograms(data_list=None, color_list=['black', 'black'], x_label='',
 
     if show_plot:
         plt.show()
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-
-def plot_matched_data(sample_1, sample_2, labels, value_label=None, colors=['grey', 'grey'], show_plot=True):
+def plot_matched_data(sample_1: list, sample_2: list, labels: list, y_label=None, x_label=None,
+                      colors=['grey', 'grey'], show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots two samples of matched data. Each sample will be plotted as points stacked vertically within condition.
-    Lines will be drawn to connect the matching pairs.
+    L ines will be drawn to connect the matching pairs.
 
+    :param sample_1:
+    :param sample_2:
+    :param colors: list of str containing matplotlib color styles
+    :param x_label: str
+    :param y_label: str
+    :param show_plot: bool
+    :param save_plot: bool
+    :param format: str containing file extension supported by matplotlib.pyplot.savefig
     """
     # Put into dataframe
     df = pd.DataFrame({labels[0]: sample_1, labels[1]: sample_2})
@@ -247,8 +269,6 @@ def plot_matched_data(sample_1, sample_2, labels, value_label=None, colors=['gre
     # Plot
     fig, ax = plt.subplots()
     sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
-
-    # Find idx0 and idx1 by inspecting the elements returned from ax.get_children()
     idx0 = 0
     idx1 = 1
     locs1 = ax.get_children()[idx0].get_offsets()
@@ -268,9 +288,15 @@ def plot_matched_data(sample_1, sample_2, labels, value_label=None, colors=['gre
                    medianprops=dict(color='k'))
         plt.xticks([])
         y_all = np.vstack((y_all, y))
-    if value_label is not None:
-        plt.ylabel(value_label)
-    plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
+
+    if y_label is not None:
+        plt.ylabel(y_label)
+    if x_label is None:
+        plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
 
     if show_plot:
         plt.show()
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
