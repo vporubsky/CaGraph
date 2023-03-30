@@ -4,907 +4,115 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scratch_files/log_CaGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DG_fear_conditioning_graph_theory.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated requirements.txt name.">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/python-app.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-app.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/rSettings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-1_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-3_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/1055-4_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-1_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/122-3_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/124-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/14-0_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-1_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/2-3_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/348-1_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/349-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/386-2_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_Day5_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/387-4_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-1_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D0_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D1_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D1_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D5_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D5_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D9_neuron_context_active.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_D9_smoothed_calcium_traces.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_Day0_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_Day1_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/396-3_Day9_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/1055-1_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/1055-2_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/1055-3_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/1055-4_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/122-1_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/122-2_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/122-3_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/14-0_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/2-1_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/2-2_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/2-3_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/348-1_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/349-2_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/387-4_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/396-1_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/396-3_cellRegistered.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/cell_matching_data/convert_cell_matching_indices_to_csv.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-1_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-1_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-1_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-1_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-3_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-3_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-3_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-3_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-4_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-4_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-4_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/1055-4_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-1_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-1_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-1_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-1_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-3_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-3_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-3_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/122-3_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/124-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/124-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/124-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/124-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/14-0_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/14-0_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/14-0_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/14-0_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-1_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-1_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-1_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-1_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-3_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-3_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-3_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/2-3_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/348-1_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/348-1_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/348-1_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/348-1_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/349-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/349-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/349-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/349-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/386-2_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/386-2_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/386-2_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/386-2_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/387-4_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/387-4_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/387-4_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/387-4_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-1_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-1_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-1_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-1_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-3_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-3_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-3_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/396-3_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/57-3_D1_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/57-3_D1_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/57-3_D9_A.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-data/freezing_periods/57-3_D9_B.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-1_D10C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-1_D12C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-1_D1_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-1_D9_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-3_D10C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-3_D12C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-3_D1_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/198-3_D9_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/202-2_D10C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/202-2_D12C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/202-2_D1_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/202-2_D9_smooth_ca_saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/20210709_prazosin_init_analysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/202-4_D10C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/202-4_D12C_smooth_ca.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/202-4_D1_smooth_ca_prazosin.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/202-4_D9_smooth_ca_prazosin.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/tmp3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/tmp_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-FC-prazosin-data/prazosin/tmp_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOPraz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOPraz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOQue.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOQue_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOSaline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_CNOSaline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Praz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Praz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Prop.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Prop_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Que.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Que_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/198-1_Saline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNO.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOPraz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOPraz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOProp.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOProp_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOQue.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOQue_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOSaline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNOSaline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_CNO_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Praz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Praz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Prop.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Prop_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Que.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Que_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/202-4_Saline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/20211202_plot_networks.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/20211202_preliminary_analysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/20211208_plot_full_timecourse_networks.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNO.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOPraz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOPraz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOProp.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOProp_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOQue.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOQue_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOSaline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNOSaline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_CNO_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Praz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Praz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Prop.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Prop_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Que.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Que_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/222-1_Saline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNO.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOPraz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOPraz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOProp.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOProp_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOQue.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOQue_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOSaline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNOSaline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_CNO_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Praz.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Praz_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Prop.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Prop_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Que.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Que_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Saline.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/223-3_Saline_eventTrace.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/OFT_binned_data_mean_clustering_coefficient.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/OFT_binned_data_mean_clustering_coefficient_6000_tp_bins.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/convert_data_to_csv.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/OFT_binned_data_mean_clustering_coefficient_2000_tp_bins.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/OFT_binned_data_mean_clustering_coefficient_4000_tp_bins.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/OFT_binned_data_mean_clustering_coefficient_6000_tp_bins.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/cc_v_num_neurons.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_11_mean_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_CNO.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_CNOPraz.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_CNOProp.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_CNOQue.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_CNOSaline.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_Praz.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_Prop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_Que5mg-kg.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_12_mean_clustering_Saline.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_1_198-1_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_2_202-4_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_3_222-1_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_4_223-3_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_5_mean_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/fig_9_mean_clustering_time_binned_6000_tp_bins.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/initial_analysis_OFT/mean_clustering_v_bin_event_count.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_CNOPrazosin.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_CNOQuetiapine5mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_CNOSaline.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_Praz.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_Prop.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_Quetiapine10mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_Quetiapine5mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/198-1_Saline.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_CNOPrazosin.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_CNOQuetiapine5mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_CNOSaline.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_Praz.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_Prop.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_Quetiapine10mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_Quetiapine5mg-kg.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LC-DG-OFT-data/visualize_networks/202-4_Saline.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/NAPE_talk_analyses.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/Th_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/Th_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/WT_clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/WT_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/WT_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/day0_day1_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/archive/example_shuffled_trace.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NAPE_talk/tutorial.py" beforeDir="false" afterPath="$PROJECT_DIR$/scratch_files/tutorial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/20230203_all_neurons_shuffled.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/20230203_generate_random_graphs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/20221222.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/20230120_separate_context_selectivity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/20230203_compare_num_events.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/20230203_full_timeseries_shuffled_correlation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/20230203_separate_context_selectivity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/randomize_by_event.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/randomize_timeseries.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D1_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-1_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-2_D9_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_2-3_D9_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_348-1_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_349-2_D9_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_386-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_387-4_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_396-1_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConA_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConA_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConA_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConA_context B selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConA_non-selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConB_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConB_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConB_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConB_context B selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_ConB_non-selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_Cona_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_Conb_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/Th_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-1_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-2_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-3_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D1_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_1055-4_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-1_D9_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-2_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_122-3_D9_non-selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_124-2_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D1_context A selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_14-0_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D1_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D1_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D1_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D1_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D9_All_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D9_all cells_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D9_all cells_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D9_context B selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_396-3_D9_non-selective_selective_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConA_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConA_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConA_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConA_context B selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConA_non-selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConB_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConB_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConB_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConB_context B selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_ConB_non-selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_Cona_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_Conb_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/WT_context A selective_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_shuffle_Th_ConA_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_shuffle_Th_ConB_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_shuffle_WT_ConA_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_shuffle_WT_ConB_all cells_cdf_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_timeseries_randomized_WT_ConA_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/full_timeseries_randomized_WT_ConB_all cells_cdf_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/tmp_ex2_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/tmp_ex_threshold_histogram_binned_event.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/scratch-analysis/tmp_fig.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/benchmarking/random_networks/threshold_analysis_df.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/network_visualization/bokeh_visualization_dev.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/network_visualization/interactive_graph_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyses/network_visualization/plot_interactive_networks.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarking.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ca_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/ca_graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dg_graph.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_report.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/neuronal_dynamics_projection.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nng.mplstyle" beforeDir="false" afterPath="$PROJECT_DIR$/CaGraph.mplstyle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plotting_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/202012218_compare_baseline.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/20210401_interactive_networks.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/20210609_context_tag_metric.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/20210825_behavior_separated_graphs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/NIH_F31_cell_tracked.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/NIH_clustering_coefficient.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_day0_day1_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_348-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_349-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_386-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_387-4_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_396-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/Th_pca/Th_pcaTh_396-3_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_1055-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_1055-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_1055-4_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_122-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_122-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_122-3_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_14-0_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_1055-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_1055-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_1055-4_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_122-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_122-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_context_active_in_context_B_122-3_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_correlated_pairs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/1055-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/1055-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/1055-4_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/122-1_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/122-2_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/122-3_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/WT_pca/14-0_PCA_projection_d1_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/a_b_clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/autocorrelation_analysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/cell_tracked/Th_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/cell_tracked/Th_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/cell_tracked/WT_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/cell_tracked/WT_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-1_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-1_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-1_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-1_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-2_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-2_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-2_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-2_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-4_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-4_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-4_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/1055-4_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-1_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-1_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-1_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-1_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-2_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-2_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-2_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-2_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-3_context_active_D1_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-3_context_active_D1_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-3_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/122-3_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/14-0_context_active_D9_in_con_A.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/14-0_context_active_D9_in_con_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-1_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-2_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-4_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_1055-4_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-1_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-2_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-3_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_A_122-3_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-1_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-2_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-4_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_1055-4_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-1_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-1_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-2_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-2_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-3_PCA_projection_d1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/context_active/pca/WT_context_active_in_context_B_122-3_PCA_projection_d9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/day0_day1_clustering.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/randomized_D1_WT.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/run_batch_analyses.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/run_batch_analyses_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/General_Exam/summary_script.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/NIH_F31_cell_tracked.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/NIH_clustering_coefficient.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/Th_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/Th_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/WT_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/NIH_F31/WT_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/Th_D0_D1_D5_D9_20210416.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/Th_D1_D9_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/Th_all_days_clustering.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/Th_plot_networks_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/Th_v_WT_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_D0_D5_D1_D9_20210416.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_D1_D9_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_Th_20210422.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_all_days_clustering.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_plot_networks_20201217.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/WT_vs_randomized.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/archived_files/20210603_cell_tracked.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/archived_files/ARIMA_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/benchmarking_graph_theory/binned_event_data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/benchmarking_graph_theory/outlier_subject_identification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/benchmarking_graph_theory/test_graph_theory_limit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/beta_generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/scratch_files/generate_report.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/dimensionality_reduction/20220321_test_PCA.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/dimensionality_reduction/20220322_test_PCA.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/dimensionality_reduction/20220423_new_PCA.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/documentation_examples.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/general_exam.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/get_context_specific_connectivity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/log_nng.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/network_visualization/bokeh_visualization_dev.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_clustering_coefficient_A_v_B_D1_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_clustering_coefficient_D1_v_D9_A_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_clustering_coefficient_D1_v_D9_B_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_correlated_pairs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_correlated_pairs_A_v_B_D1_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_correlated_pairs_D1_v_D9_A_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_correlated_pairs_D1_v_D9_B_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/Th_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_Th_clustering_coefficient_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_Th_clustering_coefficient_D9_B_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_Th_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_clustering_coefficient.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_clustering_coefficient_A_v_B_D1_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_clustering_coefficient_A_v_B_D9_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_clustering_coefficient_D1_v_D9_A_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_clustering_coefficient_D1_v_D9_B_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_correlated_pairs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_correlated_pairs_A_v_B_D1_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_correlated_pairs_A_v_B_D9_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_correlated_pairs_D1_v_D9_A_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_correlated_pairs_D1_v_D9_B_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210416/WT_hubs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/1055-1_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/1055-2_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/1055-3_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/1055-4_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/14-0_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/348-1_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/349-2_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/386-2_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/387-4_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/396-1_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/396-3_corr_pair_CDF.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_348-1_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_349-2_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_386-2_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_387-4_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_396-1_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/TH_396-3_corr_pair_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_348-1_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_348-1_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_348-1_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_348-1_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_349-2_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_349-2_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_349-2_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_349-2_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_386-2_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_386-2_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_386-2_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_386-2_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_387-4_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_387-4_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_387-4_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_387-4_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-1_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-1_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-1_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-1_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-3_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-3_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-3_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-3_clustering_coefficient_CDF_all_mice.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_396-3_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/Th_clustering_coefficient_CDF_all_mice.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-1_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-1_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-1_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-1_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-2_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-2_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-2_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-2_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-3_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-3_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-3_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-3_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-4_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-4_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-4_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_1055-4_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_14-0_clustering_coefficient_CDF_A_v_B.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_14-0_clustering_coefficient_CDF_D0_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_14-0_clustering_coefficient_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_14-0_corr_pair_CDF_D1_v_D9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210526/WT_clustering_coefficient_CDF_all_mice.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_clustering_cell_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_clustering_conA_matched_remove_extreme.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_clustering_conB_matched_remove_extreme.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/TH_corr_pair_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/Th_clustering_D1_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/Th_clustering_D9_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_D1_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_D9_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_cell_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_conA_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_conA_matched_remove_extreme.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_conB_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_clustering_conB_matched_remove_extreme.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_metrics/20210603/WT_corr_pair_matched.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/plot_networks.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/run_smallworld_analysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/run_smallworld_sigma_analysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/test-context-separation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/test-hubs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/test-small-world.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch_files/test_matched_D1D9_pearsons_correlation_indexing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_neuronal_network_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_CaGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/bem.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/bem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/io/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/io/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/chardet/universaldetector.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/chardet/universaldetector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/linalg/_procrustes.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/linalg/_procrustes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/imputation/bayes_mi.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/imputation/bayes_mi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/imputation/mice.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/imputation/mice.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/regression/process_regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/regression/process_regression.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/sandbox/distributions/gof_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/sandbox/distributions/gof_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/stats/tests/test_contingency_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/stats/tests/test_contingency_tables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/PIL/PngImagePlugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/PIL/PngImagePlugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/minimum_norm/inverse.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/minimum_norm/inverse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/utils/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/mne/utils/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/networkx/generators/geometric.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/networkx/generators/geometric.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/_distributor_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/_distributor_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/_add_newdocs.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/_add_newdocs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/_asarray.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/_asarray.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/defchararray.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/defchararray.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/setup_common.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/setup_common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/tests/test_multiarray.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/core/tests/test_multiarray.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/lib/recfunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/numpy/lib/recfunctions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/_config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/_config/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/groupby/groupby.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/groupby/groupby.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/indexes/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/indexes/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/io/pytables.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/io/pytables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/tests/extension/test_categorical.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/tests/extension/test_categorical.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/build_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/build_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/cli/cmdoptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/cli/cmdoptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/cli/req_command.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/cli/req_command.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/check.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/download.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/download.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/freeze.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/freeze.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/hash.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/hash.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/install.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/uninstall.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/uninstall.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/wheel.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/commands/wheel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/sdist.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/distributions/sdist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/index/package_finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/index/package_finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/check.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/freeze.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/freeze.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/prepare.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/operations/prepare.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/pyproject.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/pyproject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/constructors.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/constructors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_install.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_set.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/req/req_set.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/resolution/legacy/resolver.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/resolution/legacy/resolver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/resolution/resolvelib/resolver.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/resolution/resolvelib/resolver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/wheel_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_internal/wheel_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/locators.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/locators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/scripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/distlib/scripts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/idna/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/idna/core.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/build.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/build.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/envbuild.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/envbuild.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/wrappers.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pep517/wrappers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pkg_resources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/pkg_resources/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/requests/cookies.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/requests/cookies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/resolvelib/providers.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/resolvelib/providers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/resolvelib/resolvers.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pip/_vendor/resolvelib/resolvers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pkg_resources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pkg_resources/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/_distributor_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/_distributor_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/integrate/quadpack.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/integrate/quadpack.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/linalg/tests/test_solvers.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/linalg/tests/test_solvers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/optimize/_lsq/least_squares.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/optimize/_lsq/least_squares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/optimize/_trustregion_constr/minimize_trustregion_constr.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/optimize/_trustregion_constr/minimize_trustregion_constr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/signal/spectral.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/signal/spectral.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/signal/wavelets.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/signal/wavelets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/sparse/linalg/isolve/lgmres.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/sparse/linalg/isolve/lgmres.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/stats/_multivariate.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/scipy/stats/_multivariate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/_distutils/command/bdist_msi.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/_distutils/command/bdist_msi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/build_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/build_meta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/develop.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/develop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/easy_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/easy_install.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/egg_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/egg_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/launcher manifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/launcher manifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/command/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/dist.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/dist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/installer.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/setuptools/installer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/compat/pandas.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/compat/pandas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/sandbox/regression/gmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/sandbox/regression/gmm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/tsa/statespace/representation.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/tsa/statespace/representation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -919,17 +127,19 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scratch_files" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/test_data" />
+      <recent name="$PROJECT_DIR$/scratch_files" />
     </key>
   </component>
   <component name="RunManager">
@@ -955,6 +165,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="tutorial" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CaGraph" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scratch_files" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scratch_files/tutorial.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.tutorial" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -965,7 +202,134 @@
       <option name="presentableId" value="Default" />
       <updated>1677742251547</updated>
       <workItem from="1677742255852" duration="5058000" />
+      <workItem from="1677748576272" duration="395000" />
+      <workItem from="1677765513702" duration="2466000" />
+      <workItem from="1677768057944" duration="409000" />
+      <workItem from="1677768471300" duration="127000" />
+      <workItem from="1677768601428" duration="3764000" />
+      <workItem from="1677775729852" duration="793000" />
+      <workItem from="1677776536595" duration="4037000" />
+      <workItem from="1677879646851" duration="26000" />
+      <workItem from="1678144375563" duration="859000" />
+      <workItem from="1678145354442" duration="521000" />
+      <workItem from="1678146287679" duration="173000" />
+      <workItem from="1678146468055" duration="116000" />
+      <workItem from="1678146593226" duration="144000" />
+      <workItem from="1678146763776" duration="1925000" />
+      <workItem from="1678153507914" duration="2464000" />
+      <workItem from="1678162760562" duration="92000" />
+      <workItem from="1678162856496" duration="39000" />
+      <workItem from="1678162898249" duration="32000" />
+      <workItem from="1678162934722" duration="113000" />
+      <workItem from="1678163051349" duration="62000" />
+      <workItem from="1678163117575" duration="5357000" />
+      <workItem from="1678168919444" duration="219000" />
+      <workItem from="1678169149585" duration="3625000" />
+      <workItem from="1678209469366" duration="96000" />
+      <workItem from="1678209568469" duration="290000" />
+      <workItem from="1678209866691" duration="3250000" />
+      <workItem from="1678217375255" duration="1863000" />
+      <workItem from="1678220516990" duration="1683000" />
+      <workItem from="1678226369783" duration="6744000" />
+      <workItem from="1678251399736" duration="67000" />
+      <workItem from="1678251637408" duration="477000" />
+      <workItem from="1678256789127" duration="1176000" />
+      <workItem from="1678258010350" duration="55000" />
+      <workItem from="1678258083228" duration="4690000" />
+      <workItem from="1678299844303" duration="404000" />
+      <workItem from="1678300350845" duration="2847000" />
+      <workItem from="1678313006130" duration="954000" />
+      <workItem from="1678816673625" duration="9000" />
+      <workItem from="1679075813989" duration="688000" />
+      <workItem from="1679501811203" duration="326000" />
+      <workItem from="1679502182282" duration="4773000" />
+      <workItem from="1680202012333" duration="2700000" />
     </task>
+    <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
+      <created>1677768087802</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1677768087802</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Updated tutorial.py script.">
+      <created>1677776962885</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1677776962885</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Updated tutorial.py script.">
+      <created>1677784274982</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1677784274982</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Updated tutorial.py script and Preprocessing class functionality.">
+      <created>1678147343656</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1678147343656</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Updated tutorial.py script and Preprocessing class functionality.">
+      <created>1678169303731</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1678169303731</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
+      <created>1678215560910</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1678215560910</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
+      <created>1678221826968</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1678221826968</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Updated README.md.">
+      <created>1678291082828</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1678291082828</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Updated README.md.">
+      <created>1678302694688</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1678302694688</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Updated visualization.py functions with save_plot functionality.">
+      <created>1679602195669</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1679602195669</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Updated GitHub actions pytest specification.">
+      <created>1680204976471</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1680204976471</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Updated requirements.txt name.">
+      <created>1680206128880</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1680206128880</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -981,5 +345,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated testing data files and tutorial.py script." />
+    <MESSAGE value="Updated tutorial.py script." />
+    <MESSAGE value="Updated tutorial.py script and Preprocessing class functionality." />
+    <MESSAGE value="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb." />
+    <MESSAGE value="Updated README.md." />
+    <MESSAGE value="Updated visualization.py functions with save_plot functionality." />
+    <MESSAGE value="Updated GitHub actions pytest specification." />
+    <MESSAGE value="Updated requirements.txt name." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated requirements.txt name." />
   </component>
 </project>
