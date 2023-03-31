@@ -14,9 +14,11 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+import warnings
 
+# Todo:
 # ---------------- Clean data --------------------------------------
-# Todo: add smoothing algorithm for calcium imaging data
+# Todo: add smoothing algorithm used for CNMF for calcium imaging data
 def smooth(data):
     """
     Smooth unprocessed data to remove noise.
@@ -34,16 +36,75 @@ def auto_preprocess(data):
     return preprocessed_data
 
 
-# Todo: write event_detection code
-def event_detection(data):
+# Todo: try to incorporate MCMC spike inference code for event detection, this is used in the CNMF
+def get_events(data):
     """
+    Generates event data using smoothed calcium imaging trace.
 
     :param data:
     :return:
     """
-    event_data = data
+    event_data = data[0,:]
+    for i in range(1, np.shape(data)[0]):
+        event_row = get_row_event_data(row_data=data[i])
+        event_data = np.vstack((event_data, event_row))
     return event_data
 
+# Todo: clean up functionality - repurpose count_sign_switch code
+def get_row_event_data(row_data):
+    subtract = row_data[0:len(row_data) - 1] - row_data[1:]
+    a = subtract
+    asign = np.sign(a)
+    signchange = ((np.roll(asign, 1) - asign) != 0).astype(int)
+
+    # get indices where sign change occurs in timeseries
+    sign_idx = [i for i, x in enumerate(signchange) if x]
+
+    # remove duplicate spikes
+    sign_idx = np.array(sign_idx)
+    duplicate_finder = sign_idx[1:]-sign_idx[0:len(sign_idx)-1]
+    duplicates = [i for i, x in enumerate(duplicate_finder) if x == 1]
+    removed_duplicates = list(sign_idx)
+    for index in sorted(duplicates, reverse=True):
+        del removed_duplicates[index]
+
+    # build event row
+    event_row = np.zeros(len(row_data))
+    for index in removed_duplicates:
+        event_row[index] = 1
+    return event_row
+
+# Todo: make private
+def count_sign_switch(row_data):
+    """
+    Searches time-series data for points at which the time-series changes from increasing to
+    decreasing or from decreasing to increasing.
+
+    """
+    subtract = row_data[0:len(row_data) - 1] - row_data[1:]
+    a = subtract
+    asign = np.sign(a)
+    signchange = ((np.roll(asign, 1) - asign) != 0).astype(int)
+    return np.sum(signchange)
+
+
+# Todo: confirm functionality is useful and check threshold value
+def remove_low_activity(data, event_data, event_num_threshold=5):
+    """
+    Removes neurons with fewer than event_num_threshold events.
+
+    Returns a new array of data without neurons that have low activity.
+    """
+    # apply activity treshold
+    new_event_data = np.zeros((1, np.shape(event_data)[1]))
+    new_data = np.zeros((1, np.shape(data)[1]))
+    for row in range(np.shape(data)[0]):
+        if count_sign_switch(row_data=data[row, :]) <= 5 and not row == 0:
+            continue
+        else:
+            new_event_data = np.vstack((new_event_data, event_data[row, :]))
+            new_data = np.vstack((new_data, data[row, :]))
+    return new_data[1:, :], new_event_data[1:, :]
 
 # Todo: create function to generate event_data
 def remove_quiescent(data, event_data, event_num_threshold=5):
@@ -58,37 +119,6 @@ def remove_quiescent(data, event_data, event_num_threshold=5):
     new_data = np.zeros((1, np.shape(data)[1]))
     for row in range(np.shape(binarized_event_data)[0]):
         if np.sum(binarized_event_data[row, :]) <= event_num_threshold:
-            continue
-        else:
-            new_event_data = np.vstack((new_event_data, event_data[row, :]))
-            new_data = np.vstack((new_data, data[row, :]))
-    return new_data[1:, :], new_event_data[1:, :]
-
-# Todo: make private
-def __count_sign_switch(row_data):
-    """
-    Searches time-series data for points at which the time-series changes from increasing to
-    decreasing or from decreasing to increasing.
-
-    """
-    subtract = row_data[0:len(row_data) - 1] - row_data[1:]
-    a = subtract
-    asign = np.sign(a)
-    signchange = ((np.roll(asign, 1) - asign) != 0).astype(int)
-    return np.sum(signchange)
-
-
-def remove_low_activity(data, event_data, event_num_threshold=5):
-    """
-    Removes neurons with fewer than event_num_threshold events.
-
-    Returns a new array of data without neurons that have low activity.
-    """
-    # apply activity treshold
-    new_event_data = np.zeros((1, np.shape(event_data)[1]))
-    new_data = np.zeros((1, np.shape(data)[1]))
-    for row in range(np.shape(data)[0]):
-        if __count_sign_switch(row_data=data[row, :]) <= 5 and not row == 0:
             continue
         else:
             new_event_data = np.vstack((new_event_data, event_data[row, :]))
@@ -277,7 +307,7 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
         plt.show()
 
 
-def generate_threshold(data, shuffled_data=None, event_data=None):
+def generate_threshold(data, shuffled_data=None, event_data=None, report_test=False):
     """
     Analyzes a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -297,7 +327,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None):
     Q3 = np.percentile(x, 75, interpolation='midpoint')
 
     IQR = Q3 - Q1
-    outlier_threshold = Q3 + 1.5 * IQR
+    outlier_threshold = round(Q3 + 1.5 * IQR,2)
 
     ground_truth_cg = CaGraph(data)
     y = ground_truth_cg.pearsons_correlation_matrix
@@ -305,9 +335,20 @@ def generate_threshold(data, shuffled_data=None, event_data=None):
 
     random_vals = np.tril(x).flatten()
     data_vals = np.tril(y).flatten()
-    print(f"KS-statistic: {scipy.stats.ks_2samp(random_vals, data_vals)}")
-    print(f"The threshold is: {outlier_threshold}")
+    ks_statistic = scipy.stats.ks_2samp(random_vals, data_vals)
+    p_val = ks_statistic.pvalue
+    if report_test:
+        print(f"KS-statistic: {ks_statistic.statistic}")
+        print(f"P-val: {p_val}")
+    if p_val < 0.05:
+        print(f"The threshold is: {outlier_threshold:.2f}")
+    else:
+        warnings.warn('The KS-test performed on the shuffled and ground truth datasets show that the p-value is greater '
+                      'than a 5% significance level. Confirm that correlations in dataset are differentiable from random correlations'
+                      'before setting a threshold.')
     return outlier_threshold
+
+
 
 
 def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
@@ -340,7 +381,7 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
     plt.hist(np.tril(y).flatten(), bins=50, color='blue', alpha=0.3)
     plt.axvline(x=outlier_threshold, color='red')
-    plt.legend(['threshold (Q3 + 1.5*IQR)', 'shuffled', 'ground truth', ])
+    plt.legend(['threshold', 'shuffled', 'ground truth', ])
     plt.xlabel("Pearson's r-value")
     plt.ylabel("Frequency")
     if show_plot:
