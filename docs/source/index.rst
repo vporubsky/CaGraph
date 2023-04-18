@@ -13,10 +13,12 @@ how to :ref:`installation` the project.
 Contents
 --------
 
-.. toctree::
 
-    usage
-    cagraph
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+
+   CaGraph
 
 
 Indices and tables

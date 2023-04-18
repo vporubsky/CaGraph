@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated documentation files." />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/cagraph.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/cagraph.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -184,7 +188,7 @@
       <workItem from="1680810190449" duration="2103000" />
       <workItem from="1681162794353" duration="1623000" />
       <workItem from="1681342619393" duration="7776000" />
-      <workItem from="1681796958072" duration="4404000" />
+      <workItem from="1681796958072" duration="4939000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -403,7 +407,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681801879809</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules.">
+      <created>1681802259972</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1681802259972</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -435,6 +446,7 @@
     <MESSAGE value="Updated preprocess.py and preprocessing_tutorial.ipynb, added documentation sources." />
     <MESSAGE value="Added api.rst." />
     <MESSAGE value="Updated documentation files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated documentation files." />
+    <MESSAGE value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
   </component>
 </project>

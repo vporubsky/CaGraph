@@ -15,7 +15,7 @@ Install with pip
 
 preprocessing
 ----
-.. autoclass:: preprocessing
+.. automethod:: preprocessing
    :members:
    :undoc-members:
 
@@ -27,7 +27,7 @@ cagraph
 
 visualization
 ----
-.. autoclass:: visualization
+.. automethod:: visualization
    :members:
    :undoc-members:
 
