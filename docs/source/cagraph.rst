@@ -15,8 +15,11 @@ Install with pip
 
 API
 ----
-.. automodule:: cagraph
-   :members:
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+
+    cagraph
 
 
 Authors
