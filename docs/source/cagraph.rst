@@ -18,16 +18,13 @@ API
 
 .. automodule:: preprocessing
    :members:
-   :undoc-members:
-   :show-inheritance:
+
 .. automodule:: cagraph
    :members:
-   :undoc-members:
-   :show-inheritance:
+
 .. automodule:: visualization
    :members:
-   :undoc-members:
-   :show-inheritance:
+
 
 Authors
 ----------
