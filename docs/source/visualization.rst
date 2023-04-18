@@ -9,7 +9,7 @@ Python library for vizualizing graphs from calcium imaging data of neural activi
 API
 ----
 
-.. automodule:: cagraph
+.. automodule:: visualization
    :members:
 
 Authors
