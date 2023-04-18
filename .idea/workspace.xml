@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated documentation files.">
-      <change beforePath="$PROJECT_DIR$/docs/source/cagraph.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/cagraph.rst" afterDir="false" />
-    </list>
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated documentation files." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,8 +57,8 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/docs/cagraph" />
       <recent name="$PROJECT_DIR$/docs/source" />
       <recent name="$PROJECT_DIR$/test_data" />
@@ -186,7 +184,7 @@
       <workItem from="1680810190449" duration="2103000" />
       <workItem from="1681162794353" duration="1623000" />
       <workItem from="1681342619393" duration="7776000" />
-      <workItem from="1681796958072" duration="4023000" />
+      <workItem from="1681796958072" duration="4404000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -398,7 +396,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681801323093</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Updated documentation files.">
+      <created>1681801879809</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1681801879809</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
