@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added api.rst.">
-      <change afterPath="$PROJECT_DIR$/cagraph/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/source/cagraph-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/source/cagraph.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph/visualization.py" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated documentation files.">
+      <change afterPath="$PROJECT_DIR$/docs/source/preprocessing.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/source/visualization.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/cagraph.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/cagraph.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,8 +65,9 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/cagraph" />
+      <recent name="$PROJECT_DIR$/docs/source" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/test_data" />
       <recent name="$PROJECT_DIR$/scratch_files" />
     </key>
@@ -191,7 +191,7 @@
       <workItem from="1680631365847" duration="13000" />
       <workItem from="1680810190449" duration="2103000" />
       <workItem from="1681162794353" duration="1623000" />
-      <workItem from="1681342619393" duration="6675000" />
+      <workItem from="1681342619393" duration="7202000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -312,7 +312,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681780809298</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Updated documentation files.">
+      <created>1681795803227</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1681795803227</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,6 +350,7 @@
     <MESSAGE value="Updated preprocess.py and added preprocessing_tutorial.ipynb." />
     <MESSAGE value="Updated preprocess.py and preprocessing_tutorial.ipynb, added documentation sources." />
     <MESSAGE value="Added api.rst." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added api.rst." />
+    <MESSAGE value="Updated documentation files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated documentation files." />
   </component>
 </project>

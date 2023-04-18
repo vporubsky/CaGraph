@@ -1,22 +1,14 @@
-cagraph
+preprocessing
 ------------------
 
 .. image:: cagraph-logo.png
 
-Python library for generating graphs from calcium imaging data of neural activity.
-
-Installation
------------------
-
-Install with pip
-::
-
-    pip install cagraph
+Python library for preprocessing calcium imaging data to prepare it for graph theory analysis.
 
 API
 ----
 
-.. automodule:: cagraph
+.. automodule:: preprocessing
    :members:
 
 Authors

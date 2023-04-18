@@ -1,17 +1,10 @@
-cagraph
+visualization
 ------------------
 
 .. image:: cagraph-logo.png
 
-Python library for generating graphs from calcium imaging data of neural activity.
+Python library for vizualizing graphs from calcium imaging data of neural activity.
 
-Installation
------------------
-
-Install with pip
-::
-
-    pip install cagraph
 
 API
 ----
