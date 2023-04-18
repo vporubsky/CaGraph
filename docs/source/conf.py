@@ -1,5 +1,4 @@
 # Configuration file for the Sphinx documentation builder.
-
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
@@ -23,8 +22,6 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
-    'sphinx_autodoc_typehints',
-    'jupyter_sphinx.execute',
 ]
 
 intersphinx_mapping = {
