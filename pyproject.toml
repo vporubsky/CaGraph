@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cagraph"
+version = "0.0.1"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "networkx",
+    "pynwb",
+    "scipy",
+    "seaborn",
+    "statsmodels",
+    "bokeh <= 2.4.3"
+]
+authors = [
+    { name="Veronica Porubsky", email="verosky@uw.edu" },
+]
+description = "A package to generate graphs from calcium imaging data of neural activity."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/vporubsky/CaGraph"
+"Bug Tracker" = "https://github.com/vporubsky/CaGraph/issues"

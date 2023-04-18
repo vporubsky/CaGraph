@@ -42,7 +42,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     # initialize graph information
     cg = ca_graph_obj
     if graph is None:
-        G = cg.get_network_graph()
+        G = cg.get_graph()
     else:
         G = graph
     label_keys = list(map(str, list(cg.labels)))

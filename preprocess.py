@@ -138,7 +138,7 @@ def __bins(lst, n):
     return build_binned_list
 
 
-def generate_randomized_timeseries_matrix(data: list) -> np.ndarray:
+def generate_noise_shuffle(data: list) -> np.ndarray:
     """
     data: list
 
@@ -153,7 +153,7 @@ def generate_randomized_timeseries_matrix(data: list) -> np.ndarray:
     return data
 
 
-def generate_randomized_timeseries_binned(data: list, bin_size: int) -> np.ndarray:
+def generate_binned_shuffle(data: list, bin_size: int) -> np.ndarray:
     """
     data: list
 
@@ -306,7 +306,6 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
     if show_plot:
         plt.show()
 
-
 def generate_threshold(data, shuffled_data=None, event_data=None, report_test=False):
     """
     Analyzes a shuffled dataset to propose a threshold to use to construct graph objects.
@@ -348,9 +347,6 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_test=Fa
                       'before setting a threshold.')
     return outlier_threshold
 
-
-
-
 def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     """
 
@@ -391,3 +387,64 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
 # Todo: function to test sensitivity analysis
 def sensitivity_analysis():
     return
+
+# Todo: add function to plot event trace
+def plot_event_trace():
+    return
+
+# Todo: update for formal inclusion
+def plot_hist(data1, data2, colors, legend=None, show_plot=True):
+    """
+
+    :param data:
+    :param shuffled_data:
+    :param event_data:
+    :param show_plot:
+    :return:
+    """
+    cg = CaGraph(data1)
+    x = cg.pearsons_correlation_matrix
+    np.fill_diagonal(x, 0)
+
+    cg2 = CaGraph(data2)
+    y = cg2.pearsons_correlation_matrix
+    np.fill_diagonal(y, 0)
+
+    x = np.tril(x).flatten()
+    y = np.tril(y).flatten()
+    # binwidth = 0.05
+    # bins = range(min(x), max(x) + binwidth, binwidth)
+
+    plt.hist(x, bins=50, color=colors[0], alpha=0.3)
+    plt.hist(y, bins=50, color=colors[1], alpha=0.3)
+    if legend is not None:
+        plt.legend([legend[0], legend[1]])
+    plt.xlabel("Pearson's r-value")
+    plt.ylabel("Frequency")
+    plt.ylim((0,100))
+    if show_plot:
+        plt.show()
+
+# Todo: formally include
+# def compute_ks(data1, data2, sig_level = 0.05):
+#     """
+#
+#     :param data1:
+#     :param data2:
+#     :return:
+#     """
+#     cg = CaGraph(data1)
+#     x = cg.pearsons_correlation_matrix
+#     np.fill_diagonal(x, 0)
+#
+#     cg2 = CaGraph(data2)
+#     y = cg2.pearsons_correlation_matrix
+#     np.fill_diagonal(y, 0)
+#
+#     ks_statistic = scipy.stats.ks_2samp(x, y)
+#     p_val = ks_statistic.pvalue
+#     if p_val < sig_level:
+#         print(f'Null hypothesis is rejected. KS P-value = {p_val:.3}')
+#     else:
+#         print(f'Null hypothesis is not rejected. KS P-value = {p_val:.3}')
+

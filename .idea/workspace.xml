@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated test_CaGraph.py">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/python-app.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-app.yml" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated preprocess.py and added preprocessing_tutorial.ipynb.">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +52,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -55,6 +60,9 @@
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/test_data" />
@@ -162,7 +170,25 @@
       <workItem from="1679075813989" duration="688000" />
       <workItem from="1679501811203" duration="326000" />
       <workItem from="1679502182282" duration="4773000" />
-      <workItem from="1680202012333" duration="4062000" />
+      <workItem from="1680202012333" duration="5140000" />
+      <workItem from="1680267630814" duration="831000" />
+      <workItem from="1680268578051" duration="7891000" />
+      <workItem from="1680279973782" duration="58000" />
+      <workItem from="1680280040721" duration="3104000" />
+      <workItem from="1680284976603" duration="291000" />
+      <workItem from="1680285271591" duration="94000" />
+      <workItem from="1680285378913" duration="123000" />
+      <workItem from="1680285505209" duration="245000" />
+      <workItem from="1680285829893" duration="124000" />
+      <workItem from="1680285972508" duration="644000" />
+      <workItem from="1680289034379" duration="683000" />
+      <workItem from="1680290025128" duration="191000" />
+      <workItem from="1680290219334" duration="83000" />
+      <workItem from="1680290305125" duration="394000" />
+      <workItem from="1680631365847" duration="13000" />
+      <workItem from="1680810190449" duration="2103000" />
+      <workItem from="1681162794353" duration="1623000" />
+      <workItem from="1681342619393" duration="4367000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -255,7 +281,21 @@
       <option name="project" value="LOCAL" />
       <updated>1680206214036</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Checking GitHub Actions continuous integration">
+      <created>1680211388802</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1680211388802</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Updated preprocess.py and added preprocessing_tutorial.ipynb.">
+      <created>1680282713740</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1680282713740</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,6 +322,8 @@
     <MESSAGE value="Updated GitHub actions pytest specification." />
     <MESSAGE value="Updated requirements.txt name." />
     <MESSAGE value="Updated test_CaGraph.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated test_CaGraph.py" />
+    <MESSAGE value="Checking GitHub Actions continuous integration" />
+    <MESSAGE value="Updated preprocess.py and added preprocessing_tutorial.ipynb." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated preprocess.py and added preprocessing_tutorial.ipynb." />
   </component>
 </project>

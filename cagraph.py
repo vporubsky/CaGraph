@@ -11,7 +11,6 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 class CaGraph:
     """
-    Published: XX/XX/XXXX
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
     Class: CaGraph(data_file, identifiers=None)
@@ -23,10 +22,6 @@ class CaGraph:
     There are several graph theoretical metrics for further analysis of
     neuronal network connectivity patterns.
 
-    Most test_analyses are computed using a graph generated based on Pearson's correlation coefficient values computed
-    between neuron timeseries data. A threshold for Pearson's correlation coefficient is typically set edges added
-    when R>0.3. https://www.nature.com/articles/s41467-020-17270-w#MOESM1 https://www.nature.com/articles/nature15389
-    ...
 
     Attributes
     ----------
@@ -103,10 +98,10 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix()
+            graph = self.get_graph_from_matrix()
         return nx.laplacian_matrix(graph)
 
-    def get_network_graph_from_matrix(self, weighted=False):
+    def get_graph_from_matrix(self, weighted=False):
         """
         Automatically generate graph object from numpy adjacency matrix.
 
@@ -141,8 +136,7 @@ class CaGraph:
         subsampled_graphs = []
         for time_idx in subsample_indices:
             subsampled_graphs.append(
-                self.get_network_graph(corr_mat=self.get_pearsons_correlation_matrix(time_points=time_idx),
-                                       weighted=weighted))
+                self.get_graph(corr_mat=self.get_pearsons_correlation_matrix(time_points=time_idx), weighted=weighted))
         return subsampled_graphs
 
     def get_time_subsampled_correlation_matrices(self, subsample_indices):
@@ -277,7 +271,7 @@ class CaGraph:
     # Todo: adjust y axis title for normalization
     # Todo: add time ticks
     # Todo: check that the self.num_neurons is not too many for color_palette
-    def plot_subnetworks_timecourses(self, graph=None, palette=None, title=None):
+    def plot_subgraphs_timecourses(self, graph=None, palette=None, title=None):
         """
 
         :param palette:
@@ -285,12 +279,12 @@ class CaGraph:
         :param title:
         :return:
         """
-        subnetworks = self.get_subnetworks(graph=graph)
+        subgraphs = self.get_subgraphs(graph=graph)
         if palette is None:
             palette = sns.color_palette('husl', self.num_neurons)
-        for idx, subnetwork in enumerate(subnetworks):
+        for idx, subgraph in enumerate(subgraphs):
             count = 0
-            for neuron in subnetwork:
+            for neuron in subgraph:
                 y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
                 for j in range(len(y)):
                     y[j] = y[j] + 1.05 * count
@@ -311,10 +305,10 @@ class CaGraph:
         :param title:
         :return:
         """
-        subnetworks = self.get_subnetworks(graph=graph)
-        for subnetwork in subnetworks:
+        subgraphs = self.get_subgraphs(graph=graph)
+        for subgraph in subgraphs:
             count = 0
-            for neuron in subnetwork:
+            for neuron in subgraph:
                 y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
                 for j in range(len(y)):
                     y[j] = y[j] + 1.05 * count
@@ -350,7 +344,7 @@ class CaGraph:
 
     # Todo: ensure the binary and weighted graphs are built correctly
     # Todo: ensure this is the most efficient graph building method
-    def get_network_graph(self, corr_mat=None, weighted=False):
+    def get_graph(self, corr_mat=None, weighted=False):
         """
         Must pass a np.ndarray type object to corr_mat, or the Pearsons
         correlation matrix for the full dataset will be used.
@@ -384,27 +378,27 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph()
+            graph = self.get_graph()
         graph = nx.algorithms.smallworld.random_reference(graph)
         return graph
 
     def get_erdos_renyi_graph(self, graph=None):
         """
-        Generates an Erdos-Renyi random graph using a network edge coverage metric computed from the graph to be randomized.
+        Generates an Erdos-Renyi random graph using a graph edge coverage metric computed from the graph to be randomized.
 
         :param graph:
         :return:
         """
         if graph is None:
             num_nodes = self.num_neurons
-            con_probability = self.get_network_coverage()
+            con_probability = self.get_graph_coverage()
         else:
             num_nodes = len(graph.nodes)
-            con_probability = self.get_network_coverage(graph=graph)
+            con_probability = self.get_graph_coverage(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
 
     # Todo: add functionality to improve plot
-    def plot_graph_network(self, graph, show_labels=True, position=None):
+    def plot_graph(self, graph, show_labels=True, position=None):
         """
 
         :param show_labels:
@@ -431,17 +425,17 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_largest_subnetwork_graph()
+            graph = self.get_largest_subgraph()
         else:
-            graph = self.get_largest_subnetwork_graph(graph=graph)
+            graph = self.get_largest_subgraph(graph=graph)
         if len(graph.nodes()) >= 4:
             return nx.algorithms.smallworld.sigma(graph)
         else:
             raise RuntimeError(
-                'Largest subnetwork has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
+                'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
     # Todo: DO NOT USE FUNCTION, NOT UPDATED
-    # def get_smallworld_all_subnetworks(self, corr_matrix, graph=None):
+    # def get_smallworld_all_subgraphs(self, corr_matrix, graph=None):
     #     """
     #
     #     :param corr_matrix:
@@ -449,7 +443,7 @@ class CaGraph:
     #     :return:
     #     """
     #     if graph is None:
-    #         graph = self.get_network_graph(corr_matrix)
+    #         graph = self.get_graph(corr_matrix)
     #     graph_max_subgraph_generator = sorted(nx.connected_components(graph), key=len, reverse=True)
     #     omega_list = []
     #     for i, val in enumerate(graph_max_subgraph_generator):
@@ -469,7 +463,7 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            hubs, authorities = nx.hits(self.get_network_graph())
+            hubs, authorities = nx.hits(self.get_graph())
         else:
             hubs, authorities = nx.hits(graph)
         med_hubs = np.median(list(hubs.values()))
@@ -479,28 +473,28 @@ class CaGraph:
         [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
         return hubs_list, hubs
 
-    def get_subnetworks(self, graph=None):
+    def get_subgraphs(self, graph=None):
         """
 
         :param graph:
         :return:
         """
         if graph is None:
-            connected_components = list(nx.connected_components(self.get_network_graph()))
+            connected_components = list(nx.connected_components(self.get_graph()))
         else:
             connected_components = list(nx.connected_components(graph))
-        subnetworks = []
-        [subnetworks.append(list(map(int, x))) for x in connected_components if len(x) > 1]
-        return subnetworks
+        subgraphs = []
+        [subgraphs.append(list(map(int, x))) for x in connected_components if len(x) > 1]
+        return subgraphs
 
-    def get_largest_subnetwork_graph(self, graph=None):
+    def get_largest_subgraph(self, graph=None):
         """
 
         :param graph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph()
+            graph = self.get_graph()
         largest_component = max(nx.connected_components(graph), key=len)
         return graph.subgraph(largest_component)
 
@@ -521,7 +515,7 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix()
+            graph = self.get_graph_from_matrix()
         degree_view = nx.clustering(graph)
         clustering_coefficient = []
         [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
@@ -535,7 +529,7 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            return self.get_network_graph_from_matrix()
+            return self.get_graph_from_matrix()
         else:
             return graph.degree
 
@@ -549,36 +543,36 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix()
+            graph = self.get_graph_from_matrix()
         degree_view = self.get_degree(graph)
         correlated_pair_ratio = []
         [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
         return correlated_pair_ratio
 
     # Todo: adapt for directed - current total possible edges is for undirected
-    def get_network_coverage(self, graph=None):
+    def get_graph_coverage(self, graph=None):
         """
-        Returns the percentage of edges present in the network out of the total possible edges.
+        Returns the percentage of edges present in the graph out of the total possible edges.
 
         :param graph:
         :return:
         """
         possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
         if graph is None:
-            graph = self.get_network_graph()
+            graph = self.get_graph()
         return len(graph.edges) / possible_edges
 
     # Todo: check form of centrality
     def get_eigenvector_centrality(self, graph=None):
         """
-        Compute the eigenvector centrality of all network nodes, the
-        measure of influence each node has on the network.
+        Compute the eigenvector centrality of all graph nodes, the
+        measure of influence each node has on the graph.
 
         :param graph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix()
+            graph = self.get_graph_from_matrix()
         centrality = nx.eigenvector_centrality(graph)
         return centrality
 
@@ -590,7 +584,7 @@ class CaGraph:
         :return: node_groups:
         """
         if graph is None:
-            graph = self.get_network_graph_from_matrix()
+            graph = self.get_graph_from_matrix()
         communities = nx.algorithms.community.centrality.girvan_newman(graph)
         node_groups = []
         for community in next(communities):
@@ -598,9 +592,9 @@ class CaGraph:
         return node_groups
 
     # Todo: add additional arguments to expand functionality
-    def draw_network(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5):
+    def draw_graph(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5):
         """
-        Draws a simple network.
+        Draws a simple graph.
 
         :param graph:
         :param position:
@@ -610,7 +604,7 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.get_network_graph()
+            graph = self.get_graph()
         if position is None:
             position = nx.spring_layout(graph)
         nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)

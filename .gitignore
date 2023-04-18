@@ -123,4 +123,4 @@ scratch_files/
 /datasets/dg_context_active.csv
 /datasets/dg_dataset.csv
 /datasets/dg_events.csv
-tmp_test_CaGraph.py
+tmp_check_functionality.py
