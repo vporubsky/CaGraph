@@ -14,12 +14,9 @@ Contents
 --------
 
 .. toctree::
-    :caption: Contents:
 
     usage
-    preprocessing
     cagraph
-    visualization
 
 
 Indices and tables
