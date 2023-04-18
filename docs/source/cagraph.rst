@@ -13,13 +13,23 @@ Install with pip
 
     pip install cagraph
 
-API
+preprocessing
 ----
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
+.. automodule:: preprocessing
+   :members:
+   :undoc-members:
 
-    cagraph
+cagraph
+----
+.. automodule:: cagraph
+   :members:
+   :undoc-members:
+
+visualization
+----
+.. automodule:: visualization
+   :members:
+   :undoc-members:
 
 
 Authors
