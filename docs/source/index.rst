@@ -14,11 +14,10 @@ Contents
 --------
 
 
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
+.. toctree::
 
-   CaGraph
+    usage
+    cagraph
 
 
 Indices and tables
