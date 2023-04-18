@@ -5,3 +5,5 @@ API
    :toctree: generated
 
    cagraph
+   preprocessing
+   visualization
