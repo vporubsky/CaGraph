@@ -15,14 +15,7 @@ Install with pip
 
 API
 ----
-
-.. automodule:: preprocessing
-   :members:
-
 .. automodule:: cagraph
-   :members:
-
-.. automodule:: visualization
    :members:
 
 
