@@ -27,6 +27,7 @@ from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
 def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
+                        additional_attributes = None,
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
                         palette='Blues8',
                         hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
@@ -100,6 +101,13 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
 
         else:
             raise AttributeError('Invalid attribute key entered.')
+
+    # Todo: Finish adding additional attributes
+    if additional_attributes is not None:
+        for key in additional_attributes.keys():
+            # parse attribute
+            print('attribute parsed')
+        print('Added additional attributes')
 
     # Set node attributes
     for key, value in attribute_dict.items():
