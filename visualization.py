@@ -26,10 +26,10 @@ from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
-def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
+def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
                         palette='Blues8',
-                        hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
+                        hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
                         position = None, return_position = False,
                         title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
@@ -91,6 +91,12 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
                 for j in list(c[i]):
                     community_id[j] = i
             attribute_dict['communities'] = community_id
+
+        # Todo: check implementation
+        elif attribute == 'clustering':
+            # Add clustering coefficient
+            c = cg.get_clustering_coefficient(graph=G)
+            attribute_dict['clustering'] = {i: j for i, j in zip(label_keys, c)}
 
         else:
             raise AttributeError('Invalid attribute key entered.')
