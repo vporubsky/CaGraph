@@ -18,7 +18,7 @@ import warnings
 #%% Key Todos
 # Todo: check that automatic event detection is incorporated as default
 # Todo: check alternative options to report (with print statements currently)
-
+# Todo: add functionality to generate many random shuffles to compare to
 
 #%%
 def get_pearsons_correlation_matrix(data, time_points=None):

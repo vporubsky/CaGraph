@@ -23,7 +23,7 @@ from bokeh.io import show, save, output_notebook
 from bokeh.models import Range1d, Circle, MultiLine
 from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
-from bokeh.palettes import Blues8
+from bokeh.palettes import *
 from bokeh.transform import linear_cmap
 
 
@@ -34,9 +34,22 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
                         hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'], title=None,
                         show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
-    Generates an interactived Bokeh.io plot of the graph network.
+    Generates an interactive Bokeh.io plot of the graph network.
 
-    palette: a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
+    :param: ca_graph_obj
+    :param: graph
+    :param: attributes
+    :param: adjust_node_size
+    :param: adjust_size_by
+    :param: adjust_color_by
+    :param: palette: a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
+    :param: hover_attributes
+    :param: title
+    :param: show_plot
+    :param: show_in_notebook
+    :param: save_plot
+    :param: save_path
+
 
     """
     # initialize graph information
@@ -51,13 +64,16 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     #  Build attributes dictionary
     attribute_dict = {}
     for attribute in attributes:
+
         if attribute == 'degree':
             # Compute the degree of each node and add attribute
             attribute_dict['degree'] = dict(nx.degree(G))
+
         elif attribute == 'HITS':
             # Add HITS attribute
             hub_list, hit_vals = cg.get_hubs(graph=G)
             attribute_dict['HITS'] = hit_vals
+
         elif attribute == 'hubs':
             # Add hubs attribute
             attribute_dict['hubs'] = {i: 1 if i in list(set(hub_list) & set(label_keys)) else 0 for i in
@@ -66,6 +82,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
             # Add correlated pairs attribute
             corr_pair = cg.get_correlated_pair_ratio(graph=G)
             attribute_dict['CPR'] = {i: j for i, j in zip(label_keys, corr_pair)}
+
         elif attribute == 'communities':
             # Add communities
             c = list(nx.algorithms.community.greedy_modularity_communities(G))
@@ -75,6 +92,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
                 for j in list(c[i]):
                     community_id[j] = i
             attribute_dict['communities'] = community_id
+
         else:
             raise AttributeError('Invalid attribute key entered.')
 

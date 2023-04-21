@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Revert change.">
-      <change afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated private method in cagraph.py for automatic threshold generation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +192,7 @@
       <workItem from="1681342619393" duration="7776000" />
       <workItem from="1681796958072" duration="5148000" />
       <workItem from="1682050408062" duration="2551000" />
-      <workItem from="1682091630010" duration="45000" />
+      <workItem from="1682091630010" duration="2032000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -431,7 +432,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681802958498</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Updated private method in cagraph.py for automatic threshold generation.">
+      <created>1682091712626</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1682091712627</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -466,7 +474,8 @@
     <MESSAGE value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
     <MESSAGE value="Attempt autosummary for readthedocs documentation." />
     <MESSAGE value="Revert change." />
-    <option name="LAST_COMMIT_MESSAGE" value="Revert change." />
+    <MESSAGE value="Updated private method in cagraph.py for automatic threshold generation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated private method in cagraph.py for automatic threshold generation." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
