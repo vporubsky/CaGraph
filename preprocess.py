@@ -9,14 +9,31 @@ File Creation Date:
 Description: 
 """
 # Imports
-from cagraph import CaGraph
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
 import warnings
 
-# Todo:
+#%% Key Todos
+# Todo: check that automatic event detection is incorporated as default
+# Todo: check alternative options to report (with print statements currently)
+
+
+#%%
+def get_pearsons_correlation_matrix(data, time_points=None):
+    """
+    Returns the Pearson's correlation for all neuron pairs.
+
+    :param data_matrix:
+    :param time_points: tuple
+    :return:
+    """
+    if time_points:
+        data = data[:, time_points[0]:time_points[1]]
+    return np.nan_to_num(np.corrcoef(data, rowvar=True))
+
+
 # ---------------- Clean data --------------------------------------
 # Todo: add smoothing algorithm used for CNMF for calcium imaging data
 def smooth(data):
@@ -87,7 +104,6 @@ def count_sign_switch(row_data):
     signchange = ((np.roll(asign, 1) - asign) != 0).astype(int)
     return np.sum(signchange)
 
-
 # Todo: confirm functionality is useful and check threshold value
 def remove_low_activity(data, event_data, event_num_threshold=5):
     """
@@ -106,7 +122,7 @@ def remove_low_activity(data, event_data, event_num_threshold=5):
             new_data = np.vstack((new_data, data[row, :]))
     return new_data[1:, :], new_event_data[1:, :]
 
-# Todo: create function to generate event_data
+# Todo: determine if this is still required
 def remove_quiescent(data, event_data, event_num_threshold=5):
     """
     data: numpy.ndarray
@@ -318,9 +334,9 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_test=Fa
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        raise AttributeError
-    random_cg = CaGraph(shuffled_data)
-    x = random_cg.pearsons_correlation_matrix
+        event_data = get_events(data=data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+    x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
     Q1 = np.percentile(x, 25, interpolation='midpoint')
     Q3 = np.percentile(x, 75, interpolation='midpoint')
@@ -328,8 +344,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_test=Fa
     IQR = Q3 - Q1
     outlier_threshold = round(Q3 + 1.5 * IQR,2)
 
-    ground_truth_cg = CaGraph(data)
-    y = ground_truth_cg.pearsons_correlation_matrix
+    y = get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
     random_vals = np.tril(x).flatten()
@@ -359,9 +374,10 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        raise AttributeError('Must provide either a pre-processed shuffled dataset or event data to perform the shuffle.')
-    random_cg = CaGraph(shuffled_data)
-    x = random_cg.pearsons_correlation_matrix
+        event_data = get_events(data=data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+
+    x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
     Q1 = np.percentile(x, 25, interpolation='midpoint')
     Q3 = np.percentile(x, 75, interpolation='midpoint')
@@ -369,8 +385,7 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     IQR = Q3 - Q1
     outlier_threshold = Q3 + 1.5 * IQR
 
-    ground_truth_cg = CaGraph(data)
-    y = ground_truth_cg.pearsons_correlation_matrix
+    y = get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
     plt.ylim(0, 100)
@@ -402,12 +417,10 @@ def plot_hist(data1, data2, colors, legend=None, show_plot=True):
     :param show_plot:
     :return:
     """
-    cg = CaGraph(data1)
-    x = cg.pearsons_correlation_matrix
+    x = get_pearsons_correlation_matrix(data=data1)
     np.fill_diagonal(x, 0)
 
-    cg2 = CaGraph(data2)
-    y = cg2.pearsons_correlation_matrix
+    y = get_pearsons_correlation_matrix(data=data2)
     np.fill_diagonal(y, 0)
 
     x = np.tril(x).flatten()
@@ -433,12 +446,10 @@ def plot_hist(data1, data2, colors, legend=None, show_plot=True):
 #     :param data2:
 #     :return:
 #     """
-#     cg = CaGraph(data1)
-#     x = cg.pearsons_correlation_matrix
+#     x = get_pearsons_correlation_matrix(data=data1)
 #     np.fill_diagonal(x, 0)
 #
-#     cg2 = CaGraph(data2)
-#     y = cg2.pearsons_correlation_matrix
+#     y = get_pearsons_correlation_matrix(data=data2)
 #     np.fill_diagonal(y, 0)
 #
 #     ks_statistic = scipy.stats.ks_2samp(x, y)

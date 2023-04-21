@@ -1,4 +1,5 @@
 # CaGraph imports
+import preprocess as prep
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -82,13 +83,14 @@ class CaGraph:
         else:
             self.threshold = self.__generate_threshold()
 
-    # Todo: implement generate_threshold function
     def __generate_threshold(self):
         """
+        Generates a threshold for the provided datatset as described in the preprocess module.
 
+        :return: float
         """
-        # prep.generate_threshold(data=tmp)
-        return 0.3
+        return prep.generate_threshold(data=self.neuron_dynamics)
+
 
     def get_laplacian_matrix(self, graph=None):
         """
