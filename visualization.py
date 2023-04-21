@@ -29,8 +29,9 @@ from bokeh.transform import linear_cmap
 def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
                         palette='Blues8',
-                        hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'], title=None,
-                        show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
+                        hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
+                        position = None, return_position = False,
+                        title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
     Generates an interactive Bokeh.io plot of the graph network.
 
@@ -136,7 +137,8 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
                   x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), title=title)
 
     # Create a network graph object
-    position = nx.spring_layout(G)
+    if position is None:
+        position = nx.spring_layout(G)
     network_graph = from_networkx(G, position, scale=10, center=(0, 0))
 
     # Set node sizes and colors according to node degree (color as spectrum of color palette)
@@ -161,6 +163,9 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
             save(plot, filename=save_path)
         else:
             save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
+
+    if return_position:
+        return position
 
 
 def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
