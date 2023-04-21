@@ -19,18 +19,16 @@ import pandas as pd
 import os
 
 # Bokeh imports
+import bokeh
 from bokeh.io import show, save, output_notebook
 from bokeh.models import Range1d, Circle, MultiLine
 from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
-from bokeh.palettes import *
 from bokeh.transform import linear_cmap
-
-
 
 def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'],
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
-                        palette=Blues8,
+                        palette='Blues8',
                         hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities'], title=None,
                         show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
@@ -117,8 +115,15 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     # Adjust node color
     color_by_this_attribute = adjust_color_by
 
-    # Pick a color palette — Blues8, Reds8, Purples8, Oranges8, Viridis8
-    color_palette = palette
+    # Generate color palette
+    palettes = [attr for attr in dir(bokeh.palettes) if
+                not callable(getattr(bokeh.palettes, attr)) and not attr.startswith("__")]
+    if isinstance(palette, str) and palette in palettes:
+        color_palette = getattr(bokeh.palettes, palette)
+    elif isinstance(palette, tuple):
+        color_palette = palette
+    else:
+        raise AttributeError('Must specify color palette as type string using an existing bokeh.palettes palette or generate a tuple containing hex codes.')
 
     # Establish which categories will appear when hovering over each node
     HOVER_TOOLTIPS = [("Neuron", "@index")]
