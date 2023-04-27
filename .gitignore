@@ -116,11 +116,11 @@ dmypy.json
 
 # DS_Store
 .DS_Store
-/tmp_check_functionality.py
+/scratch.py
 scratch_files/
 /datasets/bla_dataset.csv
 /datasets/bla_events.csv
 /datasets/dg_context_active.csv
 /datasets/dg_dataset.csv
 /datasets/dg_events.csv
-tmp_check_functionality.py
+scratch.py

@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated visualization.py and visualization_tutorial.ipynb">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Testing continuous integration framework with nose added to requirements.txt">
+      <change afterPath="$PROJECT_DIR$/tests/test_preprocessing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +211,7 @@
       <workItem from="1682103122371" duration="174000" />
       <workItem from="1682103300531" duration="1090000" />
       <workItem from="1682104900023" duration="1858000" />
-      <workItem from="1682607557490" duration="1365000" />
+      <workItem from="1682607557490" duration="6549000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -489,7 +493,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682112195553</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Testing continuous integration framework.">
+      <created>1682616296937</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1682616296937</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -528,7 +539,8 @@
     <MESSAGE value="Updated color palette options in visualization.py to include all Bokeh.io palette options" />
     <MESSAGE value="Updated visualization.py." />
     <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated visualization.py and visualization_tutorial.ipynb" />
+    <MESSAGE value="Testing continuous integration framework." />
+    <option name="LAST_COMMIT_MESSAGE" value="Testing continuous integration framework." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
