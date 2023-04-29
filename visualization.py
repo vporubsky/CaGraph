@@ -8,7 +8,7 @@ File Creation Date:
 
 Description: 
 """
-# General mports
+# General imports
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -28,9 +28,9 @@ from bokeh.transform import linear_cmap
 
 def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
                         additional_attributes = None,
+                        hover_attributes=None,
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
                         palette='Blues8',
-                        hover_attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
                         position = None, return_position = False,
                         title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
@@ -39,17 +39,17 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     :param: ca_graph_obj
     :param: graph
     :param: attributes
+    :param: additional_attributes
+    :param: hover_attributes
     :param: adjust_node_size
     :param: adjust_size_by
     :param: adjust_color_by
     :param: palette: a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
-    :param: hover_attributes
     :param: title
     :param: show_plot
     :param: show_in_notebook
     :param: save_plot
     :param: save_path
-
 
     """
     # initialize graph information
@@ -60,7 +60,6 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
         G = graph
     label_keys = list(map(str, list(cg.labels)))
 
-    ## Todo: add additional attributes
     #  Build attributes dictionary
     attribute_dict = {}
     for attribute in attributes:
@@ -93,7 +92,6 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
                     community_id[j] = i
             attribute_dict['communities'] = community_id
 
-        # Todo: check implementation
         elif attribute == 'clustering':
             # Add clustering coefficient
             c = cg.get_clustering_coefficient(graph=G)
@@ -102,22 +100,17 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
         else:
             raise AttributeError('Invalid attribute key entered.')
 
-    # Todo: Finish adding additional attributes
+    add_hover_attributes = []
     if additional_attributes is not None:
         for key in additional_attributes.keys():
             # parse attribute
-            print('attribute parsed')
-        print('Added additional attributes')
+            attribute_dict[key] = {i: j for i, j in zip(label_keys, additional_attributes[key])} # Must be same length
+            # store key value
+            add_hover_attributes += [key]
 
     # Set node attributes
     for key, value in attribute_dict.items():
         nx.set_node_attributes(G, name=key, values=value)
-
-    # Todo: make this flexible for labeled conditions
-    # # Add context active attribute
-    # con_act = list(np.genfromtxt(mouse_id + '_neuron_context_active.csv', delimiter=','))  # load context active designations
-    # con_act_dict: dict = {i: j for i, j in zip(label_keys, con_act)}
-    # networkx.set_node_attributes(G, name='context_activity', values=con_act_dict)
 
     # Adjusted node size
     if adjust_node_size is not None:
@@ -141,6 +134,8 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
         raise AttributeError('Must specify color palette as type string using an existing bokeh.palettes palette or generate a tuple containing hex codes.')
 
     # Establish which categories will appear when hovering over each node
+    if hover_attributes is None:
+        hover_attributes = ['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'] + add_hover_attributes
     HOVER_TOOLTIPS = [("Neuron", "@index")]
     for value in hover_attributes:
         HOVER_TOOLTIPS.append((value, "@" + value))

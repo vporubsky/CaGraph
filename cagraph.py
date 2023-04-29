@@ -14,7 +14,7 @@ class CaGraph:
     """
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
 
-    Class: CaGraph(data_file, identifiers=None)
+    Class: CaGraph(data_file, labels=None, dataset_id=None, threshold=None)
     =====================
 
     This class provides functionality to easily visualize time-series data of
@@ -39,13 +39,13 @@ class CaGraph:
 
 
     """
-
     def __init__(self, data_file, labels=None, dataset_id=None, threshold=None):
         """
 
         :param data_file: str
         :param labels:
         :param dataset_id: str
+        :param threshold: float
         """
         if isinstance(data_file, np.ndarray):
             self.data = data_file
@@ -65,6 +65,7 @@ class CaGraph:
         else:
             print('Data must be passed as a .csv or .nwb file, or as numpy.ndarray.')
             raise TypeError
+
         if dataset_id is not None:
             self.data_id = dataset_id
         self.data_filename = str(data_file)
@@ -73,7 +74,7 @@ class CaGraph:
         self.neuron_dynamics = self.data[1:len(self.data), :]
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
         if labels is None:
-            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1,
+            self.labels = np.linspace(1, np.shape(self.neuron_dynamics)[0],
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = labels
@@ -90,7 +91,6 @@ class CaGraph:
         :return: float
         """
         return prep.generate_threshold(data=self.neuron_dynamics)
-
 
     def get_laplacian_matrix(self, graph=None):
         """
@@ -610,3 +610,41 @@ class CaGraph:
         if position is None:
             position = nx.spring_layout(graph)
         nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
+
+
+# Todo: add time subsampled graph class
+# Todo: Create a systematic return report/ dictionary
+class CaGraphTimesampled(CaGraph):
+    """
+    Class for running batched analyses.
+
+    Derived from CaGraph class.
+    """
+
+    # Pass __init__ from parent class
+    def __init__(self, data_file, time_samples=None, condition_labels=None, identifiers=None, dataset_id=None,
+                 threshold=None):
+        super().__init__(data_file, identifiers, dataset_id, threshold)
+        for i, sample in enumerate(time_samples):
+            setattr(self, f'{condition_labels[i]}_dynamics', self.neuron_dynamics[:, sample[0]:sample[1]])
+            setattr(self, f'{condition_labels[i]}_pearsons_correlation_matrix',
+                    np.corrcoef(self.neuron_dynamics[:, sample[0]:sample[1]]))
+
+    pass
+
+
+# Todo: add batched class
+class CaGraphBatched(CaGraph):
+    """
+    Class for running batched analyses.
+
+    Derived from CaGraph class.
+    """
+
+    # Pass __init__ from parent class
+    # Todo: allow to set
+    # Todo: make the threshold either 1. set by user, 2. each individual dataset has auto-generated, 3. average across all datasets (loop through first)
+    def __init__(self, data_file, identifiers=None, dataset_id=None, threshold=None):
+        super().__init__(data_file, identifiers, dataset_id, threshold)
+
+    pass
