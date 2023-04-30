@@ -26,7 +26,8 @@ from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
-def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
+def interactive_network(cagraph_obj, graph=None,
+                        attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
                         additional_attributes = None,
                         hover_attributes=None,
                         adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
@@ -36,26 +37,28 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     """
     Generates an interactive Bokeh.io plot of the graph network.
 
-    :param: ca_graph_obj
-    :param: graph
-    :param: attributes
-    :param: additional_attributes
-    :param: hover_attributes
-    :param: adjust_node_size
-    :param: adjust_size_by
-    :param: adjust_color_by
-    :param: palette: a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
-    :param: title
-    :param: show_plot
-    :param: show_in_notebook
-    :param: save_plot
-    :param: save_path
+    :param: cagraph_obj: CaGraph object
+    :param: graph: networkx.Graph object
+    :param: attributes: list
+    :param: additional_attributes: dict
+    :param: hover_attributes: list
+    :param: adjust_node_size: int
+    :param: adjust_size_by: str
+    :param: adjust_color_by: str
+    :param: palette: tuple a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
+    :param: position: dict
+    :param: return_position: bool
+    :param: title: str
+    :param: show_plot: bool
+    :param: show_in_notebook: bool
+    :param: save_plot: bool
+    :param: save_path: str
 
     """
-    # initialize graph information
-    cg = ca_graph_obj
+    # Initialize cagraph and graph
+    cg = cagraph_obj
     if graph is None:
-        G = cg.get_graph()
+        G = cg.graph
     else:
         G = graph
     label_keys = list(map(str, list(cg.labels)))
@@ -176,7 +179,7 @@ def interactive_network(ca_graph_obj, graph=None, attributes=['degree', 'HITS', 
     if return_position:
         return position
 
-
+# Todo: make flexible for multiple datasets and remove plot_CDFs() function
 def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the cumulative distribution function of the provided list of data.
@@ -222,7 +225,6 @@ def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
     :param y_label: str
     :param show_plot: bool
     """
-
     # Evaluate KS-test statistic
     stat_level = stats.ks_2samp(data_list[0], data_list[1])
 
@@ -251,7 +253,7 @@ def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
         plt.savefig(fname=save_path, dpi=dpi, format=format)
 
 
-
+# Todo: make sure histograms have the same sized bins when plotting multiple
 def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
                     y_label='count', bin_size=20, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
@@ -263,7 +265,12 @@ def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
     :param marker: str matplotlib marker style
     :param x_label: str
     :param y_label: str
+    :param bin_size: int
     :param show_plot: bool
+    :param save_plot: bool
+    :param save_path: str
+    :param dpi: int
+    :param format: str
     """
 
     # Evaluate KS-test statistic
@@ -284,11 +291,12 @@ def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-def plot_matched_data(sample_1: list, sample_2: list, labels: list, y_label=None, x_label=None,
-                      colors=['grey', 'grey'], show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+def plot_matched_data(sample_1: list, sample_2: list, labels: list, colors=['grey', 'grey'],
+                      x_label=None, y_label=None, show_plot=True, save_plot=False, save_path=None,
+                      dpi=300, format='png'):
     """
     Plots two samples of matched data. Each sample will be plotted as points stacked vertically within condition.
-    L ines will be drawn to connect the matching pairs.
+    Lines will be drawn to connect the matching pairs.
 
     :param sample_1:
     :param sample_2:
@@ -297,6 +305,7 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list, y_label=None
     :param y_label: str
     :param show_plot: bool
     :param save_plot: bool
+    :param dpi: int
     :param format: str containing file extension supported by matplotlib.pyplot.savefig
     """
     # Put into dataframe

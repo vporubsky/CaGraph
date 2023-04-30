@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added test suite files for CaGraph, visualization, and preprocessing.">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers.">
+      <change afterPath="$PROJECT_DIR$/datasets/bla_dataset.tsv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +51,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/datasets" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -59,6 +60,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/datasets" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
@@ -216,7 +218,8 @@
       <workItem from="1682717645475" duration="67000" />
       <workItem from="1682717715719" duration="4136000" />
       <workItem from="1682728899129" duration="4039000" />
-      <workItem from="1682745074772" duration="696000" />
+      <workItem from="1682745074772" duration="3156000" />
+      <workItem from="1682748582608" duration="14749000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -512,7 +515,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682623141330</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers.">
+      <created>1682745893846</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1682745893846</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -553,7 +563,8 @@
     <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
     <MESSAGE value="Testing continuous integration framework." />
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test suite files for CaGraph, visualization, and preprocessing." />
+    <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -567,6 +578,11 @@
           <url>file://$PROJECT_DIR$/visualization.py</url>
           <line>11</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/visualization.py</url>
+          <line>28</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
