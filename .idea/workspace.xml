@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers.">
-      <change afterPath="$PROJECT_DIR$/datasets/bla_dataset.tsv" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated docstrings with all parameter and return values.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,7 +216,7 @@
       <workItem from="1682717715719" duration="4136000" />
       <workItem from="1682728899129" duration="4039000" />
       <workItem from="1682745074772" duration="3156000" />
-      <workItem from="1682748582608" duration="14749000" />
+      <workItem from="1682748582608" duration="24141000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -522,7 +519,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682745893846</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Updated docstrings with all parameter and return values.">
+      <created>1682888682169</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1682888682169</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -564,7 +568,8 @@
     <MESSAGE value="Testing continuous integration framework." />
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
     <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
+    <MESSAGE value="Updated docstrings with all parameter and return values." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated docstrings with all parameter and return values." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

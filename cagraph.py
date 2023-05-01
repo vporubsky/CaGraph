@@ -1,4 +1,6 @@
 # CaGraph imports
+import networkx
+import numpy
 import preprocess as prep
 import numpy as np
 import networkx as nx
@@ -6,12 +8,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pynwb import NWBHDF5IO
 from statsmodels.tsa.stattools import grangercausalitytests
+import os
 
 # %% CaGraph class
-# Todo: can use dataset_id for saving files with unique name
 class CaGraph:
     """
-    Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
+    Author: Veronica Porubsky
+    Author Github: https://github.com/vporubsky
+    Author ORCID: https://orcid.org/0000-0001-7216-3368
 
     Class: CaGraph(data_file, labels=None, metadata=None, dataset_id=None, threshold=None)
     =====================
@@ -22,16 +26,15 @@ class CaGraph:
     There are several graph theoretical metrics for further analysis of
     neuronal network connectivity patterns.
 
-
     Attributes
     ----------
-    data_file : str or numpy.ndarray
+    data : str or numpy.ndarray
         A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
         memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron timeseries
         of calcium fluoresence data sampled at the timepoints specified in the first row.
     labels: list
         A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
-    metadata: dict
+    node_metadata: dict
         Contains metadata which is associated with neurons in the network. Each key in the dictionary will be added as an
         attribute to the CaGraph object, and the associated value will be .
         Each value
@@ -39,27 +42,27 @@ class CaGraph:
         A unique identifier can be added to to the CaGraph object.
     threshold: float
         Sets a threshold to be used for binarized graph.
-
     """
-    def __init__(self, data_file, labels=None, metadata=None, dataset_id=None, threshold=None):
+    def __init__(self, data, labels=None, node_metadata=None, dataset_id=None, threshold=None):
         """
-        :param data_file: str
+        :param data: str
         :param labels: list
-        :param metadata: dict
+        :param node_metadata: dict
         :param dataset_id: str
         :param threshold: float
         """
-        if isinstance(data_file, np.ndarray):
-            self.data = data_file
+        # Check that the input data is in the correct format and load dataset
+        if isinstance(data, np.ndarray):
+            self.data = data
             self.time = self.data[0, :]
             self.neuron_dynamics = self.data[1:len(self.data), :]
-        elif isinstance(data_file, str):
-            if data_file.endswith('csv'):
-                self.data = np.genfromtxt(data_file, delimiter=",")
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self.data = np.genfromtxt(data, delimiter=",")
                 self.time = self.data[0, :]
                 self.neuron_dynamics = self.data[1:len(self.data), :]
-            elif data_file.endswith('nwb'):
-                with NWBHDF5IO(data_file, 'r') as io:
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
                     nwbfile_read = io.read()
                     nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
                     ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
@@ -71,41 +74,58 @@ class CaGraph:
             raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
         if dataset_id is not None:
             self.data_id = dataset_id
-        self.data_filename = str(data_file)
-        self.time = self.data[0, :]
         self.dt = self.time[1] - self.time[0]
-        self.neuron_dynamics = self.data[1:len(self.data), :]
         self.num_neurons = np.shape(self.neuron_dynamics)[0]
         if labels is None:
             self.labels = np.linspace(1, np.shape(self.neuron_dynamics)[0],
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
-        if metadata is not None:
-            # Todo: add check for the type in the value
-            for key in metadata.keys():
-                if type(metadata[key]) is list:
-                    # Todo: if it is type list, parse it into a dictionary
-                    # Todo: warning that this will assume that the neurons on ordered from 1 to len(neurons)
-                    setattr(self, key, metadata[key])
-                elif type(metadata[key]) is dict:
-                    setattr(self, key, metadata[key])
         else:
             self.labels = labels
+        if node_metadata is not None:
+            for key in node_metadata.keys():
+                if type(node_metadata[key]) is list:
+                    if len(node_metadata[key]) != len(self.labels):
+                        raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
+                                         'associated with every node.')
+                    node_metadata_dict = {}
+                    for i, value in enumerate(node_metadata[key]):
+                        node_metadata_dict[self.labels[i]] = value
+                    setattr(self, key, node_metadata_dict)
+                elif type(node_metadata[key]) is dict:
+                    setattr(self, key, node_metadata[key])
+
+        # Initialize correlation matrix, threshold, and graph
         self.pearsons_correlation_matrix = np.nan_to_num(np.corrcoef(self.neuron_dynamics))
         if threshold is not None:
             self.threshold = threshold
         else:
             self.threshold = self.__generate_threshold()
-        self.graph = self.get_graph(threshold=self.threshold)
+        self.graph = self.get_graph()
 
-    def __generate_threshold(self):
+        # Store initial settings to reset attributes after modification
+        self.__init_threshold = self.threshold
+        self.__init_pearsons_correlation_matrix = self.pearsons_correlation_matrix
+        self.__init_graph = self.graph
+
+    def __generate_threshold(self) -> float:
         """
-        Generates a threshold for the provided datatset as described in the preprocess module.
+        Generates a threshold for the provided dataset as described in the preprocess module.
 
         :return: float
         """
         return prep.generate_threshold(data=self.neuron_dynamics)
 
-    def get_laplacian_matrix(self, graph=None):
+    def reset(self):
+        """
+        Resets the CaGraph object graph attribute to the original state at the time the object was created.
+        """
+        self.pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
+        self.threshold = self.__init_threshold
+        self.graph = self.__init_graph
+
+
+    # Todo: check that the np.ndarray() worked as expected
+    def get_laplacian_matrix(self, graph=None) -> numpy.ndarray:
         """
         Returns the Laplacian matrix of the specified graph.
 
@@ -114,9 +134,9 @@ class CaGraph:
         """
         if graph is None:
             graph = self.get_graph_from_matrix()
-        return nx.laplacian_matrix(graph)
+        return np.ndarray(nx.laplacian_matrix(graph))
 
-    def get_graph_from_matrix(self, weighted=False):
+    def get_graph_from_matrix(self, weighted=False) -> networkx.Graph:
         """
         Automatically generate graph object from numpy adjacency matrix.
 
@@ -128,7 +148,7 @@ class CaGraph:
         return nx.from_numpy_array(self.get_weight_matrix())
 
     # Todo: decide how to handle time point sampling, can move to timesampled class
-    def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None):
+    def get_pearsons_correlation_matrix(self, data_matrix=None, time_points=None) -> numpy.ndarray:
         """
         Returns the Pearson's correlation for all neuron pairs.
 
@@ -143,7 +163,7 @@ class CaGraph:
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
     
     # Todo: move this into the time sampling class 
-    def get_time_subsampled_graphs(self, subsample_indices, weighted=False):
+    def get_time_subsampled_graphs(self, subsample_indices, weighted=False) -> list:
         """
 
         :param subsample_indices: list of tuples
@@ -157,7 +177,7 @@ class CaGraph:
         return subsampled_graphs
 
     # Todo: move this into the time sampling class
-    def get_time_subsampled_correlation_matrices(self, subsample_indices):
+    def get_time_subsampled_correlation_matrices(self, subsample_indices) -> list:
         """
         Samples the timeseries using provided indices to generate correlation matrices for
         defined periods.
@@ -171,7 +191,7 @@ class CaGraph:
         return subsampled_correlation_matrix
 
     # Todo: decide if this should be included or added in the future
-    def get_granger_causality_scores_matrix(self):
+    def get_granger_causality_scores_matrix(self) -> numpy.ndarray:
         """
         Returns Granger causality chi-square values.
 
@@ -187,7 +207,7 @@ class CaGraph:
         return gc_matrix
 
     # Todo: determine if you need this to be adjusted so you can set multiple thresholds (< 0.1, > 0.5)
-    def get_adjacency_matrix(self):
+    def get_adjacency_matrix(self) -> numpy.ndarray:
         """
         Returns the adjacency matrix of a binarized graph where edges exist when greater than the provided threshold.
         
@@ -200,33 +220,49 @@ class CaGraph:
         return adj_mat.astype(int)
 
     # Todo: consider making private
-    def get_weight_matrix(self):
+    def get_weight_matrix(self) -> numpy.ndarray:
         """
         Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
 
-        :return:
+        :return: numpy.ndarray
         """
         weight_matrix = self.pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
-    # Todo: add formatting for consistency
     # Todo: consider if returning the plotting object is useful
-    def plot_correlation_heatmap(self, correlation_matrix=None, show_plot=True):
+    def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
         Plots a heatmap of the correlation matrix.
 
         :param correlation_matrix:
+        :param title:
+        :param y_label:
+        :param x_label:
         :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         :return:
         """
         if correlation_matrix is None:
             correlation_matrix = self.get_pearsons_correlation_matrix()
         sns.heatmap(correlation_matrix, vmin=0, vmax=1)
+        if title is not None:
+            plt.title(title)
+        if y_label is not None:
+            plt.ylabel(y_label)
+        if x_label is not None:
+            plt.xlabel(x_label)
         if show_plot:
             plt.show()
+        if save_plot:
+            if save_path is None:
+                save_path = os.getcwd() + f'fig'
+            plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    def get_single_neuron_timecourse(self, neuron_trace_number):
+    def get_single_neuron_timecourse(self, neuron_trace_number) -> numpy.ndarray:
         """
         Return time vector stacked on the recorded calcium fluorescence for the neuron of interest.
 
@@ -238,11 +274,18 @@ class CaGraph:
 
     # Todo: make units flexible/ allow user to pass plotting information
     # Todo: add show and save to all plots
-    def plot_single_neuron_timecourse(self, neuron_trace_number, title=None):
+    def plot_single_neuron_timecourse(self, neuron_trace_number, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
 
         :param neuron_trace_number: int
-        :param title: str
+        :param title:
+        :param y_label:
+        :param x_label:
+        :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         :return:
         """
         neuron_timecourse_selection = neuron_trace_number
@@ -257,23 +300,38 @@ class CaGraph:
                  linewidth=1)  # add option : 'xkcd:olive',
         plt.xticks(x_tick_array)
         plt.xlim(0, self.time[-1])
-        plt.ylabel('ΔF/F')
-        plt.xlabel('Time (s)')
-        if title is None:
-            plt.title(f'{self.data_id} neuron {neuron_timecourse_selection}')
-        else:
+        if title is not None:
             plt.title(title)
-        plt.show()
+        if y_label is not None:
+            plt.ylabel(y_label)
+        else:
+            plt.ylabel('ΔF/F')
+        if x_label is not None:
+            plt.xlabel(x_label)
+        else:
+            plt.xlabel('Time')
+        if show_plot:
+            plt.show()
+        if save_plot:
+            if save_path is None:
+                save_path = os.getcwd() + f'fig'
+            plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, show=True):
+    def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
         Plots multiple individual calcium fluorescence traces, stacked vertically.
 
 
         :param neuron_trace_labels: list
         :param palette: list
-        :param title: str
-        :param show: bool
+        :param title:
+        :param y_label:
+        :param x_label:
+        :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         :return:
         """
         count = 0
@@ -286,24 +344,38 @@ class CaGraph:
             plt.xticks([])
             plt.yticks([])
             count += 1
-        plt.ylabel('ΔF/F')
-        plt.xlabel('Time (s)')
-        if title:
+        if title is not None:
             plt.title(title)
-        if show:
+        if y_label is not None:
+            plt.ylabel(y_label)
+        else:
+            plt.ylabel('ΔF/F')
+        if x_label is not None:
+            plt.xlabel(x_label)
+        else:
+            plt.xlabel('Time')
+        if show_plot:
             plt.show()
+        if save_plot:
+            if save_path is None:
+                save_path = os.getcwd() + f'fig'
+            plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    # Todo: plot stacked timecourses based on input neuron indices from graph theory test_analyses
-    # Todo: adjust y axis title for normalization
-    # Todo: add time ticks
+    # Todo: plot stacked timeseries based on input neuron indices from graph theory test_analyses
     # Todo: check that the self.num_neurons is not too many for color_palette
-    def plot_subgraphs_timecourses(self, graph=None, palette=None, title=None, show=True):
+    def plot_subgraphs_timeseries(self, graph=None, palette=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
 
         :param graph: networkx.Graph object
         :param palette: list
         :param title:
-        :param show: bool
+        :param y_label:
+        :param x_label:
+        :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         :return:
         """
         subgraphs = self.get_subgraphs(graph=graph)
@@ -319,17 +391,35 @@ class CaGraph:
                 plt.xticks([])
                 plt.yticks([])
                 count += 1
-            plt.ylabel('ΔF/F')
-            plt.xlabel('Time (s)')
-            if title:
+            if title is not None:
                 plt.title(title)
-            if show:
+            if y_label is not None:
+                plt.ylabel(y_label)
+            else:
+                plt.ylabel('ΔF/F')
+            if x_label is not None:
+                plt.xlabel(x_label)
+            else:
+                plt.xlabel('Time')
+            if show_plot:
                 plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    def plot_multi_neurons_timecourses(self, graph=None, title=None):
+    def plot_multi_neurons_timeseries(self, graph=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
 
         :param graph:
+        :param title:
+        :param y_label:
+        :param x_label:
+        :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         :param title:
         """
         subgraphs = self.get_subgraphs(graph=graph)
@@ -343,15 +433,33 @@ class CaGraph:
                 plt.xticks([])
                 plt.yticks([])
                 count += 1
-            plt.ylabel('ΔF/F')
-            plt.xlabel('Time (s)')
-            if title:
+            if title is not None:
                 plt.title(title)
-            plt.show()
+            if y_label is not None:
+                plt.ylabel(y_label)
+            else:
+                plt.ylabel('ΔF/F')
+            if x_label is not None:
+                plt.xlabel(x_label)
+            else:
+                plt.xlabel('Time')
+            if show_plot:
+                plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    def plot_all_neurons_timecourse(self):
+    def plot_all_neurons_timecourse(self, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
         """
-
+        :param title:
+        :param y_label:
+        :param x_label:
+        :param show_plot:
+        :param save_plot:
+        :param save_path:
+        :param dpi:
+        :param format:
         """
         plt.figure(num=2, figsize=(10, 2))
         count = 1
@@ -364,14 +472,25 @@ class CaGraph:
             plt.plot(self.time, self.neuron_dynamics[i, :], linewidth=0.5)
             plt.xticks(x_tick_array)
             plt.xlim(0, self.time[-1])
+        if title is not None:
+            plt.title(title)
+        if y_label is not None:
+            plt.ylabel(y_label)
+        else:
             plt.ylabel('ΔF/F')
-            plt.xlabel('Time (s)')
-            plt.title(f'{self.data_id}')
-        plt.show()
+        if x_label is not None:
+            plt.xlabel(x_label)
+        else:
+            plt.xlabel('Time')
+        if show_plot:
+            plt.show()
+        if save_plot:
+            if save_path is None:
+                save_path = os.getcwd() + f'fig'
+            plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-    # Todo: ensure the binary and weighted graphs are built correctly
-    # Todo: ensure this is the most efficient graph building method
-    def get_graph(self, correlation_matrix=None, weighted=False):
+    # Todo: consider if this is redundant
+    def get_graph(self, correlation_matrix=None, weighted=False) -> networkx.Graph:
         """
         Must pass a np.ndarray type object to correlation_matrix, or the Pearsons
         correlation matrix for the full dataset will be used.
@@ -395,11 +514,9 @@ class CaGraph:
                 for j in range(len(self.labels)):
                     if not i == j and correlation_matrix[i, j] > self.threshold:
                         graph.add_edge(str(self.labels[i]), str(self.labels[j]))
-        # Todo: should I update graph here?
-        self.graph=graph
         return graph
 
-    def get_random_graph(self, graph=None):
+    def get_random_graph(self, graph=None) -> networkx.Graph:
         """
         Generates a random graph. The nx.algorithms.smallworld.random_reference is adapted from the
         Maslov and Sneppen (2002) algorithm. It randomizes the existing graph.
@@ -412,7 +529,7 @@ class CaGraph:
         graph = nx.algorithms.smallworld.random_reference(graph)
         return graph
 
-    def get_erdos_renyi_graph(self, graph=None):
+    def get_erdos_renyi_graph(self, graph=None) -> networkx.Graph:
         """
         Generates an Erdos-Renyi random graph using a graph edge density metric computed from the graph to be randomized.
 
@@ -427,8 +544,8 @@ class CaGraph:
             con_probability = self.get_graph_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
 
-    # Todo: add functionality to improve basic plot
-    def plot_graph(self, graph, show_labels=True, position=None):
+    # Todo: add functionality
+    def draw_graph(self, graph, show_labels=False, position=None):
         """
 
         :param graph: networkx.Graph object
@@ -444,15 +561,14 @@ class CaGraph:
             nx.draw_networkx_labels(graph, pos=position, font_size=6, font_color='w', font_family='sans-serif')
         plt.axis('off')
         plt.show()
-        return
 
     # Todo: getting stuck on small world analysis when computing sigma -- infinite loop
     # Todo: this^ may be due to computing the average clustering coefficient or the average shortest path length -- test
-    def get_smallworld_largest_subnetwork(self, graph=None):
+    def get_smallworld_largest_subnetwork(self, graph=None) -> float:
         """
 
         :param graph: networkx.Graph object
-        :return:
+        :return: float
         """
         if graph is None:
             graph = self.get_largest_subgraph()
@@ -464,16 +580,13 @@ class CaGraph:
             raise RuntimeError(
                 'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
-
-    # Todo: define hits_threshold based on tail of powerlaw distribution
-    # Todo: determine best practices for setting threshold of powerlaw distribution to find hubs
-    def get_hubs(self, graph=None):
+    def get_hubs(self, graph=None) -> list:
         """
-        Computes hub nodes in the graph and returns a list of nodes identified as hubs.
+        Computes hub nodes in the graph using the HITS algorithm. Hubs are identified by finding
+        those nodes which have a hub value greater than the median of the hubs values plus 2.5 time the standard deviation.
 
         :param graph: networkx.Graph object
         :return: hubs_list: list
-        :return: hubs:
         """
         if graph is None:
             hubs, authorities = nx.hits(self.graph)
@@ -484,25 +597,39 @@ class CaGraph:
         hubs_threshold = med_hubs + 2.5 * std_hubs
         hubs_list = []
         [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
-        return hubs_list, hubs
+        return hubs_list
 
-    # Todo: rename subgraphs to connected_components?
-    def get_subgraphs(self, graph=None):
+    def get_hits_values(self, graph=None) -> dict:
         """
+        Computes hub nodes in the graph and returns a list of nodes identified as hubs.
+        HITS and authorities values match due to bidirectional edges.
+
+        :param graph: networkx.Graph object
+        :return: hits: dict
+        """
+        if graph is None:
+            graph = self.graph
+        hubs, authorities = nx.hits(graph)
+        return hubs
+
+    def get_connected_components(self, graph=None) -> list:
+        """
+        Returns connected components with more than one node.
 
         :param graph: networkx.Graph object
         :return: list
         """
         if graph is None:
-            connected_components = list(nx.connected_components(self.graph))
+            connected_components_with_orphan = list(nx.connected_components(self.graph))
         else:
-            connected_components = list(nx.connected_components(graph))
-        subgraphs = []
-        [subgraphs.append(list(map(int, x))) for x in connected_components if len(x) > 1]
-        return subgraphs
+            connected_components_with_orphan = list(nx.connected_components(graph))
+        connected_components = []
+        [connected_components.append(list(map(int, x))) for x in connected_components_with_orphan if len(x) > 1]
+        return connected_components
 
-    def get_largest_subgraph(self, graph=None):
+    def get_largest_connected_component(self, graph=None) -> networkx.Graph:
         """
+        Returns a subgraph containing the largest connected component.
 
         :param graph: networkx.Graph object
         :return: networkx.Graph object
@@ -647,7 +774,7 @@ class CaGraph:
 # Todo: Create a systematic return report/ dictionary
 class CaGraphTimesampled(CaGraph):
     """
-    Class for running batched analyses.
+    Class for running timesampled analyses on a single dataset.
 
     Derived from CaGraph class.
     """
