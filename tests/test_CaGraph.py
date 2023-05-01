@@ -1,8 +1,5 @@
 import unittest
 import cagraph as cg
-DATA_PATH = '/Users/veronica_porubsky/GitHub/CaGraph/datasets/'
-TEST_DATA_PATH = DATA_PATH + 'bla_dataset.csv'
-INCORRECT_DATA_PATH = DATA_PATH + 'bla_dataset.tsv'
 
 class CaGraphTestSuite(unittest.TestCase):
     """
@@ -13,7 +10,10 @@ class CaGraphTestSuite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Runs before any tests have been executed to set up the testing class."""
-        cls.cg_graph = cg.CaGraph(data=TEST_DATA_PATH)
+        cls.DATA_PATH = '/Users/veronica_porubsky/GitHub/CaGraph/datasets/'
+        cls.TEST_DATA_PATH = cls.DATA_PATH + 'bla_dataset.csv'
+        cls.INCORRECT_DATA_PATH = cls.DATA_PATH + 'bla_dataset.tsv'
+        cls.cg_graph = cg.CaGraph(data=cls.TEST_DATA_PATH)
         pass
 
     @classmethod
@@ -57,13 +57,13 @@ class CaGraphTestSuite(unittest.TestCase):
         Test that the CaGraph object creation method does not accept TSV files.
         """
         with self.assertRaises(TypeError):
-            cg.CaGraph(data=INCORRECT_DATA_PATH)
+            cg.CaGraph(data=self.INCORRECT_DATA_PATH)
 
     def test_changeThreshold(self):
         """
         Test that the threshold can be updated by the user.
         """
-        cg_obj = cg.CaGraph(data=TEST_DATA_PATH, threshold=0.2)
+        cg_obj = cg.CaGraph(data=self.TEST_DATA_PATH, threshold=0.2)
         init_threshold = cg_obj.threshold
         cg_obj.threshold = 0.5
         self.assertNotEqual(cg_obj.threshold, init_threshold)
@@ -72,7 +72,7 @@ class CaGraphTestSuite(unittest.TestCase):
         """
         Test that calling the reset method resets the threshold to the intial state when the data was loaded.
         """
-        cg_obj = cg.CaGraph(data=TEST_DATA_PATH, threshold=0.2)
+        cg_obj = cg.CaGraph(data=self.TEST_DATA_PATH, threshold=0.2)
         init_threshold = cg_obj.threshold
         cg_obj.threshold = 0.5
         cg_obj.reset()
