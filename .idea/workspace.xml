@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated docstrings with all parameter and return values.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
-    </list>
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -216,7 +212,7 @@
       <workItem from="1682717715719" duration="4136000" />
       <workItem from="1682728899129" duration="4039000" />
       <workItem from="1682745074772" duration="3156000" />
-      <workItem from="1682748582608" duration="24141000" />
+      <workItem from="1682748582608" duration="24472000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -526,7 +522,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682888682169</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests.">
+      <created>1682975352964</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1682975352964</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -544,7 +547,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated testing data files and tutorial.py script." />
     <MESSAGE value="Updated tutorial.py script." />
     <MESSAGE value="Updated tutorial.py script and Preprocessing class functionality." />
     <MESSAGE value="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb." />
@@ -569,7 +571,8 @@
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
     <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
     <MESSAGE value="Updated docstrings with all parameter and return values." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated docstrings with all parameter and return values." />
+    <MESSAGE value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
