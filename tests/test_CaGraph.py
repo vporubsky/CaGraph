@@ -10,7 +10,7 @@ class CaGraphTestSuite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Runs before any tests have been executed to set up the testing class."""
-        cls.DATA_PATH = '/Users/veronica_porubsky/GitHub/CaGraph/datasets/'
+        cls.DATA_PATH = './datasets/'
         cls.TEST_DATA_PATH = cls.DATA_PATH + 'bla_dataset.csv'
         cls.INCORRECT_DATA_PATH = cls.DATA_PATH + 'bla_dataset.tsv'
         cls.cg_graph = cg.CaGraph(data=cls.TEST_DATA_PATH)
