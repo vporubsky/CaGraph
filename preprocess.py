@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy
 import warnings
+import os
 
 
 # %% Key Todos
@@ -24,8 +25,7 @@ import warnings
 # Todo: add functionality to generate many random shuffles to compare to
 
 # %%
-# Todo: consider if time_points is needed
-def get_pearsons_correlation_matrix(data, time_points=None):
+def get_pearsons_correlation_matrix(data):
     """
     Returns the Pearson's correlation for all neuron pairs.
 
@@ -33,8 +33,6 @@ def get_pearsons_correlation_matrix(data, time_points=None):
     :param time_points: tuple
     :return: numpy.ndarray
     """
-    if time_points:
-        data = data[:, time_points[0]:time_points[1]]
     return np.nan_to_num(np.corrcoef(data, rowvar=True))
 
 
@@ -167,7 +165,7 @@ def remove_quiescent(data, event_data, event_num_threshold=5):
     return new_data[1:, :], new_event_data[1:, :]
 
 
-#%% Suitability for graph theory analysis
+# %% Suitability for graph theory analysis
 def _bins(data_row, bin_size):
     """
     Return successive bin_size-sized chunks from data_row.
@@ -182,6 +180,7 @@ def _bins(data_row, bin_size):
         build_binned_list.append(data_row[i:i + bin_size])
     return build_binned_list
 
+
 def generate_noise_shuffle(data: list) -> np.ndarray:
     """
     Shuffle every data point randomly within each neuron's calcium fluorescence timeseries.
@@ -192,7 +191,7 @@ def generate_noise_shuffle(data: list) -> np.ndarray:
     time = data[0, :].copy()
     for row in range(np.shape(data)[0]):
         np.random.shuffle(data[row, :])
-    data[0, :] = time.copy() # reset time row to original sampling
+    data[0, :] = time.copy()  # reset time row to original sampling
     return data
 
 
@@ -347,7 +346,7 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
         plt.show()
 
 
-def generate_threshold(data, shuffled_data=None, event_data=None, report_test=False):
+def generate_threshold(data, shuffled_data=None, event_data=None, report_threshold=False, report_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -383,7 +382,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_test=Fa
     if report_test:
         print(f"KS-statistic: {ks_statistic.statistic}")
         print(f"P-val: {p_val}")
-    if p_val < 0.05:
+    if p_val < 0.05 and report_threshold:
         print(f"The threshold is: {outlier_threshold:.2f}")
     else:
         warnings.warn(
@@ -392,7 +391,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_test=Fa
             'before setting a threshold.')
     return outlier_threshold
 
-
+# Todo: update with bin-size adjustment below
 def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
@@ -420,9 +419,17 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     y = get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
-    plt.ylim(0, 100)
-    plt.hist(np.tril(x).flatten(), bins=50, color='grey', alpha=0.3)
-    plt.hist(np.tril(y).flatten(), bins=50, color='blue', alpha=0.3)
+    # specify the bin width
+    bin_width = 0.01
+
+    # calculate the number of bins
+    x_bins = int(np.ceil((x.max() - x.min()) / bin_width))
+    y_bins = int(np.ceil((y.max() - y.min()) / bin_width))
+
+    # Todo: consider adding ylim
+    # plt.ylim(0, 100)
+    plt.hist(np.tril(x).flatten(), bins=x_bins, color='grey', alpha=0.3)
+    plt.hist(np.tril(y).flatten(), bins=y_bins, color='blue', alpha=0.3)
     plt.axvline(x=outlier_threshold, color='red')
     plt.legend(['threshold', 'shuffled', 'ground truth', ])
     plt.xlabel("Pearson's r-value")
@@ -448,40 +455,106 @@ def plot_event_trace():
     """
     return
 
-
-# Todo: update for formal inclusion
-# Todo: expand for multiple datasets (more than two
-def plot_correlation_hist(data1, data2, colors, legend=None, show_plot=True):
+# Todo: move to cagraph class/ merge with visualization version
+def plot_histogram(data, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
+                   save_path=None, dpi=300, format='png'):
     """
     Plot histograms of the provided datasets.
 
-    :param data1: numpy.ndarray
-    :param data2: numpy.ndarray
+    :param data: list
     :param colors: list
     :param legend: list
-    :param show_plot: bool
+    :param title:
+    :param y_label:
+    :param x_label:
+    :param show_plot:
+    :param save_plot:
+    :param save_path:
+    :param dpi:
+    :param format:
     :return:
     """
-    x = get_pearsons_correlation_matrix(data=data1)
+    # specify the bin width
+    bin_width = 0.01
+
+    for dataset in data:
+        # calculate the number of bins
+        dataset_bins = int(np.ceil((dataset.max() - dataset.min()) / bin_width))
+
+        # plot histogram
+        plt.hist(dataset, bins=dataset_bins, color=colors[0], alpha=0.3)
+
+    if legend is not None:
+        plt.legend(legend)
+    if title is not None:
+        plt.title(title)
+    if y_label is not None:
+        plt.ylabel(y_label)
+    if x_label is not None:
+        plt.xlabel(x_label)
+    else:
+        plt.ylabel("Frequency")
+    if show_plot:
+        plt.show()
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+
+def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True,
+                          save_plot=False, save_path=None, dpi=300, format='png'):
+    """
+    Plot histograms of the Pearson's correlation coefficient distributions for the provided datasets.
+
+    :param data: list
+    :param colors: list
+    :param legend: list
+    :param title:
+    :param y_label:
+    :param x_label:
+    :param show_plot:
+    :param save_plot:
+    :param save_path:
+    :param dpi:
+    :param format:
+    :return:
+    """
+    x = get_pearsons_correlation_matrix(data=data[0])
     np.fill_diagonal(x, 0)
 
-    y = get_pearsons_correlation_matrix(data=data2)
+    y = get_pearsons_correlation_matrix(data=data[1])
     np.fill_diagonal(y, 0)
 
     x = np.tril(x).flatten()
     y = np.tril(y).flatten()
-    # binwidth = 0.05
-    # bins = range(min(x), max(x) + binwidth, binwidth)
 
-    plt.hist(x, bins=50, color=colors[0], alpha=0.3)
-    plt.hist(y, bins=50, color=colors[1], alpha=0.3)
+    # specify the bin width
+    bin_width = 0.01
+
+    # calculate the number of bins
+    x_bins = int(np.ceil((x.max() - x.min()) / bin_width))
+    y_bins = int(np.ceil((y.max() - y.min()) / bin_width))
+
+    # plot histograms
+    plt.hist(x, bins=x_bins, color=colors[0], alpha=0.3)
+    plt.hist(y, bins=y_bins, color=colors[1], alpha=0.3)
     if legend is not None:
-        plt.legend([legend[0], legend[1]])
-    plt.xlabel("Pearson's r-value")
-    plt.ylabel("Frequency")
-    plt.ylim((0, 100))
+        plt.legend(legend)
+    if title is not None:
+        plt.title(title)
+    if y_label is not None:
+        plt.ylabel(y_label)
+    if x_label is not None:
+        plt.xlabel(x_label)
+    else:
+        plt.ylabel("Frequency")
     if show_plot:
         plt.show()
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, dpi=dpi, format=format)
 
 # Todo: formally include
 # def compute_ks(data1, data2, sig_level = 0.05):

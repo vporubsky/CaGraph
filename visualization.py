@@ -73,11 +73,12 @@ def interactive_network(cagraph_obj, graph=None,
 
         elif attribute == 'HITS':
             # Add HITS attribute
-            hub_list, hit_vals = cg.get_hubs(graph=G)
-            attribute_dict['HITS'] = hit_vals
+            hub_vals = cg.get_hits_values(graph=G)
+            attribute_dict['HITS'] = hub_vals
 
         elif attribute == 'hubs':
             # Add hubs attribute
+            hub_list = cg.get_hubs()
             attribute_dict['hubs'] = {i: 1 if i in list(set(hub_list) & set(label_keys)) else 0 for i in
                                       label_keys}
         elif attribute == 'CPR':
@@ -252,8 +253,7 @@ def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-
-# Todo: make sure histograms have the same sized bins when plotting multiple
+# Todo: harmonize with preprocess version
 def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
                     y_label='count', bin_size=20, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """

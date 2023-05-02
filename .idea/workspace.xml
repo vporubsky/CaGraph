@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Fixing continuous integration workflow.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,7 +220,10 @@
       <workItem from="1682717715719" duration="4136000" />
       <workItem from="1682728899129" duration="4039000" />
       <workItem from="1682745074772" duration="3156000" />
-      <workItem from="1682748582608" duration="25348000" />
+      <workItem from="1682748582608" duration="26481000" />
+      <workItem from="1682979464674" duration="298000" />
+      <workItem from="1682979765766" duration="307000" />
+      <workItem from="1682980076649" duration="3749000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -546,7 +554,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682976050488</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Fixing continuous integration workflow.">
+      <created>1682976614712</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1682976614712</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,6 +623,11 @@
           <url>file://$PROJECT_DIR$/visualization.py</url>
           <line>28</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocess.py</url>
+          <line>458</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

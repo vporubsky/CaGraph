@@ -83,7 +83,7 @@ class CaGraph:
             self.labels = labels
         if node_metadata is not None:
             for key in node_metadata.keys():
-                if type(node_metadata[key]) is list:
+                if type(node_metadata[key]) is list or numpy.ndarray:
                     if len(node_metadata[key]) != len(self.labels):
                         raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
                                          'associated with every node.')
@@ -93,6 +93,10 @@ class CaGraph:
                     setattr(self, key, node_metadata_dict)
                 elif type(node_metadata[key]) is dict:
                     setattr(self, key, node_metadata[key])
+                else:
+                    raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
+                                         'supplied as type list, one-dimensional numpy.ndarray, or as a dictionary'
+                                         'where each key is a node and each value is the metadata value for that node.')
 
         # Initialize correlation matrix, threshold, and graph
         self.pearsons_correlation_matrix = np.nan_to_num(np.corrcoef(self.neuron_dynamics))
@@ -763,6 +767,8 @@ class CaGraph:
         """
 
     # Todo: add function -- allow user to specify which cells to report on (parse by attribute)
+    # Todo: add option to output to excel file
+    # Todo: add option to generate a directory with analysis files
     def get_report(self,):
         """
 
