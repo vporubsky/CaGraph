@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Fixing continuous integration workflow.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updating tutorials and adding functionality to each submodule of cagraph.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +218,18 @@
       <workItem from="1682748582608" duration="26481000" />
       <workItem from="1682979464674" duration="298000" />
       <workItem from="1682979765766" duration="307000" />
-      <workItem from="1682980076649" duration="3749000" />
+      <workItem from="1682980076649" duration="4052000" />
+      <workItem from="1683071041287" duration="2081000" />
+      <workItem from="1683073502891" duration="203000" />
+      <workItem from="1683073731506" duration="284000" />
+      <workItem from="1683074018725" duration="293000" />
+      <workItem from="1683074315251" duration="123000" />
+      <workItem from="1683074441174" duration="165000" />
+      <workItem from="1683074634883" duration="96000" />
+      <workItem from="1683074733039" duration="286000" />
+      <workItem from="1683075030983" duration="110000" />
+      <workItem from="1683075143178" duration="763000" />
+      <workItem from="1683075933190" duration="575000" />
     </task>
     <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
       <created>1677768087802</created>
@@ -561,7 +567,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682976614712</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Updating tutorials and adding functionality to each submodule of cagraph.">
+      <created>1683003798746</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1683003798746</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -579,7 +592,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb." />
     <MESSAGE value="Updated README.md." />
     <MESSAGE value="Updated visualization.py functions with save_plot functionality." />
     <MESSAGE value="Updated GitHub actions pytest specification." />
@@ -604,7 +616,8 @@
     <MESSAGE value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
     <MESSAGE value="Example datasets added due to failed continuous integration workflow." />
     <MESSAGE value="Fixing continuous integration workflow." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing continuous integration workflow." />
+    <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating tutorials and adding functionality to each submodule of cagraph." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -10,6 +10,7 @@ from pynwb import NWBHDF5IO
 from statsmodels.tsa.stattools import grangercausalitytests
 import os
 
+
 # %% CaGraph class
 class CaGraph:
     """
@@ -43,6 +44,7 @@ class CaGraph:
     threshold: float
         Sets a threshold to be used for binarized graph.
     """
+
     def __init__(self, data, labels=None, node_metadata=None, dataset_id=None, threshold=None):
         """
         :param data: str
@@ -111,6 +113,9 @@ class CaGraph:
         self.__init_pearsons_correlation_matrix = self.pearsons_correlation_matrix
         self.__init_graph = self.graph
 
+        # Define subclasses
+        self.plotting = self.Plotting(neuron_dynamics = self.neuron_dynamics, time = self.time)
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
@@ -126,7 +131,6 @@ class CaGraph:
         self.pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
         self.threshold = self.__init_threshold
         self.graph = self.__init_graph
-
 
     # Todo: check that the np.ndarray() worked as expected
     def get_laplacian_matrix(self, graph=None) -> numpy.ndarray:
@@ -165,7 +169,7 @@ class CaGraph:
         if time_points:
             data_matrix = data_matrix[:, time_points[0]:time_points[1]]
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
-    
+
     # Todo: move this into the time sampling class 
     def get_time_subsampled_graphs(self, subsample_indices, weighted=False) -> list:
         """
@@ -177,7 +181,8 @@ class CaGraph:
         subsampled_graphs = []
         for time_idx in subsample_indices:
             subsampled_graphs.append(
-                self.get_graph(correlation_matrix=self.get_pearsons_correlation_matrix(time_points=time_idx), weighted=weighted))
+                self.get_graph(correlation_matrix=self.get_pearsons_correlation_matrix(time_points=time_idx),
+                               weighted=weighted))
         return subsampled_graphs
 
     # Todo: move this into the time sampling class
@@ -233,265 +238,6 @@ class CaGraph:
         weight_matrix = self.pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
-
-    # Todo: consider if returning the plotting object is useful
-    def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-        Plots a heatmap of the correlation matrix.
-
-        :param correlation_matrix:
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        :return:
-        """
-        if correlation_matrix is None:
-            correlation_matrix = self.get_pearsons_correlation_matrix()
-        sns.heatmap(correlation_matrix, vmin=0, vmax=1)
-        if title is not None:
-            plt.title(title)
-        if y_label is not None:
-            plt.ylabel(y_label)
-        if x_label is not None:
-            plt.xlabel(x_label)
-        if show_plot:
-            plt.show()
-        if save_plot:
-            if save_path is None:
-                save_path = os.getcwd() + f'fig'
-            plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-    def get_single_neuron_timecourse(self, neuron_trace_number) -> numpy.ndarray:
-        """
-        Return time vector stacked on the recorded calcium fluorescence for the neuron of interest.
-
-        :param neuron_trace_number: int
-        :return: numpy.ndarray
-        """
-        neuron_timecourse_selection = neuron_trace_number
-        return np.vstack((self.time, self.neuron_dynamics[neuron_timecourse_selection, :]))
-
-    # Todo: make units flexible/ allow user to pass plotting information
-    # Todo: add show and save to all plots
-    def plot_single_neuron_timecourse(self, neuron_trace_number, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-
-        :param neuron_trace_number: int
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        :return:
-        """
-        neuron_timecourse_selection = neuron_trace_number
-        count = 1
-        x_tick_array = []
-        for i in range(len(self.time)):
-            if count % (len(self.time) / 20) == 0:
-                x_tick_array.append(self.time[i])
-            count += 1
-        plt.figure(num=1, figsize=(10, 2))
-        plt.plot(self.time, self.neuron_dynamics[neuron_timecourse_selection, :],
-                 linewidth=1)  # add option : 'xkcd:olive',
-        plt.xticks(x_tick_array)
-        plt.xlim(0, self.time[-1])
-        if title is not None:
-            plt.title(title)
-        if y_label is not None:
-            plt.ylabel(y_label)
-        else:
-            plt.ylabel('ΔF/F')
-        if x_label is not None:
-            plt.xlabel(x_label)
-        else:
-            plt.xlabel('Time')
-        if show_plot:
-            plt.show()
-        if save_plot:
-            if save_path is None:
-                save_path = os.getcwd() + f'fig'
-            plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-    def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-        Plots multiple individual calcium fluorescence traces, stacked vertically.
-
-
-        :param neuron_trace_labels: list
-        :param palette: list
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        :return:
-        """
-        count = 0
-        if palette is None:
-            palette = sns.color_palette('husl', len(neuron_trace_labels))
-        for idx, neuron in enumerate(neuron_trace_labels):
-            y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
-            y = [x + 1.05 * count for x in y]
-            plt.plot(self.time, y, c=palette[idx], linewidth=1)
-            plt.xticks([])
-            plt.yticks([])
-            count += 1
-        if title is not None:
-            plt.title(title)
-        if y_label is not None:
-            plt.ylabel(y_label)
-        else:
-            plt.ylabel('ΔF/F')
-        if x_label is not None:
-            plt.xlabel(x_label)
-        else:
-            plt.xlabel('Time')
-        if show_plot:
-            plt.show()
-        if save_plot:
-            if save_path is None:
-                save_path = os.getcwd() + f'fig'
-            plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-    # Todo: plot stacked timeseries based on input neuron indices from graph theory test_analyses
-    # Todo: check that the self.num_neurons is not too many for color_palette
-    def plot_subgraphs_timeseries(self, graph=None, palette=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-
-        :param graph: networkx.Graph object
-        :param palette: list
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        :return:
-        """
-        subgraphs = self.get_subgraphs(graph=graph)
-        if palette is None:
-            palette = sns.color_palette('husl', self.num_neurons)
-        for idx, subgraph in enumerate(subgraphs):
-            count = 0
-            for neuron in subgraph:
-                y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
-                for j in range(len(y)):
-                    y[j] = y[j] + 1.05 * count
-                plt.plot(self.time, y, c=palette[idx], linewidth=1)
-                plt.xticks([])
-                plt.yticks([])
-                count += 1
-            if title is not None:
-                plt.title(title)
-            if y_label is not None:
-                plt.ylabel(y_label)
-            else:
-                plt.ylabel('ΔF/F')
-            if x_label is not None:
-                plt.xlabel(x_label)
-            else:
-                plt.xlabel('Time')
-            if show_plot:
-                plt.show()
-            if save_plot:
-                if save_path is None:
-                    save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-    def plot_multi_neurons_timeseries(self, graph=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-
-        :param graph:
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        :param title:
-        """
-        subgraphs = self.get_subgraphs(graph=graph)
-        for subgraph in subgraphs:
-            count = 0
-            for neuron in subgraph:
-                y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
-                for j in range(len(y)):
-                    y[j] = y[j] + 1.05 * count
-                plt.plot(self.time, y, 'k', linewidth=1)
-                plt.xticks([])
-                plt.yticks([])
-                count += 1
-            if title is not None:
-                plt.title(title)
-            if y_label is not None:
-                plt.ylabel(y_label)
-            else:
-                plt.ylabel('ΔF/F')
-            if x_label is not None:
-                plt.xlabel(x_label)
-            else:
-                plt.xlabel('Time')
-            if show_plot:
-                plt.show()
-            if save_plot:
-                if save_path is None:
-                    save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-    def plot_all_neurons_timecourse(self, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-        """
-        :param title:
-        :param y_label:
-        :param x_label:
-        :param show_plot:
-        :param save_plot:
-        :param save_path:
-        :param dpi:
-        :param format:
-        """
-        plt.figure(num=2, figsize=(10, 2))
-        count = 1
-        x_tick_array = []
-        for i in range(len(self.time)):
-            if count % (len(self.time) / 20) == 0:
-                x_tick_array.append(self.time[i])
-            count += 1
-        for i in range(len(self.neuron_dynamics) - 1):
-            plt.plot(self.time, self.neuron_dynamics[i, :], linewidth=0.5)
-            plt.xticks(x_tick_array)
-            plt.xlim(0, self.time[-1])
-        if title is not None:
-            plt.title(title)
-        if y_label is not None:
-            plt.ylabel(y_label)
-        else:
-            plt.ylabel('ΔF/F')
-        if x_label is not None:
-            plt.xlabel(x_label)
-        else:
-            plt.xlabel('Time')
-        if show_plot:
-            plt.show()
-        if save_plot:
-            if save_path is None:
-                save_path = os.getcwd() + f'fig'
-            plt.savefig(fname=save_path, dpi=dpi, format=format)
 
     # Todo: consider if this is redundant
     def get_graph(self, correlation_matrix=None, weighted=False) -> networkx.Graph:
@@ -769,12 +515,288 @@ class CaGraph:
     # Todo: add function -- allow user to specify which cells to report on (parse by attribute)
     # Todo: add option to output to excel file
     # Todo: add option to generate a directory with analysis files
-    def get_report(self,):
+    def get_report(self, ):
         """
 
-        :return:
+        :return: dict
         """
+        report_dict = {}
 
+    class Plotting:
+        def __init__(self, neuron_dynamics, time):
+            self.time = time
+            self.neuron_dynamics = neuron_dynamics
+
+        # Todo: consider if returning the plotting object is useful
+        def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None,
+                                     show_plot=True,
+                                     save_plot=False, save_path=None, dpi=300, format='png'):
+            """
+            Plots a heatmap of the correlation matrix.
+
+            :param correlation_matrix:
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            :return:
+            """
+            if correlation_matrix is None:
+                correlation_matrix = self.get_pearsons_correlation_matrix()
+            sns.heatmap(correlation_matrix, vmin=0, vmax=1)
+            if title is not None:
+                plt.title(title)
+            if y_label is not None:
+                plt.ylabel(y_label)
+            if x_label is not None:
+                plt.xlabel(x_label)
+            if show_plot:
+                plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+        def get_single_neuron_timecourse(self, neuron_trace_number) -> numpy.ndarray:
+            """
+            Return time vector stacked on the recorded calcium fluorescence for the neuron of interest.
+
+            :param neuron_trace_number: int
+            :return: numpy.ndarray
+            """
+            neuron_timecourse_selection = neuron_trace_number
+            return np.vstack((self.time, self.neuron_dynamics[neuron_timecourse_selection, :]))
+
+        # Todo: make units flexible/ allow user to pass plotting information
+        # Todo: add show and save to all plots
+        def plot_single_neuron_timecourse(self, neuron_trace_number, title=None, y_label=None, x_label=None,
+                                          show_plot=True,
+                                          save_plot=False, save_path=None, dpi=300, format='png'):
+            """
+
+            :param neuron_trace_number: int
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            :return:
+            """
+            neuron_timecourse_selection = neuron_trace_number
+            count = 1
+            x_tick_array = []
+            for i in range(len(self.time)):
+                if count % (len(self.time) / 20) == 0:
+                    x_tick_array.append(self.time[i])
+                count += 1
+            plt.figure(num=1, figsize=(10, 2))
+            plt.plot(self.time, self.neuron_dynamics[neuron_timecourse_selection, :],
+                     linewidth=1)  # add option : 'xkcd:olive',
+            plt.xticks(x_tick_array)
+            plt.xlim(0, self.time[-1])
+            if title is not None:
+                plt.title(title)
+            if y_label is not None:
+                plt.ylabel(y_label)
+            else:
+                plt.ylabel('ΔF/F')
+            if x_label is not None:
+                plt.xlabel(x_label)
+            else:
+                plt.xlabel('Time')
+            if show_plot:
+                plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+        def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, y_label=None,
+                                         x_label=None,
+                                         show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+            """
+            Plots multiple individual calcium fluorescence traces, stacked vertically.
+
+
+            :param neuron_trace_labels: list
+            :param palette: list
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            :return:
+            """
+            count = 0
+            if palette is None:
+                palette = sns.color_palette('husl', len(neuron_trace_labels))
+            for idx, neuron in enumerate(neuron_trace_labels):
+                y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                y = [x + 1.05 * count for x in y]
+                plt.plot(self.time, y, c=palette[idx], linewidth=1)
+                plt.xticks([])
+                plt.yticks([])
+                count += 1
+            if title is not None:
+                plt.title(title)
+            if y_label is not None:
+                plt.ylabel(y_label)
+            else:
+                plt.ylabel('ΔF/F')
+            if x_label is not None:
+                plt.xlabel(x_label)
+            else:
+                plt.xlabel('Time')
+            if show_plot:
+                plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+        # Todo: plot stacked timeseries based on input neuron indices from graph theory test_analyses
+        # Todo: check that the self.num_neurons is not too many for color_palette
+        def plot_subgraphs_timeseries(self, graph=None, palette=None, title=None, y_label=None, x_label=None,
+                                      show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+            """
+
+            :param graph: networkx.Graph object
+            :param palette: list
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            :return:
+            """
+            subgraphs = self.get_subgraphs(graph=graph)
+            if palette is None:
+                palette = sns.color_palette('husl', self.num_neurons)
+            for idx, subgraph in enumerate(subgraphs):
+                count = 0
+                for neuron in subgraph:
+                    y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                    for j in range(len(y)):
+                        y[j] = y[j] + 1.05 * count
+                    plt.plot(self.time, y, c=palette[idx], linewidth=1)
+                    plt.xticks([])
+                    plt.yticks([])
+                    count += 1
+                if title is not None:
+                    plt.title(title)
+                if y_label is not None:
+                    plt.ylabel(y_label)
+                else:
+                    plt.ylabel('ΔF/F')
+                if x_label is not None:
+                    plt.xlabel(x_label)
+                else:
+                    plt.xlabel('Time')
+                if show_plot:
+                    plt.show()
+                if save_plot:
+                    if save_path is None:
+                        save_path = os.getcwd() + f'fig'
+                    plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+        def plot_multi_neurons_timeseries(self, graph=None, title=None, y_label=None, x_label=None, show_plot=True,
+                                          save_plot=False, save_path=None, dpi=300, format='png'):
+            """
+
+            :param graph:
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            :param title:
+            """
+            subgraphs = self.get_subgraphs(graph=graph)
+            for subgraph in subgraphs:
+                count = 0
+                for neuron in subgraph:
+                    y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                    for j in range(len(y)):
+                        y[j] = y[j] + 1.05 * count
+                    plt.plot(self.time, y, 'k', linewidth=1)
+                    plt.xticks([])
+                    plt.yticks([])
+                    count += 1
+                if title is not None:
+                    plt.title(title)
+                if y_label is not None:
+                    plt.ylabel(y_label)
+                else:
+                    plt.ylabel('ΔF/F')
+                if x_label is not None:
+                    plt.xlabel(x_label)
+                else:
+                    plt.xlabel('Time')
+                if show_plot:
+                    plt.show()
+                if save_plot:
+                    if save_path is None:
+                        save_path = os.getcwd() + f'fig'
+                    plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+        def plot_all_neurons_timecourse(self, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
+                                        save_path=None, dpi=300, format='png'):
+            """
+            :param title:
+            :param y_label:
+            :param x_label:
+            :param show_plot:
+            :param save_plot:
+            :param save_path:
+            :param dpi:
+            :param format:
+            """
+            plt.figure(num=2, figsize=(10, 2))
+            count = 1
+            x_tick_array = []
+            for i in range(len(self.time)):
+                if count % (len(self.time) / 20) == 0:
+                    x_tick_array.append(self.time[i])
+                count += 1
+            for i in range(len(self.neuron_dynamics) - 1):
+                plt.plot(self.time, self.neuron_dynamics[i, :], linewidth=0.5)
+                plt.xticks(x_tick_array)
+                plt.xlim(0, self.time[-1])
+            if title is not None:
+                plt.title(title)
+            if y_label is not None:
+                plt.ylabel(y_label)
+            else:
+                plt.ylabel('ΔF/F')
+            if x_label is not None:
+                plt.xlabel(x_label)
+            else:
+                plt.xlabel('Time')
+            if show_plot:
+                plt.show()
+            if save_plot:
+                if save_path is None:
+                    save_path = os.getcwd() + f'fig'
+                plt.savefig(fname=save_path, dpi=dpi, format=format)
+
+
+# %%
 
 # Todo: add time subsampled graph class
 # Todo: Create a systematic return report/ dictionary
