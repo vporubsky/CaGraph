@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updating tutorials and adding functionality to each submodule of cagraph.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,14 +232,40 @@
       <workItem from="1683074733039" duration="286000" />
       <workItem from="1683075030983" duration="110000" />
       <workItem from="1683075143178" duration="763000" />
-      <workItem from="1683075933190" duration="575000" />
-    </task>
-    <task id="LOCAL-00001" summary="Updated testing data files and tutorial.py script.">
-      <created>1677768087802</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1677768087802</updated>
+      <workItem from="1683075933190" duration="1307000" />
+      <workItem from="1683084473694" duration="58000" />
+      <workItem from="1683084534403" duration="47000" />
+      <workItem from="1683084584403" duration="102000" />
+      <workItem from="1683084689326" duration="21000" />
+      <workItem from="1683084713021" duration="1193000" />
+      <workItem from="1683086553770" duration="49000" />
+      <workItem from="1683086605614" duration="1961000" />
+      <workItem from="1683090278381" duration="135000" />
+      <workItem from="1683090416331" duration="20000" />
+      <workItem from="1683090438542" duration="1712000" />
+      <workItem from="1683093141635" duration="76000" />
+      <workItem from="1683093219981" duration="110000" />
+      <workItem from="1683093333197" duration="71000" />
+      <workItem from="1683093407043" duration="29000" />
+      <workItem from="1683093438600" duration="1105000" />
+      <workItem from="1683127920900" duration="48000" />
+      <workItem from="1683127971335" duration="1080000" />
+      <workItem from="1683129057569" duration="232000" />
+      <workItem from="1683129292908" duration="47000" />
+      <workItem from="1683129342643" duration="462000" />
+      <workItem from="1683129808079" duration="274000" />
+      <workItem from="1683130084560" duration="184000" />
+      <workItem from="1683130271634" duration="769000" />
+      <workItem from="1683131172242" duration="276000" />
+      <workItem from="1683131514746" duration="340000" />
+      <workItem from="1683131863195" duration="220000" />
+      <workItem from="1683132085926" duration="41000" />
+      <workItem from="1683132129738" duration="66000" />
+      <workItem from="1683132198740" duration="89000" />
+      <workItem from="1683132291223" duration="233000" />
+      <workItem from="1683132527055" duration="91000" />
+      <workItem from="1683132620799" duration="39000" />
+      <workItem from="1683132663124" duration="226000" />
     </task>
     <task id="LOCAL-00002" summary="Updated tutorial.py script.">
       <created>1677776962885</created>
@@ -574,7 +603,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683003798746</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class..">
+      <created>1683076620711</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1683076620711</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -592,7 +628,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated README.md." />
     <MESSAGE value="Updated visualization.py functions with save_plot functionality." />
     <MESSAGE value="Updated GitHub actions pytest specification." />
     <MESSAGE value="Updated requirements.txt name." />
@@ -617,7 +652,8 @@
     <MESSAGE value="Example datasets added due to failed continuous integration workflow." />
     <MESSAGE value="Fixing continuous integration workflow." />
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating tutorials and adding functionality to each submodule of cagraph." />
+    <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
+    <option name="LAST_COMMIT_MESSAGE" value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -629,12 +665,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>11</line>
+          <line>12</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>28</line>
+          <line>29</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

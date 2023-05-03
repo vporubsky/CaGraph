@@ -9,6 +9,7 @@ File Creation Date:
 Description: 
 """
 # General imports
+from cagraph import CaGraph
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -61,7 +62,7 @@ def interactive_network(cagraph_obj, graph=None,
         G = cg.graph
     else:
         G = graph
-    label_keys = list(map(str, list(cg.labels)))
+    label_keys = cg.labels
 
     #  Build attributes dictionary
     attribute_dict = {}
@@ -69,22 +70,19 @@ def interactive_network(cagraph_obj, graph=None,
 
         if attribute == 'degree':
             # Compute the degree of each node and add attribute
-            attribute_dict['degree'] = dict(nx.degree(G))
+            attribute_dict['degree'] = cg.graph_theory.get_degree()
 
         elif attribute == 'HITS':
             # Add HITS attribute
-            hub_vals = cg.get_hits_values(graph=G)
-            attribute_dict['HITS'] = hub_vals
+            attribute_dict['HITS'] = cg.graph_theory.get_hits_values()
 
         elif attribute == 'hubs':
             # Add hubs attribute
-            hub_list = cg.get_hubs()
-            attribute_dict['hubs'] = {i: 1 if i in list(set(hub_list) & set(label_keys)) else 0 for i in
-                                      label_keys}
+            attribute_dict['hubs'] = cg.graph_theory.get_hubs()
+
         elif attribute == 'CPR':
             # Add correlated pairs attribute
-            corr_pair = cg.get_correlated_pair_ratio(graph=G)
-            attribute_dict['CPR'] = {i: j for i, j in zip(label_keys, corr_pair)}
+            attribute_dict['CPR'] = cg.graph_theory.get_correlated_pair_ratio()
 
         elif attribute == 'communities':
             # Add communities
@@ -98,8 +96,7 @@ def interactive_network(cagraph_obj, graph=None,
 
         elif attribute == 'clustering':
             # Add clustering coefficient
-            c = cg.get_clustering_coefficient(graph=G)
-            attribute_dict['clustering'] = {i: j for i, j in zip(label_keys, c)}
+            attribute_dict['clustering'] = cg.graph_theory.get_clustering_coefficient()
 
         else:
             raise AttributeError('Invalid attribute key entered.')
