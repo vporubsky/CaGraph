@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class..">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -265,14 +264,34 @@
       <workItem from="1683132291223" duration="233000" />
       <workItem from="1683132527055" duration="91000" />
       <workItem from="1683132620799" duration="39000" />
-      <workItem from="1683132663124" duration="226000" />
-    </task>
-    <task id="LOCAL-00002" summary="Updated tutorial.py script.">
-      <created>1677776962885</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1677776962885</updated>
+      <workItem from="1683132663124" duration="1150000" />
+      <workItem from="1683136538123" duration="649000" />
+      <workItem from="1683137191902" duration="244000" />
+      <workItem from="1683137449984" duration="262000" />
+      <workItem from="1683137715889" duration="1486000" />
+      <workItem from="1683139626856" duration="23000" />
+      <workItem from="1683139652029" duration="2587000" />
+      <workItem from="1683143090093" duration="98000" />
+      <workItem from="1683143190682" duration="405000" />
+      <workItem from="1683143623298" duration="847000" />
+      <workItem from="1683144475509" duration="78000" />
+      <workItem from="1683144556184" duration="208000" />
+      <workItem from="1683144767781" duration="21000" />
+      <workItem from="1683144791981" duration="121000" />
+      <workItem from="1683144916062" duration="149000" />
+      <workItem from="1683145067569" duration="156000" />
+      <workItem from="1683145226721" duration="1902000" />
+      <workItem from="1683147734791" duration="282000" />
+      <workItem from="1683148019890" duration="72000" />
+      <workItem from="1683148094794" duration="43000" />
+      <workItem from="1683148141073" duration="1100000" />
+      <workItem from="1683149376828" duration="85000" />
+      <workItem from="1683149464365" duration="150000" />
+      <workItem from="1683149617716" duration="67000" />
+      <workItem from="1683149688087" duration="36000" />
+      <workItem from="1683149727226" duration="129000" />
+      <workItem from="1683149859289" duration="269000" />
+      <workItem from="1683150131473" duration="264000" />
     </task>
     <task id="LOCAL-00003" summary="Updated tutorial.py script.">
       <created>1677784274982</created>
@@ -610,7 +629,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683076620711</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate.">
+      <created>1683132982433</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1683132982433</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -628,7 +654,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated visualization.py functions with save_plot functionality." />
     <MESSAGE value="Updated GitHub actions pytest specification." />
     <MESSAGE value="Updated requirements.txt name." />
     <MESSAGE value="Updated test_CaGraph.py" />
@@ -653,7 +678,8 @@
     <MESSAGE value="Fixing continuous integration workflow." />
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
-    <option name="LAST_COMMIT_MESSAGE" value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
+    <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
+    <option name="LAST_COMMIT_MESSAGE" value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

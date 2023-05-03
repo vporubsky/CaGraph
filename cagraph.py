@@ -88,24 +88,6 @@ class CaGraph:
         else:
             self.labels = labels
 
-        # Add node metadata
-        if node_metadata is not None:
-            for key in node_metadata.keys():
-                if type(node_metadata[key]) is list or np.ndarray:
-                    if len(node_metadata[key]) != len(self.labels):
-                        raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
-                                         'associated with every node.')
-                    node_metadata_dict = {}
-                    for i, value in enumerate(node_metadata[key]):
-                        node_metadata_dict[self.labels[i]] = value
-                    setattr(self, key, node_metadata_dict)
-                elif type(node_metadata[key]) is dict:
-                    setattr(self, key, node_metadata[key])
-                else:
-                    raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
-                                         'supplied as type list, one-dimensional numpy.ndarray, or as a dictionary'
-                                         'where each key is a node and each value is the metadata value for that node.')
-
         # Initialize correlation matrix, threshold, and graph
         self.pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
         if threshold is not None:
@@ -119,12 +101,53 @@ class CaGraph:
         self.__init_pearsons_correlation_matrix = self.pearsons_correlation_matrix
         self.__init_graph = self.graph
 
-        # Initialize subclasses
+        # Initialize subclass objects
         self.graph_theory = self.GraphTheory(neuron_dynamics=self.neuron_dynamics, time=self.time, num_neurons = self.num_neurons,
                                              pearsons_correlation_matrix=self.pearsons_correlation_matrix,
                                              graph=self.graph, labels=self.labels)
         self.plotting = self.Plotting(neuron_dynamics=self.neuron_dynamics, time=self.time, num_neurons = self.num_neurons,
                                       pearsons_correlation_matrix=self.pearsons_correlation_matrix, graph=self.graph)
+
+        # Initialize base graph theory analyses
+        self.degree = self.graph_theory.get_degree(return_type='dict')
+        self.clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
+        self.correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
+        self.communities = self.graph_theory.get_communities(return_type='dict')
+        self.hubs = self.graph_theory.get_hubs(return_type='dict')
+        self.hits = self.graph_theory.get_hits_values(return_type='dict')
+        self.eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+
+
+        # Build private attribute dictionary
+        self.__attribute_dictionary = {}
+        self.__attribute_dictionary['hubs'] = self.hubs
+        self.__attribute_dictionary['degree'] = self.degree
+        self.__attribute_dictionary['clustering coefficient'] = self.clustering_coefficient
+        self.__attribute_dictionary['communities'] = self.communities
+        self.__attribute_dictionary['eigenvector centrality'] = self.eigenvector_centrality
+        self.__attribute_dictionary['correlated pair ratio'] = self.correlated_pair_ratio
+        self.__attribute_dictionary['HITS'] = self.hits
+
+        # Todo: check if this can be simplified/ cleaned-up
+        # Add node metadata
+        if node_metadata is not None:
+            for key in node_metadata.keys():
+                if type(node_metadata[key]) is list or np.ndarray:
+                    if len(node_metadata[key]) != len(self.labels):
+                        raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
+                                         'associated with every node.')
+                    node_metadata_dict = {}
+                    for i, value in enumerate(node_metadata[key]):
+                        node_metadata_dict[self.labels[i]] = value
+                    self.__attribute_dictionary[key] = node_metadata_dict
+                    setattr(self, key, node_metadata_dict)
+                elif type(node_metadata[key]) is dict:
+                    self.__attribute_dictionary[key] = node_metadata_dict
+                    setattr(self, key, node_metadata[key])
+                else:
+                    raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
+                                         'supplied as type list, one-dimensional numpy.ndarray, or as a dictionary'
+                                         'where each key is a node and each value is the metadata value for that node.')
 
     # Private utility methods
     def __generate_threshold(self) -> float:
@@ -135,6 +158,17 @@ class CaGraph:
         """
         return prep.generate_threshold(data=self.neuron_dynamics)
 
+    def __parse_by_node(self, node_data, node_list) -> list:
+        """
+        Method to parse report analyses using only a subset of nodes.
+
+        :type node_list: object
+        :param node_data: list
+        :param node_list: list
+        :return: list
+        """
+        return [node_data[i] for i in node_list if i < len(node_data)]
+
     # Public utility methods
     def reset(self):
         """
@@ -143,6 +177,13 @@ class CaGraph:
         self.pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
         self.threshold = self.__init_threshold
         self.graph = self.__init_graph
+
+        # Re-initialize base graph theory analyses
+        self.degree = self.graph_theory.get_degree()
+        self.clustering_coefficient = self.graph_theory.get_clustering_coefficient()
+        self.correlated_pairs_ratio = self.graph_theory.get_correlated_pair_ratio()
+        self.communities = self.graph_theory.get_communities()
+        self.hubs = self.graph_theory.get_hubs()
 
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
@@ -253,17 +294,61 @@ class CaGraph:
             position = nx.spring_layout(graph)
         nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
 
-
-
-    # Todo: add function -- allow user to specify which cells to report on (parse by attribute)
     # Todo: add option to output to excel file
     # Todo: add option to generate a directory with analysis files
-    def get_report(self, ):
+    def get_report(self, graph=None, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None, parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-
+        :param graph:
+        :param parse_by_attribute: str
+        :param parsing_operation: str
+        :param parsing_value: float
         :return: dict
         """
+        # Set up parsing
+        if parse_by_attribute is not None:
+            # identify nodes that meet the criteria
+            if parsing_operation == '>':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value > parsing_value]
+            elif parsing_operation == '<':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value < parsing_value]
+            elif parsing_operation == '<=':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value <= parsing_value]
+            elif parsing_operation == '>=':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value >= parsing_value]
+            elif parsing_operation == '==':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value == parsing_value]
+            elif parsing_operation == '!=':
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value != parsing_value]
+
+        # Individual node analyses
+        if parsing_nodes is None:
+            parsing_nodes = self.labels
         report_dict = {}
+        for key in self.__attribute_dictionary.keys():
+            report_dict[key] = self.__parse_by_node(node_data=self.__attribute_dictionary[key], node_list=parsing_nodes)
+
+        # Construct report dataframe
+        report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
+        report_df.index = parsing_nodes
+
+
+        # Todo: add whole-graph analysis
+        # Whole graph analysis
+        # report_dict['density']  = self.graph_theory.get_graph_density()
+
+        # Save report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return report_df
 
     class GraphTheory:
         def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons, labels):
@@ -274,16 +359,14 @@ class CaGraph:
             self.graph = graph
             self.labels = labels
 
-        # todo: check that get_hubs is working as expected
-        # Todo: update get_hubs so it returns a dict with each node having 1 if it is a hub and 0 if it is not
         # Graph theory analysis
-        def get_hubs(self, graph=None) -> list:
+        def get_hubs(self, graph=None, return_type='list'):
             """
             Computes hub nodes in the graph using the HITS algorithm. Hubs are identified by finding
             those nodes which have a hub value greater than the median of the hubs values plus 2.5 time the standard deviation.
 
             :param graph: networkx.Graph object
-            :return: hubs_list: dict
+            :param return_type: str
             """
             if graph is None:
                 hubs, authorities = nx.hits(self.graph)
@@ -294,20 +377,27 @@ class CaGraph:
             hubs_threshold = med_hubs + 2.5 * std_hubs
             hubs_list = []
             [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
-            return {i: 1 if i in list(set(hubs_list) & set(self.labels)) else 0 for i in self.labels}
+            hub_dict = {i: 1 if i in list(set(hubs_list) & set(self.labels)) else 0 for i in self.labels}
+            if return_type == 'dict':
+                return hub_dict
+            if return_type == 'list':
+                return list(hub_dict.values())
 
-        def get_hits_values(self, graph=None) -> dict:
+        def get_hits_values(self, graph=None, return_type='list'):
             """
             Computes hub nodes in the graph and returns a list of nodes identified as hubs.
             HITS and authorities values match due to bidirectional edges.
 
             :param graph: networkx.Graph object
-            :return: hits: dict
+            :param return_type: str
             """
             if graph is None:
                 graph = self.graph
-            hubs, authorities = nx.hits(graph)
-            return dict(zip(self.labels, hubs))
+            hits_dict, authorities_dict = nx.hits(graph)
+            if return_type == 'dict':
+                return hits_dict
+            if return_type == 'list':
+                return list(hits_dict.values())
 
         def get_connected_components(self, graph=None) -> list:
             """
@@ -345,45 +435,57 @@ class CaGraph:
             """
             return
 
-        def get_clustering_coefficient(self, graph=None) -> list:
+        def get_clustering_coefficient(self, graph=None, return_type='list'):
             """
             Returns a list of clustering coefficient values for each node.
 
             :param graph: networkx.Graph object
-            :return: list
+            :param return_type: str
             """
             if graph is None:
                 graph = self.graph
             degree_view = nx.clustering(graph)
             clustering_coefficient = []
             [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
-            return dict(zip(self.labels, clustering_coefficient))
+            clustering_dict = dict(zip(self.labels, clustering_coefficient))
+            if return_type == 'dict':
+                return clustering_dict
+            if return_type == 'list':
+                return list(clustering_dict.values())
 
-        def get_degree(self, graph=None):
+        def get_degree(self, graph=None, return_type='list'):
             """
             Returns iterator object of (node, degree) pairs.
 
             :param graph: networkx.Graph object
-            :return: dict
+            :param return_type: str
             """
             if graph is None:
                 graph = self.graph
-            return dict(graph.degree)
+            degree_dict = dict(graph.degree)
+            if return_type == 'dict':
+                return degree_dict
+            if return_type == 'list':
+                return list(degree_dict.values())
 
-        def get_correlated_pair_ratio(self, graph=None):
+        def get_correlated_pair_ratio(self, graph=None, return_type='list'):
             """
             Computes the number of connections each neuron has, divided by the nuber of cells in the field of view.
             This method is described in Jimenez et al. 2020: https://www.nature.com/articles/s41467-020-17270-w#Sec8
 
             :param graph: networkx.Graph object
-            :return: list
+            :param return_type: str
             """
             if graph is None:
                 graph = self.graph
             degree_view = self.get_degree(graph)
             correlated_pair_ratio = []
             [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
-            return dict(zip(self.labels, correlated_pair_ratio))
+            correlated_pair_ratio_dict = dict(zip(self.labels, correlated_pair_ratio))
+            if return_type == 'dict':
+                return correlated_pair_ratio_dict
+            if return_type == 'list':
+                return list(correlated_pair_ratio_dict.values())
 
         # Todo: adapt for directed - current total possible edges is for undirected
         def get_graph_density(self, graph=None):
@@ -399,20 +501,23 @@ class CaGraph:
             return len(graph.edges) / possible_edges
 
         # Todo: make the return match the clustering coefficient
-        def get_eigenvector_centrality(self, graph=None):
+        def get_eigenvector_centrality(self, graph=None, return_type='list'):
             """
             Compute the eigenvector centrality of all graph nodes, the
             measure of influence each node has on the graph.
 
             :param graph: networkx.Graph object
-            :return: eigenvector_centrality: dict
+            :param return_type: str
             """
             if graph is None:
                 graph = self.graph
             eigenvector_centrality = nx.eigenvector_centrality(graph)
-            return eigenvector_centrality
+            if return_type == 'dict':
+                return eigenvector_centrality
+            if return_type == 'list':
+                return list(eigenvector_centrality.values())
 
-        def get_communities(self, graph=None) -> list:
+        def get_communities(self, graph=None, return_type='list'):
             """
             Returns a list of communities, composed of a group of nodes.
 
@@ -421,11 +526,16 @@ class CaGraph:
             """
             if graph is None:
                 graph = self.graph
-            communities = nx.algorithms.community.centrality.girvan_newman(graph)
-            node_groups = []
-            for community in next(communities):
-                node_groups.append(list(community))
-            return node_groups
+            communities = list(nx.algorithms.community.greedy_modularity_communities(graph))
+            sorted(communities)
+            community_id = {}
+            for i in range(len(communities)):
+                for j in list(communities[i]):
+                    community_id[j] = i
+            if return_type == 'dict':
+                return community_id
+            if return_type == 'list':
+                return list(community_id.values())
 
         # Todo: getting stuck on small world analysis when computing sigma -- infinite loop may be due to computing the average clustering coefficient or the average shortest path length -- test
         def get_smallworld_largest_subnetwork(self, graph=None) -> float:

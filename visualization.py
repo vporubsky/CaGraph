@@ -70,33 +70,27 @@ def interactive_network(cagraph_obj, graph=None,
 
         if attribute == 'degree':
             # Compute the degree of each node and add attribute
-            attribute_dict['degree'] = cg.graph_theory.get_degree()
+            attribute_dict['degree'] = cg.graph_theory.get_degree(return_type='dict')
 
         elif attribute == 'HITS':
             # Add HITS attribute
-            attribute_dict['HITS'] = cg.graph_theory.get_hits_values()
+            attribute_dict['HITS'] = cg.graph_theory.get_hits_values(return_type='dict')
 
         elif attribute == 'hubs':
             # Add hubs attribute
-            attribute_dict['hubs'] = cg.graph_theory.get_hubs()
+            attribute_dict['hubs'] = cg.graph_theory.get_hubs(return_type='dict')
 
         elif attribute == 'CPR':
             # Add correlated pairs attribute
-            attribute_dict['CPR'] = cg.graph_theory.get_correlated_pair_ratio()
+            attribute_dict['CPR'] = cg.graph_theory.get_correlated_pair_ratio(return_type='dict')
 
         elif attribute == 'communities':
             # Add communities
-            c = list(nx.algorithms.community.greedy_modularity_communities(G))
-            sorted(c)
-            community_id = {}
-            for i in range(len(c)):
-                for j in list(c[i]):
-                    community_id[j] = i
-            attribute_dict['communities'] = community_id
+            attribute_dict['communities'] = cg.graph_theory.get_communities(return_type='dict')
 
         elif attribute == 'clustering':
             # Add clustering coefficient
-            attribute_dict['clustering'] = cg.graph_theory.get_clustering_coefficient()
+            attribute_dict['clustering'] = cg.graph_theory.get_clustering_coefficient(return_type='dict')
 
         else:
             raise AttributeError('Invalid attribute key entered.')
