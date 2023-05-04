@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added get_report() method to CaGraph class.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -291,14 +290,11 @@
       <workItem from="1683149688087" duration="36000" />
       <workItem from="1683149727226" duration="129000" />
       <workItem from="1683149859289" duration="269000" />
-      <workItem from="1683150131473" duration="264000" />
-    </task>
-    <task id="LOCAL-00003" summary="Updated tutorial.py script.">
-      <created>1677784274982</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1677784274982</updated>
+      <workItem from="1683150131473" duration="2695000" />
+      <workItem from="1683168686787" duration="306000" />
+      <workItem from="1683168995659" duration="88000" />
+      <workItem from="1683169086110" duration="3000000" />
+      <workItem from="1683172370266" duration="2203000" />
     </task>
     <task id="LOCAL-00004" summary="Updated tutorial.py script and Preprocessing class functionality.">
       <created>1678147343656</created>
@@ -636,7 +632,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683132982433</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Added get_report() method to CaGraph class.">
+      <created>1683150428805</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1683150428806</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -654,7 +657,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated GitHub actions pytest specification." />
     <MESSAGE value="Updated requirements.txt name." />
     <MESSAGE value="Updated test_CaGraph.py" />
     <MESSAGE value="Checking GitHub Actions continuous integration" />
@@ -679,7 +681,8 @@
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
-    <option name="LAST_COMMIT_MESSAGE" value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
+    <MESSAGE value="Added get_report() method to CaGraph class." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added get_report() method to CaGraph class." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

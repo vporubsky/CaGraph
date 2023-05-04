@@ -491,6 +491,7 @@ class CaGraph:
         def get_graph_density(self, graph=None):
             """
             Returns the ratio of edges present in the graph out of the total possible edges.
+            The equation used to calculate this ratio is only relevant to undirected graphs.
 
             :param graph: networkx.Graph object
             :return: float
@@ -500,7 +501,6 @@ class CaGraph:
                 graph = self.graph
             return len(graph.edges) / possible_edges
 
-        # Todo: make the return match the clustering coefficient
         def get_eigenvector_centrality(self, graph=None, return_type='list'):
             """
             Compute the eigenvector centrality of all graph nodes, the
@@ -836,59 +836,90 @@ class CaGraph:
 
 
 # %%
-
-# Todo: add time subsampled graph class
 # Todo: Create a systematic return report/ dictionary
 class CaGraphTimesampled(CaGraph):
     """
     Class for running timesampled analyses on a single dataset.
 
-    Derived from CaGraph class.
     """
+    # Todo: add checks that length of timesamples and condition labels are equal -- user guardrails
+    def __init__(self, data, time_samples=None, condition_labels=None, labels=None, node_metadata=None, dataset_id=None, threshold=None):
+        """
+        :param data: str
+        :param time_samples:
+        :param condition_labels:
+        :param labels: list
+        :param node_metadata: dict
+        :param dataset_id: str
+        :param threshold: float
+        """
+        # Check that the input data is in the correct format and load dataset
+        if isinstance(data, np.ndarray):
+            self.data = data
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self.data = np.genfromtxt(data, delimiter=",")
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
+                    nwbfile_read = io.read()
+                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                    # Todo: need to stack these two and generate self.data
+                    self.neuron_dynamics = ca_from_nwb.data[:]
+                    self.time = ca_from_nwb.timestamps[:]
+            else:
+                raise TypeError('File path must have a .csv or .nwb file to load.')
+        else:
+            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
-    # Pass __init__ from parent class
-    def __init__(self, data_file, time_samples=None, condition_labels=None, identifiers=None, dataset_id=None,
-                 threshold=None):
-        super().__init__(data_file, identifiers, dataset_id, threshold)
+        # Add dataset identifier
+        if dataset_id is not None:
+            self.data_id = dataset_id
+
+        # Compute time interval and number of neurons
+        self.dt = self.data[0,1] - self.data[0,0]
+        self.num_neurons = np.shape(self.data)[0]
+        if threshold is not None:
+            self.threshold = threshold
+        else:
+            self.threshold = self.__generate_threshold()
+
+        # Generate node labels
+        if labels is None:
+            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0]-1,
+                                      np.shape(self.neuron_dynamics)[0]).astype(int)
+        else:
+            self.labels = labels
+
+        # Add a series of private attributes which are CaGraph objects
         for i, sample in enumerate(time_samples):
-            setattr(self, f'{condition_labels[i]}_dynamics', self.neuron_dynamics[:, sample[0]:sample[1]])
-            setattr(self, f'{condition_labels[i]}_pearsons_correlation_matrix',
-                    np.corrcoef(self.neuron_dynamics[:, sample[0]:sample[1]]))
+            setattr(self, f'__{condition_labels[i]}_cagraph', CaGraph(data=self.data[:, sample[0]:sample[1]], labels=self.labels, node_metadata=node_metadata, threshold=self.threshold))
 
-    pass
+    # Private utility methods
+    def __generate_threshold(self) -> float:
+        """
+        Generates a threshold for the provided dataset as described in the preprocess module.
 
-    # Todo: check that implementation works in timesubsampling class
-    def get_time_subsampled_graphs(self, subsample_indices, weighted=False) -> list:
+        :return: float
+        """
+        return prep.generate_threshold(data=self.neuron_dynamics)
+
+    # Public utility methods
+    def get_cagraph(self, condition_label):
         """
 
-        :param subsample_indices: list of tuples
-        :param weighted: bool
-        :return: list
+        :param condition_label:
+        :return:
         """
-        subsampled_graphs = []
-        for time_idx in subsample_indices:
-            subsampled_graphs.append(
-                self.get_graph(correlation_matrix=self.get_pearsons_correlation_matrix(time_points=time_idx),
-                               weighted=weighted))
-        return subsampled_graphs
+        return getattr(self, f'__{condition_label}_cagraph')
 
-    # Todo: check implementation
-    def get_time_subsampled_correlation_matrices(self, subsample_indices) -> list:
-        """
-        Samples the timeseries using provided indices to generate correlation matrices for
-        defined periods.
-
-        :param subsample_indices: list of tuples
-        :return: list
-        """
-        subsampled_correlation_matrix = []
-        for time_idx in subsample_indices:
-            subsampled_correlation_matrix.append(self.get_pearsons_correlation_matrix(time_points=time_idx))
-        return subsampled_correlation_matrix
+    # Todo: add function
+    def get_full_report(self):
+        print('')
 
 
 # Todo: add batched class
-class CaGraphBatched(CaGraph):
+class CaGraphBatched:
     """
     Class for running batched analyses.
 
@@ -896,9 +927,6 @@ class CaGraphBatched(CaGraph):
     """
 
     # Pass __init__ from parent class
-    # Todo: allow to set
-    # Todo: make the threshold either 1. set by user, 2. each individual dataset has auto-generated, 3. average across all datasets (loop through first)
-    def __init__(self, data_file, identifiers=None, dataset_id=None, threshold=None):
-        super().__init__(data_file, identifiers, dataset_id, threshold)
+    # Todo: make the threshold either 1. set by user 2. each individual dataset has auto-generated 3. average across all datasets (loop through first)
 
     pass
