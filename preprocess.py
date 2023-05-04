@@ -387,7 +387,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
     else:
         warnings.warn(
             'The KS-test performed on the shuffled and ground truth datasets show that the p-value is greater '
-            'than a 5% significance level. Confirm that correlations in dataset are differentiable from random correlations'
+            'than a 5% significance level. Confirm that correlations in dataset are differentiable from random correlations '
             'before setting a threshold.')
     return outlier_threshold
 

@@ -83,7 +83,7 @@ class CaGraph:
 
         # Generate node labels
         if labels is None:
-            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0]-1,
+            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1,
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = labels
@@ -102,10 +102,12 @@ class CaGraph:
         self.__init_graph = self.graph
 
         # Initialize subclass objects
-        self.graph_theory = self.GraphTheory(neuron_dynamics=self.neuron_dynamics, time=self.time, num_neurons = self.num_neurons,
+        self.graph_theory = self.GraphTheory(neuron_dynamics=self.neuron_dynamics, time=self.time,
+                                             num_neurons=self.num_neurons,
                                              pearsons_correlation_matrix=self.pearsons_correlation_matrix,
                                              graph=self.graph, labels=self.labels)
-        self.plotting = self.Plotting(neuron_dynamics=self.neuron_dynamics, time=self.time, num_neurons = self.num_neurons,
+        self.plotting = self.Plotting(neuron_dynamics=self.neuron_dynamics, time=self.time,
+                                      num_neurons=self.num_neurons,
                                       pearsons_correlation_matrix=self.pearsons_correlation_matrix, graph=self.graph)
 
         # Initialize base graph theory analyses
@@ -116,7 +118,6 @@ class CaGraph:
         self.hubs = self.graph_theory.get_hubs(return_type='dict')
         self.hits = self.graph_theory.get_hits_values(return_type='dict')
         self.eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
-
 
         # Build private attribute dictionary
         self.__attribute_dictionary = {}
@@ -296,7 +297,8 @@ class CaGraph:
 
     # Todo: add option to output to excel file
     # Todo: add option to generate a directory with analysis files
-    def get_report(self, graph=None, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None, parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_report(self, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None,
+                   parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
         :param graph:
         :param parse_by_attribute: str
@@ -308,17 +310,23 @@ class CaGraph:
         if parse_by_attribute is not None:
             # identify nodes that meet the criteria
             if parsing_operation == '>':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value > parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value > parsing_value]
             elif parsing_operation == '<':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value < parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value < parsing_value]
             elif parsing_operation == '<=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value <= parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value <= parsing_value]
             elif parsing_operation == '>=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value >= parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value >= parsing_value]
             elif parsing_operation == '==':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value == parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value == parsing_value]
             elif parsing_operation == '!=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if value != parsing_value]
+                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                 value != parsing_value]
 
         # Individual node analyses
         if parsing_nodes is None:
@@ -330,7 +338,6 @@ class CaGraph:
         # Construct report dataframe
         report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
         report_df.index = parsing_nodes
-
 
         # Todo: add whole-graph analysis
         # Whole graph analysis
@@ -369,9 +376,9 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                hubs, authorities = nx.hits(self.graph)
+                hubs, authorities = nx.hits(self.graph, max_iter=500)
             else:
-                hubs, authorities = nx.hits(graph)
+                hubs, authorities = nx.hits(graph, max_iter=500)
             med_hubs = np.median(list(hubs.values()))
             std_hubs = np.std(list(hubs.values()))
             hubs_threshold = med_hubs + 2.5 * std_hubs
@@ -393,7 +400,7 @@ class CaGraph:
             """
             if graph is None:
                 graph = self.graph
-            hits_dict, authorities_dict = nx.hits(graph)
+            hits_dict, authorities_dict = nx.hits(graph, max_iter=500)
             if return_type == 'dict':
                 return hits_dict
             if return_type == 'list':
@@ -835,15 +842,17 @@ class CaGraph:
                 plt.savefig(fname=save_path, dpi=dpi, format=format)
 
 
-# %%
+# %% Timesampled
 # Todo: Create a systematic return report/ dictionary
 class CaGraphTimesampled(CaGraph):
     """
     Class for running timesampled analyses on a single dataset.
 
     """
+
     # Todo: add checks that length of timesamples and condition labels are equal -- user guardrails
-    def __init__(self, data, time_samples=None, condition_labels=None, labels=None, node_metadata=None, dataset_id=None, threshold=None):
+    def __init__(self, data, time_samples=None, condition_labels=None, labels=None, node_metadata=None, dataset_id=None,
+                 threshold=None):
         """
         :param data: str
         :param time_samples:
@@ -877,7 +886,7 @@ class CaGraphTimesampled(CaGraph):
             self.data_id = dataset_id
 
         # Compute time interval and number of neurons
-        self.dt = self.data[0,1] - self.data[0,0]
+        self.dt = self.data[0, 1] - self.data[0, 0]
         self.num_neurons = np.shape(self.data)[0]
         if threshold is not None:
             self.threshold = threshold
@@ -886,15 +895,18 @@ class CaGraphTimesampled(CaGraph):
 
         # Generate node labels
         if labels is None:
-            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0]-1,
+            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1,
                                       np.shape(self.neuron_dynamics)[0]).astype(int)
         else:
             self.labels = labels
 
         # Add a series of private attributes which are CaGraph objects
         for i, sample in enumerate(time_samples):
-            setattr(self, f'__{condition_labels[i]}_cagraph', CaGraph(data=self.data[:, sample[0]:sample[1]], labels=self.labels, node_metadata=node_metadata, threshold=self.threshold))
+            setattr(self, f'__{condition_labels[i]}_cagraph',
+                    CaGraph(data=self.data[:, sample[0]:sample[1]], labels=self.labels, node_metadata=node_metadata,
+                            threshold=self.threshold))
 
+    # todo: should I remove generate_threshold?
     # Private utility methods
     def __generate_threshold(self) -> float:
         """
@@ -915,18 +927,161 @@ class CaGraphTimesampled(CaGraph):
 
     # Todo: add function
     def get_full_report(self):
+        """
+
+        :return:
+        """
         print('')
 
 
-# Todo: add batched class
+# %% Batched analyses
+# Todo: allow user to specify labels and also pass loaded numpy arrays
+# Todo: add option to add cell metadata
 class CaGraphBatched:
     """
-    Class for running batched analyses.
+    Class for running batched analyses - .
 
-    Derived from CaGraph class.
+    Only directories can be passed to CaGraphBatched. Node metadata cannot be added to CaGraph objects in the batched
+    analysis. Future versions will include the node_metadata attribute.
     """
+    def __init__(self, data_path, group_id=None, threshold=None, threshold_averaged=False):
+        """
+        Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
+        The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
+        2. if not set manually, all
 
-    # Pass __init__ from parent class
-    # Todo: make the threshold either 1. set by user 2. each individual dataset has auto-generated 3. average across all datasets (loop through first)
+        :param data: str
+        :param time_samples:
+        :param condition_labels:
+        :param labels: list
+        :param node_metadata: dict
+        :param dataset_id: str
+        :param threshold: float
+        """
+        if not os.path.exists(os.path.dirname(data_path)):
+            raise ValueError('Path provided for data_path parameter does not exist.')
+        data_list = os.listdir(data_path)
 
-    pass
+        # Set threshold
+        if threshold is not None:
+            self.threshold = threshold
+        elif threshold_averaged:
+            threshold_keys = []
+            for dataset in data_list:
+                if dataset.endswith(".csv"):
+                    threshold_keys.append(dataset[:-4])
+            self.threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
+        else:
+            self.threshold = None
+        if group_id is not None:
+            self.group_id = group_id
+
+        # Construct CaGraph objects for each datasets
+        self.dataset_identifiers = []
+        for dataset in data_list:
+            if dataset.endswith(".csv"):
+                data = np.genfromtxt(data_path + dataset, delimiter=",")
+                try:
+                    setattr(self, f'__{dataset[:-4]}_cagraph', CaGraph(data=data, threshold=self.threshold))
+                    self.dataset_identifiers.append(dataset[:-4])
+                except Exception as e:
+                    # Todo: add this exception to other classes
+                    print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
+
+    # Private utility methods
+    # Todo: ensure that datasets which are thrown out at CaGraph object generation are not included in future versions
+    def __generate_averaged_threshold(self, data_path, dataset_keys):
+        """
+        Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
+
+        :param data_path:
+        :param dataset_keys:
+        :return:
+        """
+        store_thresholds = []
+        for dataset in dataset_keys:
+            data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
+            store_thresholds.append(prep.generate_threshold(data=data))
+        return np.mean(store_thresholds)
+
+    # Public utility methods
+    def get_cagraph(self, condition_label):
+        """
+
+        :param condition_label:
+        :return:
+        """
+        return getattr(self, f'__{condition_label}_cagraph')
+
+    def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+        """
+        Generates an organized report of all data in the batched sample. It will report on the
+        base analyses included in the CaGraph object get_report() method, and output a single
+        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
+        :return:
+        """
+        store_reports = {}
+        for key in self.dataset_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            store_reports[key] = cagraph_obj.get_report()
+
+        # For each column in the individual reports, append to the full report
+        full_report_df = pd.DataFrame()
+        for col in store_reports[key].columns:
+            for key in store_reports.keys():
+                df = store_reports[key]
+                df = df.rename(columns={col: f'{key}_{col}'})
+                full_report_df = pd.concat([full_report_df, df[f'{key}_{col}']], axis=1)
+
+        # Save the report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                full_report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return full_report_df
+
+    # Todo: write second report method that averages results and stores the averages
+    def get_averaged_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+        """
+
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
+        :return:
+        """
+        self.get_full_report()
+
+    def save_individual_dataset_reports(self, save_path=None, save_filetype=None):
+        """
+        Saves individual reports for each of the specified datasets.
+        Individual filenames will be generated using the filename name of the dataset from which the analysis is derived.
+
+        This will result in the same analysis that can be done by creating a CaGraph object using a single dataset.
+
+        :param save_path: str
+        :param save_filetype: str ('csv', 'HDF5', 'xlsx')
+        :return:
+        """
+        # Iterate through all datasets and save report for each
+        for key in self.dataset_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key+'_report', save_filetype=save_filetype)
+
+
+
+# Todo: see if you can make a constructor for the input to CaGraphBatched
+# Todo: add check that all save_paths exist, otherwise create them
+# Todo: check docstrings again
