@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated docstrings and resolved warnings on cagraph.py.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -331,14 +327,7 @@
       <workItem from="1683267774351" duration="154000" />
       <workItem from="1683267931739" duration="242000" />
       <workItem from="1683268176355" duration="4106000" />
-      <workItem from="1683296509125" duration="1522000" />
-    </task>
-    <task id="LOCAL-00007" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
-      <created>1678221826968</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1678221826968</updated>
+      <workItem from="1683296509125" duration="1645000" />
     </task>
     <task id="LOCAL-00008" summary="Updated README.md.">
       <created>1678291082828</created>
@@ -676,7 +665,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683268753333</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Updated docstrings and resolved warnings on cagraph.py.">
+      <created>1683298443367</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1683298443367</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
