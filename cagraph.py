@@ -372,7 +372,6 @@ class CaGraph:
             position = nx.spring_layout(graph)
         nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
 
-    # Todo: add option to output to excel file
     # Todo: add option to generate a directory with analysis files
     def get_report(self, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None,
                    parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
@@ -876,14 +875,10 @@ class CaGraph:
 
 
 # %% Time samples
-# Todo: Create a systematic return report/ dictionary
 class CaGraphTimeSamples:
     """
     Class for running time-sample analyses on a single dataset.
-
     """
-
-    # Todo: add checks that length of time samples and condition labels are equal -- user guardrails
     def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None,
                  dataset_id=None,
                  threshold=None):
@@ -916,6 +911,8 @@ class CaGraphTimeSamples:
         # Add dataset identifier
         if dataset_id is not None:
             self._data_id = dataset_id
+
+        self._condition_identifiers = condition_labels
 
         # Compute time interval and number of neurons
         self._dt = self.data[0, 1] - self.data[0, 0]
@@ -963,6 +960,10 @@ class CaGraphTimeSamples:
     def threshold(self):
         return self._threshold
 
+    @property
+    def condition_identifiers(self):
+        return self._condition_identifiers
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
@@ -981,21 +982,52 @@ class CaGraphTimeSamples:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    # Todo: high priority add function
-    def get_full_report(self):
+    def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
+        Generates an organized report of all data in the batched sample. It will report on the
+        base analyses included in the CaGraph object get_report() method, and output a single
+        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
 
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
         :return:
         """
-        print('')
+        store_reports = {}
+        for key in self._condition_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            store_reports[key] = cagraph_obj.get_report()
+
+        # For each column in the individual reports, append to the full report
+        full_report_df = pd.DataFrame()
+        for col in store_reports[key].columns:
+            for key in store_reports.keys():
+                df = store_reports[key]
+                df = df.rename(columns={col: f'{key}_{col}'})
+                full_report_df = pd.concat([full_report_df, df[f'{key}_{col}']], axis=1)
+
+        # Save the report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                full_report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return full_report_df
 
 
 # %% Batched analyses
-class CaGraphBatches:
+class CaGraphBatch:
     """
     Class for running batched analyses.
 
-    Only directories can be passed to CaGraphBatches. Node metadata cannot be added to CaGraph objects in the batched
+    Only directories can be passed to CaGraphBatch. Node metadata cannot be added to CaGraph objects in the batched
     analysis. Future versions will include the node_metadata attribute.
     """
 
@@ -1113,18 +1145,6 @@ class CaGraphBatches:
                 full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return full_report_df
 
-    # Todo: high priority write second report method that averages results and stores the averages
-    def get_averaged_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
-        """
-
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
-        """
-        self.get_full_report()
-
     def save_individual_dataset_reports(self, save_path=None, save_filetype=None):
         """
         Saves individual reports for each of the specified datasets.
@@ -1148,10 +1168,13 @@ class CaGraphBatches:
 
 
 # %% Remaining updates
-# Todo: CaGraphBatches -> allow user to specify labels and also pass loaded numpy arrays
-# Todo: CaGraphBatches -> add option to add cell metadata
-# Todo: CaGraphBatches -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
-# Todo: CaGraphBatches -> make a constructor function that can pass loaded data, numpy arrays
+# Todo: CaGraphBatch -> allow user to specify labels and also pass loaded numpy arrays
+# Todo: CaGraphBatch -> add option to add cell metadata
+# Todo: CaGraphBatch -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
+# Todo: CaGraphBatch -> make a constructor function that can pass loaded data, numpy arrays
 # Todo: All classes -> add check that all save_paths exist, otherwise create them
 # Todo: All classes -> check docstrings again
 # Todo: dd whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
+# Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
+# Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
+# Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
