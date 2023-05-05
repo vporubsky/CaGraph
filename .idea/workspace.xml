@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphTimesampled class to cagraph.py">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphBatched class with report functionality.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -317,13 +316,18 @@
       <workItem from="1683234624233" duration="62000" />
       <workItem from="1683234688607" duration="2353000" />
       <workItem from="1683238644271" duration="1000000" />
-    </task>
-    <task id="LOCAL-00005" summary="Updated tutorial.py script and Preprocessing class functionality.">
-      <created>1678169303731</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1678169303731</updated>
+      <workItem from="1683240174920" duration="644000" />
+      <workItem from="1683250655825" duration="6310000" />
+      <workItem from="1683264628363" duration="411000" />
+      <workItem from="1683265042744" duration="162000" />
+      <workItem from="1683265207796" duration="313000" />
+      <workItem from="1683265588704" duration="1084000" />
+      <workItem from="1683266736131" duration="33000" />
+      <workItem from="1683266771974" duration="490000" />
+      <workItem from="1683267265635" duration="447000" />
+      <workItem from="1683267774351" duration="154000" />
+      <workItem from="1683267931739" duration="242000" />
+      <workItem from="1683268176355" duration="341000" />
     </task>
     <task id="LOCAL-00006" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
       <created>1678215560910</created>
@@ -661,7 +665,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683178653239</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Added CaGraphBatched class with report functionality.">
+      <created>1683240242458</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1683240242459</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -679,7 +690,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated test_CaGraph.py" />
     <MESSAGE value="Checking GitHub Actions continuous integration" />
     <MESSAGE value="Updated preprocess.py and added preprocessing_tutorial.ipynb." />
     <MESSAGE value="Updated preprocess.py and preprocessing_tutorial.ipynb, added documentation sources." />
@@ -704,7 +714,8 @@
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
     <MESSAGE value="Added get_report() method to CaGraph class." />
     <MESSAGE value="Added CaGraphTimesampled class to cagraph.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphTimesampled class to cagraph.py" />
+    <MESSAGE value="Added CaGraphBatched class with report functionality." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphBatched class with report functionality." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

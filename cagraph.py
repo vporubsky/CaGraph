@@ -8,7 +8,6 @@ from pynwb import NWBHDF5IO
 import pandas as pd
 import os
 
-
 # %% CaGraph class
 class CaGraph:
     """
@@ -16,7 +15,7 @@ class CaGraph:
     Author Github: https://github.com/vporubsky
     Author ORCID: https://orcid.org/0000-0001-7216-3368
 
-    Class: CaGraph(data_file, labels=None, metadata=None, dataset_id=None, threshold=None)
+    Class: CaGraph(data_file, node_labels=None, node_metadata=None, dataset_id=None, threshold=None)
     =====================
 
     This class provides functionality to easily visualize time-series data of
@@ -31,7 +30,7 @@ class CaGraph:
         A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
         memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron timeseries
         of calcium fluoresence data sampled at the timepoints specified in the first row.
-    labels: list
+    node_labels: list
         A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
     node_metadata: dict
         Contains metadata which is associated with neurons in the network. Each key in the dictionary will be added as an
@@ -43,31 +42,32 @@ class CaGraph:
         Sets a threshold to be used for binarized graph.
     """
 
-    def __init__(self, data, labels=None, node_metadata=None, dataset_id=None, threshold=None):
+    def __init__(self, data, node_labels=None, node_metadata=None, dataset_id=None, threshold=None):
         """
         :param data: str
-        :param labels: list
+        :param node_labels: list
         :param node_metadata: dict
         :param dataset_id: str
         :param threshold: float
         """
         # Check that the input data is in the correct format and load dataset
         if isinstance(data, np.ndarray):
-            self.data = data
-            self.time = self.data[0, :]
-            self.neuron_dynamics = self.data[1:len(self.data), :]
+            self._data = data
+            self._time = self._data[0, :]
+            self._neuron_dynamics = self._data[1:len(self._data), :]
         elif isinstance(data, str):
             if data.endswith('csv'):
-                self.data = np.genfromtxt(data, delimiter=",")
-                self.time = self.data[0, :]
-                self.neuron_dynamics = self.data[1:len(self.data), :]
+                self._data = np.genfromtxt(data, delimiter=",")
+                self._time = self._data[0, :]
+                self._neuron_dynamics = self._data[1:len(self._data), :]
             elif data.endswith('nwb'):
                 with NWBHDF5IO(data, 'r') as io:
                     nwbfile_read = io.read()
                     nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
                     ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                    self.neuron_dynamics = ca_from_nwb.data[:]
-                    self.time = ca_from_nwb.timestamps[:]
+                    self._neuron_dynamics = ca_from_nwb.data[:]
+                    self._time = ca_from_nwb.timestamps[:]
+                    self._data = np.vstack((self._time, self._neuron_dynamics))
             else:
                 raise TypeError('File path must have a .csv or .nwb file to load.')
         else:
@@ -75,49 +75,50 @@ class CaGraph:
 
         # Add dataset identifier
         if dataset_id is not None:
-            self.data_id = dataset_id
+            self._data_id = dataset_id
 
         # Compute time interval and number of neurons
-        self.dt = self.time[1] - self.time[0]
-        self.num_neurons = np.shape(self.neuron_dynamics)[0]
+        self._dt = self._time[1] - self._time[0]
+        self._num_neurons = np.shape(self._neuron_dynamics)[0]
 
         # Generate node labels
-        if labels is None:
-            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1,
-                                      np.shape(self.neuron_dynamics)[0]).astype(int)
+        if node_labels is None:
+            self._node_labels = np.linspace(0, np.shape(self._neuron_dynamics)[0] - 1,
+                                      np.shape(self._neuron_dynamics)[0]).astype(int)
         else:
-            self.labels = labels
+            self._node_labels = node_labels
 
         # Initialize correlation matrix, threshold, and graph
-        self.pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
+        self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
         if threshold is not None:
-            self.threshold = threshold
+            self._threshold = threshold
         else:
-            self.threshold = self.__generate_threshold()
-        self.graph = self.get_graph()
+            self._threshold = self.__generate_threshold()
+        self._graph = self.get_graph()
 
         # Store initial settings to reset attributes after modification
-        self.__init_threshold = self.threshold
-        self.__init_pearsons_correlation_matrix = self.pearsons_correlation_matrix
-        self.__init_graph = self.graph
+        self.__init_threshold = self._threshold
+        self.__init_pearsons_correlation_matrix = self._pearsons_correlation_matrix
+        self.__init_graph = self._graph
 
         # Initialize subclass objects
-        self.graph_theory = self.GraphTheory(neuron_dynamics=self.neuron_dynamics, time=self.time,
-                                             num_neurons=self.num_neurons,
-                                             pearsons_correlation_matrix=self.pearsons_correlation_matrix,
-                                             graph=self.graph, labels=self.labels)
-        self.plotting = self.Plotting(neuron_dynamics=self.neuron_dynamics, time=self.time,
-                                      num_neurons=self.num_neurons,
-                                      pearsons_correlation_matrix=self.pearsons_correlation_matrix, graph=self.graph)
+        self.graph_theory = self.GraphTheory(neuron_dynamics=self._neuron_dynamics, time=self._time,
+                                             num_neurons=self._num_neurons,
+                                             pearsons_correlation_matrix=self._pearsons_correlation_matrix,
+                                             graph=self._graph, labels=self._node_labels)
+
+        self.plotting = self.Plotting(neuron_dynamics=self._neuron_dynamics, time=self._time,
+                                      num_neurons=self._num_neurons,
+                                      pearsons_correlation_matrix=self._pearsons_correlation_matrix, graph=self._graph)
 
         # Initialize base graph theory analyses
-        self.degree = self.graph_theory.get_degree(return_type='dict')
-        self.clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
-        self.correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
-        self.communities = self.graph_theory.get_communities(return_type='dict')
-        self.hubs = self.graph_theory.get_hubs(return_type='dict')
-        self.hits = self.graph_theory.get_hits_values(return_type='dict')
-        self.eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+        self._degree = self.graph_theory.get_degree(return_type='dict')
+        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
+        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
+        self._communities = self.graph_theory.get_communities(return_type='dict')
+        self._hubs = self.graph_theory.get_hubs(return_type='dict')
+        self._hits = self.graph_theory.get_hits_values(return_type='dict')
+        self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
         # Build private attribute dictionary
         self.__attribute_dictionary = {}
@@ -129,17 +130,16 @@ class CaGraph:
         self.__attribute_dictionary['correlated pair ratio'] = self.correlated_pair_ratio
         self.__attribute_dictionary['HITS'] = self.hits
 
-        # Todo: check if this can be simplified/ cleaned-up
         # Add node metadata
         if node_metadata is not None:
             for key in node_metadata.keys():
                 if type(node_metadata[key]) is list or np.ndarray:
-                    if len(node_metadata[key]) != len(self.labels):
+                    if len(node_metadata[key]) != len(self._node_labels):
                         raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
                                          'associated with every node.')
                     node_metadata_dict = {}
                     for i, value in enumerate(node_metadata[key]):
-                        node_metadata_dict[self.labels[i]] = value
+                        node_metadata_dict[self._node_labels[i]] = value
                     self.__attribute_dictionary[key] = node_metadata_dict
                     setattr(self, key, node_metadata_dict)
                 elif type(node_metadata[key]) is dict:
@@ -151,13 +151,94 @@ class CaGraph:
                                          'where each key is a node and each value is the metadata value for that node.')
 
     # Private utility methods
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def time(self):
+        return self._time
+
+    @property
+    def neuron_dynamics(self):
+        return self._neuron_dynamics
+
+    @property
+    def dt(self):
+        return self._dt
+
+    @property
+    def num_neurons(self):
+        return self._num_neurons
+
+    @property
+    def data_id(self):
+        return self._data_id
+
+    @property
+    def node_labels(self):
+        return self._node_labels
+
+    @property
+    def pearsons_correlation_matrix(self):
+        return self._pearsons_correlation_matrix
+
+    @property
+    def graph(self):
+        return self._graph
+
+    @property
+    def degree(self):
+        return self._degree
+
+    @property
+    def clustering_coefficient(self):
+        return self._clustering_coefficient
+
+    @property
+    def correlated_pair_ratio(self):
+        return self._correlated_pair_ratio
+
+    @property
+    def communities(self):
+        return self._communities
+
+    @property
+    def hubs(self):
+        return self._hubs
+
+    @property
+    def hits(self):
+        return self._hits
+
+    @property
+    def eigenvector_centrality(self):
+        return self._eigenvector_centrality
+
+    @property
+    def threshold(self):
+        return self._threshold
+
+    @threshold.setter
+    def threshold(self, value):
+        self._threshold = value
+        self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
+        self._graph = self.get_graph()
+        self._degree = self.graph_theory.get_degree(return_type='dict')
+        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
+        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
+        self._communities = self.graph_theory.get_communities(return_type='dict')
+        self._hubs = self.graph_theory.get_hubs(return_type='dict')
+        self._hits = self.graph_theory.get_hits_values(return_type='dict')
+        self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
 
         :return: float
         """
-        return prep.generate_threshold(data=self.neuron_dynamics)
+        return prep.generate_threshold(data=self._neuron_dynamics)
 
     def __parse_by_node(self, node_data, node_list) -> list:
         """
@@ -175,16 +256,16 @@ class CaGraph:
         """
         Resets the CaGraph object graph attribute to the original state at the time the object was created.
         """
-        self.pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
-        self.threshold = self.__init_threshold
-        self.graph = self.__init_graph
+        self._pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
+        self._threshold = self.__init_threshold
+        self._graph = self.__init_graph
 
         # Re-initialize base graph theory analyses
-        self.degree = self.graph_theory.get_degree()
-        self.clustering_coefficient = self.graph_theory.get_clustering_coefficient()
-        self.correlated_pairs_ratio = self.graph_theory.get_correlated_pair_ratio()
-        self.communities = self.graph_theory.get_communities()
-        self.hubs = self.graph_theory.get_hubs()
+        self._degree = self.graph_theory.get_degree()
+        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient()
+        self._correlated_pairs_ratio = self.graph_theory.get_correlated_pair_ratio()
+        self._communities = self.graph_theory.get_communities()
+        self._hubs = self.graph_theory.get_hubs()
 
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
@@ -199,7 +280,7 @@ class CaGraph:
         :return:
         """
         if data_matrix is None:
-            data_matrix = self.neuron_dynamics
+            data_matrix = self._neuron_dynamics
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
 
     # Todo: determine if you need this to be adjusted so you can set multiple thresholds (< 0.1, > 0.5)
@@ -211,7 +292,7 @@ class CaGraph:
 
         :return: numpy.ndarray
         """
-        adj_mat = (self.pearsons_correlation_matrix > self.threshold).astype(int)
+        adj_mat = (self._pearsons_correlation_matrix > self._threshold).astype(int)
         np.fill_diagonal(adj_mat, 0)
         return adj_mat
 
@@ -232,7 +313,7 @@ class CaGraph:
 
         :return: numpy.ndarray
         """
-        weight_matrix = self.pearsons_correlation_matrix
+        weight_matrix = self._pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
@@ -269,7 +350,7 @@ class CaGraph:
         :return: networkx.Graph object
         """
         if graph is None:
-            num_nodes = self.num_neurons
+            num_nodes = self._num_neurons
             con_probability = self.get_graph_density()
         else:
             num_nodes = len(graph.nodes)
@@ -290,7 +371,7 @@ class CaGraph:
         :return:
         """
         if graph is None:
-            graph = self.graph
+            graph = self._graph
         if position is None:
             position = nx.spring_layout(graph)
         nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
@@ -308,7 +389,7 @@ class CaGraph:
         """
         # Set up parsing
         if parse_by_attribute is not None:
-            # identify nodes that meet the criteria
+            # identify nodes that meet the parsing criteria
             if parsing_operation == '>':
                 parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
                                  value > parsing_value]
@@ -330,18 +411,16 @@ class CaGraph:
 
         # Individual node analyses
         if parsing_nodes is None:
-            parsing_nodes = self.labels
+            parsing_nodes = self._node_labels
         report_dict = {}
         for key in self.__attribute_dictionary.keys():
             report_dict[key] = self.__parse_by_node(node_data=self.__attribute_dictionary[key], node_list=parsing_nodes)
-
+        print(report_dict)
+        for key in report_dict.keys():
+            print(len(report_dict[key]))
         # Construct report dataframe
         report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
         report_df.index = parsing_nodes
-
-        # Todo: add whole-graph analysis
-        # Whole graph analysis
-        # report_dict['density']  = self.graph_theory.get_graph_density()
 
         # Save report
         if save_report:
@@ -359,12 +438,37 @@ class CaGraph:
 
     class GraphTheory:
         def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons, labels):
-            self.time = time
-            self.neuron_dynamics = neuron_dynamics
-            self.num_neurons = num_neurons
-            self.pearsons_correlation_matrix = pearsons_correlation_matrix
-            self.graph = graph
-            self.labels = labels
+            self._time = time
+            self._neuron_dynamics = neuron_dynamics
+            self._num_neurons = num_neurons
+            self._pearsons_correlation_matrix = pearsons_correlation_matrix
+            self._graph = graph
+            self._node_labels = labels
+
+        # Private utility methods
+        @property
+        def time(self):
+            return self._time
+
+        @property
+        def neuron_dynamics(self):
+            return self._neuron_dynamics
+
+        @property
+        def num_neurons(self):
+            return self._num_neurons
+
+        @property
+        def graph(self):
+            return self._graph
+
+        @property
+        def node_labels(self):
+            return self._node_labels
+
+        @property
+        def pearsons_correlation_matrix(self):
+            return self._pearsons_correlation_matrix
 
         # Graph theory analysis
         def get_hubs(self, graph=None, return_type='list'):
@@ -376,7 +480,7 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                hubs, authorities = nx.hits(self.graph, max_iter=500)
+                hubs, authorities = nx.hits(self._graph, max_iter=500)
             else:
                 hubs, authorities = nx.hits(graph, max_iter=500)
             med_hubs = np.median(list(hubs.values()))
@@ -384,7 +488,7 @@ class CaGraph:
             hubs_threshold = med_hubs + 2.5 * std_hubs
             hubs_list = []
             [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
-            hub_dict = {i: 1 if i in list(set(hubs_list) & set(self.labels)) else 0 for i in self.labels}
+            hub_dict = {i: 1 if i in list(set(hubs_list) & set(self._node_labels)) else 0 for i in self._node_labels}
             if return_type == 'dict':
                 return hub_dict
             if return_type == 'list':
@@ -399,7 +503,7 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             hits_dict, authorities_dict = nx.hits(graph, max_iter=500)
             if return_type == 'dict':
                 return hits_dict
@@ -414,7 +518,7 @@ class CaGraph:
             :return: list
             """
             if graph is None:
-                connected_components_with_orphan = list(nx.connected_components(self.graph))
+                connected_components_with_orphan = list(nx.connected_components(self._graph))
             else:
                 connected_components_with_orphan = list(nx.connected_components(graph))
             connected_components = []
@@ -429,7 +533,7 @@ class CaGraph:
             :return: networkx.Graph object
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             largest_component = max(nx.connected_components(graph), key=len)
             return graph.subgraph(largest_component)
 
@@ -450,11 +554,11 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             degree_view = nx.clustering(graph)
             clustering_coefficient = []
             [clustering_coefficient.append(degree_view[node]) for node in graph.nodes()]
-            clustering_dict = dict(zip(self.labels, clustering_coefficient))
+            clustering_dict = dict(zip(self._node_labels, clustering_coefficient))
             if return_type == 'dict':
                 return clustering_dict
             if return_type == 'list':
@@ -468,7 +572,7 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             degree_dict = dict(graph.degree)
             if return_type == 'dict':
                 return degree_dict
@@ -484,11 +588,11 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             degree_view = self.get_degree(graph)
             correlated_pair_ratio = []
-            [correlated_pair_ratio.append(degree_view[node] / self.num_neurons) for node in graph.nodes()]
-            correlated_pair_ratio_dict = dict(zip(self.labels, correlated_pair_ratio))
+            [correlated_pair_ratio.append(degree_view[node] / self._num_neurons) for node in graph.nodes()]
+            correlated_pair_ratio_dict = dict(zip(self._node_labels, correlated_pair_ratio))
             if return_type == 'dict':
                 return correlated_pair_ratio_dict
             if return_type == 'list':
@@ -503,9 +607,9 @@ class CaGraph:
             :param graph: networkx.Graph object
             :return: float
             """
-            possible_edges = (self.num_neurons * (self.num_neurons - 1)) / 2
+            possible_edges = (self._num_neurons * (self._num_neurons - 1)) / 2
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             return len(graph.edges) / possible_edges
 
         def get_eigenvector_centrality(self, graph=None, return_type='list'):
@@ -517,7 +621,7 @@ class CaGraph:
             :param return_type: str
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             eigenvector_centrality = nx.eigenvector_centrality(graph)
             if return_type == 'dict':
                 return eigenvector_centrality
@@ -532,7 +636,7 @@ class CaGraph:
             :return: node_groups: list
             """
             if graph is None:
-                graph = self.graph
+                graph = self._graph
             communities = list(nx.algorithms.community.greedy_modularity_communities(graph))
             sorted(communities)
             community_id = {}
@@ -561,7 +665,7 @@ class CaGraph:
                 raise RuntimeError(
                     'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
-        # Todo: add function
+        # Todo: high priority add function
         def compare_graphs(self):
             """
 
@@ -570,11 +674,32 @@ class CaGraph:
 
     class Plotting:
         def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons):
-            self.num_neurons = num_neurons
-            self.time = time
-            self.neuron_dynamics = neuron_dynamics
-            self.pearsons_correlation_matrix = pearsons_correlation_matrix
-            self.graph = graph
+            self._num_neurons = num_neurons
+            self._time = time
+            self._neuron_dynamics = neuron_dynamics
+            self._pearsons_correlation_matrix = pearsons_correlation_matrix
+            self._graph = graph
+
+        # Private utility methods
+        @property
+        def time(self):
+            return self._time
+
+        @property
+        def neuron_dynamics(self):
+            return self._neuron_dynamics
+
+        @property
+        def num_neurons(self):
+            return self._num_neurons
+
+        @property
+        def graph(self):
+            return self._graph
+
+        @property
+        def pearsons_correlation_matrix(self):
+            return self._pearsons_correlation_matrix
 
         def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None,
                                      show_plot=True,
@@ -617,7 +742,7 @@ class CaGraph:
             :return: numpy.ndarray
             """
             neuron_timecourse_selection = neuron_trace_number
-            return np.vstack((self.time, self.neuron_dynamics[neuron_timecourse_selection, :]))
+            return np.vstack((self._time, self._neuron_dynamics[neuron_timecourse_selection, :]))
 
         def plot_single_neuron_timecourse(self, neuron_trace_number, title=None, y_label=None, x_label=None,
                                           show_plot=True,
@@ -638,15 +763,15 @@ class CaGraph:
             neuron_timecourse_selection = neuron_trace_number
             count = 1
             x_tick_array = []
-            for i in range(len(self.time)):
-                if count % (len(self.time) / 20) == 0:
-                    x_tick_array.append(self.time[i])
+            for i in range(len(self._time)):
+                if count % (len(self._time) / 20) == 0:
+                    x_tick_array.append(self._time[i])
                 count += 1
             plt.figure(num=1, figsize=(10, 2))
-            plt.plot(self.time, self.neuron_dynamics[neuron_timecourse_selection, :],
+            plt.plot(self._time, self._neuron_dynamics[neuron_timecourse_selection, :],
                      linewidth=1)  # add option : 'xkcd:olive',
             plt.xticks(x_tick_array)
-            plt.xlim(0, self.time[-1])
+            plt.xlim(0, self._time[-1])
             if title is not None:
                 plt.title(title)
             if y_label is not None:
@@ -687,9 +812,9 @@ class CaGraph:
             if palette is None:
                 palette = sns.color_palette('husl', len(neuron_trace_labels))
             for idx, neuron in enumerate(neuron_trace_labels):
-                y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                y = self._neuron_dynamics[neuron, :].copy() / max(self._neuron_dynamics[neuron, :])
                 y = [x + 1.05 * count for x in y]
-                plt.plot(self.time, y, c=palette[idx], linewidth=1)
+                plt.plot(self._time, y, c=palette[idx], linewidth=1)
                 plt.xticks([])
                 plt.yticks([])
                 count += 1
@@ -711,7 +836,7 @@ class CaGraph:
                 plt.savefig(fname=save_path, dpi=dpi, format=format)
 
         # Todo: plot stacked timeseries based on input neuron indices from graph theory test_analyses
-        # Todo: check that the self.num_neurons is not too many for color_palette
+        # Todo: check that the self._num_neurons is not too many for color_palette
         def plot_subgraphs_timeseries(self, graph=None, palette=None, title=None, y_label=None, x_label=None,
                                       show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
             """
@@ -730,14 +855,14 @@ class CaGraph:
             """
             subgraphs = self.get_subgraphs(graph=graph)
             if palette is None:
-                palette = sns.color_palette('husl', self.num_neurons)
+                palette = sns.color_palette('husl', self._num_neurons)
             for idx, subgraph in enumerate(subgraphs):
                 count = 0
                 for neuron in subgraph:
-                    y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                    y = self._neuron_dynamics[neuron, :].copy() / max(self._neuron_dynamics[neuron, :])
                     for j in range(len(y)):
                         y[j] = y[j] + 1.05 * count
-                    plt.plot(self.time, y, c=palette[idx], linewidth=1)
+                    plt.plot(self._time, y, c=palette[idx], linewidth=1)
                     plt.xticks([])
                     plt.yticks([])
                     count += 1
@@ -777,10 +902,10 @@ class CaGraph:
             for subgraph in subgraphs:
                 count = 0
                 for neuron in subgraph:
-                    y = self.neuron_dynamics[neuron, :].copy() / max(self.neuron_dynamics[neuron, :])
+                    y = self._neuron_dynamics[neuron, :].copy() / max(self._neuron_dynamics[neuron, :])
                     for j in range(len(y)):
                         y[j] = y[j] + 1.05 * count
-                    plt.plot(self.time, y, 'k', linewidth=1)
+                    plt.plot(self._time, y, 'k', linewidth=1)
                     plt.xticks([])
                     plt.yticks([])
                     count += 1
@@ -816,14 +941,14 @@ class CaGraph:
             plt.figure(num=2, figsize=(10, 2))
             count = 1
             x_tick_array = []
-            for i in range(len(self.time)):
-                if count % (len(self.time) / 20) == 0:
-                    x_tick_array.append(self.time[i])
+            for i in range(len(self._time)):
+                if count % (len(self._time) / 20) == 0:
+                    x_tick_array.append(self._time[i])
                 count += 1
-            for i in range(len(self.neuron_dynamics) - 1):
-                plt.plot(self.time, self.neuron_dynamics[i, :], linewidth=0.5)
+            for i in range(len(self._neuron_dynamics) - 1):
+                plt.plot(self._time, self._neuron_dynamics[i, :], linewidth=0.5)
                 plt.xticks(x_tick_array)
-                plt.xlim(0, self.time[-1])
+                plt.xlim(0, self._time[-1])
             if title is not None:
                 plt.title(title)
             if y_label is not None:
@@ -849,33 +974,30 @@ class CaGraphTimesampled(CaGraph):
     Class for running timesampled analyses on a single dataset.
 
     """
-
     # Todo: add checks that length of timesamples and condition labels are equal -- user guardrails
-    def __init__(self, data, time_samples=None, condition_labels=None, labels=None, node_metadata=None, dataset_id=None,
+    def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None, dataset_id=None,
                  threshold=None):
         """
         :param data: str
         :param time_samples:
         :param condition_labels:
-        :param labels: list
+        :param node_labels: list
         :param node_metadata: dict
         :param dataset_id: str
         :param threshold: float
         """
         # Check that the input data is in the correct format and load dataset
         if isinstance(data, np.ndarray):
-            self.data = data
+            self._data = data
         elif isinstance(data, str):
             if data.endswith('csv'):
-                self.data = np.genfromtxt(data, delimiter=",")
+                self._data = np.genfromtxt(data, delimiter=",")
             elif data.endswith('nwb'):
                 with NWBHDF5IO(data, 'r') as io:
                     nwbfile_read = io.read()
                     nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
                     ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                    # Todo: need to stack these two and generate self.data
-                    self.neuron_dynamics = ca_from_nwb.data[:]
-                    self.time = ca_from_nwb.timestamps[:]
+                    self._data = np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:]))
             else:
                 raise TypeError('File path must have a .csv or .nwb file to load.')
         else:
@@ -883,38 +1005,62 @@ class CaGraphTimesampled(CaGraph):
 
         # Add dataset identifier
         if dataset_id is not None:
-            self.data_id = dataset_id
+            self._data_id = dataset_id
 
         # Compute time interval and number of neurons
-        self.dt = self.data[0, 1] - self.data[0, 0]
-        self.num_neurons = np.shape(self.data)[0]
+        self._dt = self.data[0, 1] - self.data[0, 0]
+        self._num_neurons = np.shape(self.data)[0]
         if threshold is not None:
-            self.threshold = threshold
+            self._threshold = threshold
         else:
-            self.threshold = self.__generate_threshold()
+            self._threshold = self.__generate_threshold()
 
         # Generate node labels
-        if labels is None:
-            self.labels = np.linspace(0, np.shape(self.neuron_dynamics)[0] - 1,
-                                      np.shape(self.neuron_dynamics)[0]).astype(int)
+        if node_labels is None:
+            self._node_labels = np.linspace(0, np.shape(self.data)[0] - 2,
+                                      np.shape(self.data)[0] - 1).astype(int)
         else:
-            self.labels = labels
+            self._node_labels = node_labels
 
         # Add a series of private attributes which are CaGraph objects
         for i, sample in enumerate(time_samples):
             setattr(self, f'__{condition_labels[i]}_cagraph',
-                    CaGraph(data=self.data[:, sample[0]:sample[1]], labels=self.labels, node_metadata=node_metadata,
-                            threshold=self.threshold))
+                    CaGraph(data=self._data[:, sample[0]:sample[1]], node_labels=self._node_labels,
+                            node_metadata=node_metadata, threshold=self._threshold))
 
-    # todo: should I remove generate_threshold?
     # Private utility methods
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def dt(self):
+        return self._dt
+
+    @property
+    def num_neurons(self):
+        return self._num_neurons
+
+    @property
+    def data_id(self):
+        return self._data_id
+
+    @property
+    def node_labels(self):
+        return self._node_labels
+
+    @property
+    def threshold(self):
+        return self._threshold
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
+        This threshold generation will use the full dataset.
 
         :return: float
         """
-        return prep.generate_threshold(data=self.neuron_dynamics)
+        return prep.generate_threshold(data=self.data)
 
     # Public utility methods
     def get_cagraph(self, condition_label):
@@ -925,7 +1071,7 @@ class CaGraphTimesampled(CaGraph):
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    # Todo: add function
+    # Todo: high priority add function
     def get_full_report(self):
         """
 
@@ -935,11 +1081,9 @@ class CaGraphTimesampled(CaGraph):
 
 
 # %% Batched analyses
-# Todo: allow user to specify labels and also pass loaded numpy arrays
-# Todo: add option to add cell metadata
 class CaGraphBatched:
     """
-    Class for running batched analyses - .
+    Class for running batched analyses.
 
     Only directories can be passed to CaGraphBatched. Node metadata cannot be added to CaGraph objects in the batched
     analysis. Future versions will include the node_metadata attribute.
@@ -964,32 +1108,59 @@ class CaGraphBatched:
 
         # Set threshold
         if threshold is not None:
-            self.threshold = threshold
+            self._threshold = threshold
         elif threshold_averaged:
             threshold_keys = []
             for dataset in data_list:
                 if dataset.endswith(".csv"):
                     threshold_keys.append(dataset[:-4])
-            self.threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
+            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
         else:
-            self.threshold = None
+            self._threshold = None
         if group_id is not None:
-            self.group_id = group_id
+            self._group_id = group_id
 
         # Construct CaGraph objects for each datasets
-        self.dataset_identifiers = []
+        self._dataset_identifiers = []
         for dataset in data_list:
             if dataset.endswith(".csv"):
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
                 try:
-                    setattr(self, f'__{dataset[:-4]}_cagraph', CaGraph(data=data, threshold=self.threshold))
-                    self.dataset_identifiers.append(dataset[:-4])
+                    setattr(self, f'__{dataset[:-4]}_cagraph', CaGraph(data=data, threshold=self._threshold))
+                    self._dataset_identifiers.append(dataset[:-4])
                 except Exception as e:
                     # Todo: add this exception to other classes
                     print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
 
     # Private utility methods
-    # Todo: ensure that datasets which are thrown out at CaGraph object generation are not included in future versions
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def dt(self):
+        return self._dt
+
+    @property
+    def num_neurons(self):
+        return self._num_neurons
+
+    @property
+    def group_id(self):
+        return self._group_id
+
+    @property
+    def node_labels(self):
+        return self._node_labels
+
+    @property
+    def threshold(self):
+        return self._threshold
+
+    @property
+    def dataset_identifiers(self):
+        return self._dataset_identifiers
+
     def __generate_averaged_threshold(self, data_path, dataset_keys):
         """
         Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
@@ -1005,11 +1176,12 @@ class CaGraphBatched:
         return np.mean(store_thresholds)
 
     # Public utility methods
-    def get_cagraph(self, condition_label):
+    def get_cagraph(self, condition_label) -> CaGraph:
         """
+        Return a CaGraph object for the specified dataset condition_label
 
-        :param condition_label:
-        :return:
+        :param condition_label: str
+        :return: CaGraph
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
@@ -1052,7 +1224,7 @@ class CaGraphBatched:
                 full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return full_report_df
 
-    # Todo: write second report method that averages results and stores the averages
+    # Todo: high priority write second report method that averages results and stores the averages
     def get_averaged_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
 
@@ -1080,8 +1252,21 @@ class CaGraphBatched:
             cagraph_obj = self.get_cagraph(key)
             cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key+'_report', save_filetype=save_filetype)
 
+#%%  Matched analyses
 
 
-# Todo: see if you can make a constructor for the input to CaGraphBatched
-# Todo: add check that all save_paths exist, otherwise create them
-# Todo: check docstrings again
+
+
+
+
+
+
+
+#%% Remaining updates
+# Todo: CaGraphBatched -> allow user to specify labels and also pass loaded numpy arrays
+# Todo: CaGraphBatched -> add option to add cell metadata
+# Todo: CaGraphBatched -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
+# Todo: CaGraphBatched -> make a constructor function that can pass loaded data, numpy arrays
+# Todo: All classes -> add check that all save_paths exist, otherwise create them
+# Todo: All classes -> check docstrings again
+# Todo: dd whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()

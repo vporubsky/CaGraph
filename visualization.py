@@ -62,7 +62,7 @@ def interactive_network(cagraph_obj, graph=None,
         G = cg.graph
     else:
         G = graph
-    label_keys = cg.labels
+    label_keys = cg.node_labels
 
     #  Build attributes dictionary
     attribute_dict = {}
