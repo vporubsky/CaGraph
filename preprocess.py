@@ -357,7 +357,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
     :param shuffled_data: numpy.ndarray
     :param event_data:
     :param report_test: bool
-    :return: float
+    :return: float or dict
     """
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
@@ -379,9 +379,6 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
     data_vals = np.tril(y).flatten()
     ks_statistic = scipy.stats.ks_2samp(random_vals, data_vals)
     p_val = ks_statistic.pvalue
-    if report_test:
-        print(f"KS-statistic: {ks_statistic.statistic}")
-        print(f"P-val: {p_val}")
     if p_val < 0.05 and report_threshold:
         print(f"The threshold is: {outlier_threshold:.2f}")
     else:
@@ -389,6 +386,13 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
             'The KS-test performed on the shuffled and ground truth datasets show that the p-value is greater '
             'than a 5% significance level. Confirm that correlations in dataset are differentiable from random correlations '
             'before setting a threshold.')
+    if report_test:
+        print(f"KS-statistic: {ks_statistic.statistic}")
+        print(f"P-val: {p_val}")
+        threshold_dict = {"KS-statistic": ks_statistic.statistic}
+        threshold_dict["P-val"] = p_val
+        threshold_dict["threshold"] = outlier_threshold
+        return threshold_dict
     return outlier_threshold
 
 # Todo: update with bin-size adjustment below

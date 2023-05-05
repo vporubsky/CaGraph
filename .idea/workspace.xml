@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphBatched class with report functionality.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated docstrings and resolved warnings on cagraph.py.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -327,14 +330,8 @@
       <workItem from="1683267265635" duration="447000" />
       <workItem from="1683267774351" duration="154000" />
       <workItem from="1683267931739" duration="242000" />
-      <workItem from="1683268176355" duration="341000" />
-    </task>
-    <task id="LOCAL-00006" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
-      <created>1678215560910</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1678215560910</updated>
+      <workItem from="1683268176355" duration="4106000" />
+      <workItem from="1683296509125" duration="1522000" />
     </task>
     <task id="LOCAL-00007" summary="Updated tutorial.py script and cagraph.py, visualization.py, and preprocess.py functionality. Added Jupyter notebook version of tutorial, cagraph_tutorial.ipynb.">
       <created>1678221826968</created>
@@ -672,7 +669,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683240242459</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Updated class attributes to be immutable when necessary.">
+      <created>1683268753332</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1683268753333</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -690,8 +694,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Checking GitHub Actions continuous integration" />
-    <MESSAGE value="Updated preprocess.py and added preprocessing_tutorial.ipynb." />
     <MESSAGE value="Updated preprocess.py and preprocessing_tutorial.ipynb, added documentation sources." />
     <MESSAGE value="Added api.rst." />
     <MESSAGE value="Updated documentation files." />
@@ -715,7 +717,9 @@
     <MESSAGE value="Added get_report() method to CaGraph class." />
     <MESSAGE value="Added CaGraphTimesampled class to cagraph.py" />
     <MESSAGE value="Added CaGraphBatched class with report functionality." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphBatched class with report functionality." />
+    <MESSAGE value="Updated class attributes to be immutable when necessary." />
+    <MESSAGE value="Updated docstrings and resolved warnings on cagraph.py." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated docstrings and resolved warnings on cagraph.py." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -727,17 +731,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>12</line>
+          <line>11</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>29</line>
+          <line>28</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>458</line>
+          <line>462</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>

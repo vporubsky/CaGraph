@@ -8,6 +8,7 @@ from pynwb import NWBHDF5IO
 import pandas as pd
 import os
 
+
 # %% CaGraph class
 class CaGraph:
     """
@@ -29,7 +30,7 @@ class CaGraph:
     data : str or numpy.ndarray
         A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
         memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron timeseries
-        of calcium fluoresence data sampled at the timepoints specified in the first row.
+        of calcium fluorescence data sampled at the timepoints specified in the first row.
     node_labels: list
         A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
     node_metadata: dict
@@ -37,9 +38,9 @@ class CaGraph:
         attribute to the CaGraph object, and the associated value will be .
         Each value
     dataset_id: str
-        A unique identifier can be added to to the CaGraph object.
+        A unique identifier can be added to the CaGraph object.
     threshold: float
-        Sets a threshold to be used for binarized graph.
+        Sets a threshold to be used for thresholded graph.
     """
 
     def __init__(self, data, node_labels=None, node_metadata=None, dataset_id=None, threshold=None):
@@ -84,7 +85,7 @@ class CaGraph:
         # Generate node labels
         if node_labels is None:
             self._node_labels = np.linspace(0, np.shape(self._neuron_dynamics)[0] - 1,
-                                      np.shape(self._neuron_dynamics)[0]).astype(int)
+                                            np.shape(self._neuron_dynamics)[0]).astype(int)
         else:
             self._node_labels = node_labels
 
@@ -121,14 +122,11 @@ class CaGraph:
         self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
         # Build private attribute dictionary
-        self.__attribute_dictionary = {}
-        self.__attribute_dictionary['hubs'] = self.hubs
-        self.__attribute_dictionary['degree'] = self.degree
-        self.__attribute_dictionary['clustering coefficient'] = self.clustering_coefficient
-        self.__attribute_dictionary['communities'] = self.communities
-        self.__attribute_dictionary['eigenvector centrality'] = self.eigenvector_centrality
-        self.__attribute_dictionary['correlated pair ratio'] = self.correlated_pair_ratio
-        self.__attribute_dictionary['HITS'] = self.hits
+        self.__attribute_dictionary = {'hubs': self.hubs, 'degree': self.degree,
+                                       'clustering coefficient': self.clustering_coefficient,
+                                       'communities': self.communities,
+                                       'eigenvector centrality': self.eigenvector_centrality,
+                                       'correlated pair ratio': self.correlated_pair_ratio, 'HITS': self.hits}
 
         # Add node metadata
         if node_metadata is not None:
@@ -143,7 +141,7 @@ class CaGraph:
                     self.__attribute_dictionary[key] = node_metadata_dict
                     setattr(self, key, node_metadata_dict)
                 elif type(node_metadata[key]) is dict:
-                    self.__attribute_dictionary[key] = node_metadata_dict
+                    self.__attribute_dictionary[key] = node_metadata
                     setattr(self, key, node_metadata[key])
                 else:
                     raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
@@ -244,7 +242,6 @@ class CaGraph:
         """
         Method to parse report analyses using only a subset of nodes.
 
-        :type node_list: object
         :param node_data: list
         :param node_list: list
         :return: list
@@ -263,7 +260,7 @@ class CaGraph:
         # Re-initialize base graph theory analyses
         self._degree = self.graph_theory.get_degree()
         self._clustering_coefficient = self.graph_theory.get_clustering_coefficient()
-        self._correlated_pairs_ratio = self.graph_theory.get_correlated_pair_ratio()
+        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio()
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
 
@@ -276,7 +273,6 @@ class CaGraph:
         the dataset passed to the CaGraph object constructor will be used.
 
         :param data_matrix: numpy.ndarray
-        :param time_points: tuple
         :return:
         """
         if data_matrix is None:
@@ -351,10 +347,10 @@ class CaGraph:
         """
         if graph is None:
             num_nodes = self._num_neurons
-            con_probability = self.get_graph_density()
+            con_probability = self.graph_theory.get_graph_density()
         else:
             num_nodes = len(graph.nodes)
-            con_probability = self.get_graph_density(graph=graph)
+            con_probability = self.graph_theory.get_graph_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
 
     # Todo: add additional arguments to expand functionality
@@ -381,7 +377,11 @@ class CaGraph:
     def get_report(self, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None,
                    parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        :param graph:
+        :param save_filetype:
+        :param save_filename:
+        :param save_path:
+        :param save_report:
+        :param parsing_nodes:
         :param parse_by_attribute: str
         :param parsing_operation: str
         :param parsing_value: float
@@ -415,9 +415,7 @@ class CaGraph:
         report_dict = {}
         for key in self.__attribute_dictionary.keys():
             report_dict[key] = self.__parse_by_node(node_data=self.__attribute_dictionary[key], node_list=parsing_nodes)
-        print(report_dict)
-        for key in report_dict.keys():
-            print(len(report_dict[key]))
+
         # Construct report dataframe
         report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
         report_df.index = parsing_nodes
@@ -632,6 +630,7 @@ class CaGraph:
             """
             Returns a list of communities, composed of a group of nodes.
 
+            :param return_type: list
             :param graph: networkx.Graph object
             :return: node_groups: list
             """
@@ -656,9 +655,9 @@ class CaGraph:
             :return: float
             """
             if graph is None:
-                graph = self.get_largest_subgraph()
+                graph = self.get_largest_connected_component()
             else:
-                graph = self.get_largest_subgraph(graph=graph)
+                graph = self.get_largest_connected_component(graph=graph)
             if len(graph.nodes()) >= 4:
                 return nx.algorithms.smallworld.sigma(graph)
             else:
@@ -703,10 +702,11 @@ class CaGraph:
 
         def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None,
                                      show_plot=True,
-                                     save_plot=False, save_path=None, dpi=300, format='png'):
+                                     save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
             Plots a heatmap of the correlation matrix.
 
+            :param save_format:
             :param correlation_matrix:
             :param title:
             :param y_label:
@@ -715,11 +715,10 @@ class CaGraph:
             :param save_plot:
             :param save_path:
             :param dpi:
-            :param format:
             :return:
             """
             if correlation_matrix is None:
-                correlation_matrix = self.get_pearsons_correlation_matrix()
+                correlation_matrix = self._pearsons_correlation_matrix()
             sns.heatmap(correlation_matrix, vmin=0, vmax=1)
             if title is not None:
                 plt.title(title)
@@ -732,7 +731,7 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
+                plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def get_single_neuron_timecourse(self, neuron_trace_number) -> np.ndarray:
             """
@@ -746,9 +745,10 @@ class CaGraph:
 
         def plot_single_neuron_timecourse(self, neuron_trace_number, title=None, y_label=None, x_label=None,
                                           show_plot=True,
-                                          save_plot=False, save_path=None, dpi=300, format='png'):
+                                          save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
 
+            :param save_format:
             :param neuron_trace_number: int
             :param title:
             :param y_label:
@@ -757,7 +757,6 @@ class CaGraph:
             :param save_plot:
             :param save_path:
             :param dpi:
-            :param format:
             :return:
             """
             neuron_timecourse_selection = neuron_trace_number
@@ -787,15 +786,16 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
+                plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, y_label=None,
                                          x_label=None,
-                                         show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+                                         show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
             Plots multiple individual calcium fluorescence traces, stacked vertically.
 
 
+            :param save_format:
             :param neuron_trace_labels: list
             :param palette: list
             :param title:
@@ -805,7 +805,6 @@ class CaGraph:
             :param save_plot:
             :param save_path:
             :param dpi:
-            :param format:
             :return:
             """
             count = 0
@@ -833,102 +832,12 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-        # Todo: plot stacked timeseries based on input neuron indices from graph theory test_analyses
-        # Todo: check that the self._num_neurons is not too many for color_palette
-        def plot_subgraphs_timeseries(self, graph=None, palette=None, title=None, y_label=None, x_label=None,
-                                      show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-            """
-
-            :param graph: networkx.Graph object
-            :param palette: list
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            :param format:
-            :return:
-            """
-            subgraphs = self.get_subgraphs(graph=graph)
-            if palette is None:
-                palette = sns.color_palette('husl', self._num_neurons)
-            for idx, subgraph in enumerate(subgraphs):
-                count = 0
-                for neuron in subgraph:
-                    y = self._neuron_dynamics[neuron, :].copy() / max(self._neuron_dynamics[neuron, :])
-                    for j in range(len(y)):
-                        y[j] = y[j] + 1.05 * count
-                    plt.plot(self._time, y, c=palette[idx], linewidth=1)
-                    plt.xticks([])
-                    plt.yticks([])
-                    count += 1
-                if title is not None:
-                    plt.title(title)
-                if y_label is not None:
-                    plt.ylabel(y_label)
-                else:
-                    plt.ylabel('ΔF/F')
-                if x_label is not None:
-                    plt.xlabel(x_label)
-                else:
-                    plt.xlabel('Time')
-                if show_plot:
-                    plt.show()
-                if save_plot:
-                    if save_path is None:
-                        save_path = os.getcwd() + f'fig'
-                    plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-        def plot_multi_neurons_timeseries(self, graph=None, title=None, y_label=None, x_label=None, show_plot=True,
-                                          save_plot=False, save_path=None, dpi=300, format='png'):
-            """
-
-            :param graph:
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            :param format:
-            :param title:
-            """
-            subgraphs = self.get_subgraphs(graph=graph)
-            for subgraph in subgraphs:
-                count = 0
-                for neuron in subgraph:
-                    y = self._neuron_dynamics[neuron, :].copy() / max(self._neuron_dynamics[neuron, :])
-                    for j in range(len(y)):
-                        y[j] = y[j] + 1.05 * count
-                    plt.plot(self._time, y, 'k', linewidth=1)
-                    plt.xticks([])
-                    plt.yticks([])
-                    count += 1
-                if title is not None:
-                    plt.title(title)
-                if y_label is not None:
-                    plt.ylabel(y_label)
-                else:
-                    plt.ylabel('ΔF/F')
-                if x_label is not None:
-                    plt.xlabel(x_label)
-                else:
-                    plt.xlabel('Time')
-                if show_plot:
-                    plt.show()
-                if save_plot:
-                    if save_path is None:
-                        save_path = os.getcwd() + f'fig'
-                    plt.savefig(fname=save_path, dpi=dpi, format=format)
+                plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def plot_all_neurons_timecourse(self, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
-                                        save_path=None, dpi=300, format='png'):
+                                        save_path=None, dpi=300, save_format='png'):
             """
+            :param save_format:
             :param title:
             :param y_label:
             :param x_label:
@@ -936,7 +845,6 @@ class CaGraph:
             :param save_plot:
             :param save_path:
             :param dpi:
-            :param format:
             """
             plt.figure(num=2, figsize=(10, 2))
             count = 1
@@ -964,18 +872,20 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
-                plt.savefig(fname=save_path, dpi=dpi, format=format)
+                plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
 
-# %% Timesampled
+# %% Time samples
 # Todo: Create a systematic return report/ dictionary
-class CaGraphTimesampled(CaGraph):
+class CaGraphTimeSamples:
     """
-    Class for running timesampled analyses on a single dataset.
+    Class for running time-sample analyses on a single dataset.
 
     """
-    # Todo: add checks that length of timesamples and condition labels are equal -- user guardrails
-    def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None, dataset_id=None,
+
+    # Todo: add checks that length of time samples and condition labels are equal -- user guardrails
+    def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None,
+                 dataset_id=None,
                  threshold=None):
         """
         :param data: str
@@ -1018,7 +928,7 @@ class CaGraphTimesampled(CaGraph):
         # Generate node labels
         if node_labels is None:
             self._node_labels = np.linspace(0, np.shape(self.data)[0] - 2,
-                                      np.shape(self.data)[0] - 1).astype(int)
+                                            np.shape(self.data)[0] - 1).astype(int)
         else:
             self._node_labels = node_labels
 
@@ -1081,25 +991,21 @@ class CaGraphTimesampled(CaGraph):
 
 
 # %% Batched analyses
-class CaGraphBatched:
+class CaGraphBatches:
     """
     Class for running batched analyses.
 
-    Only directories can be passed to CaGraphBatched. Node metadata cannot be added to CaGraph objects in the batched
+    Only directories can be passed to CaGraphBatches. Node metadata cannot be added to CaGraph objects in the batched
     analysis. Future versions will include the node_metadata attribute.
     """
+
     def __init__(self, data_path, group_id=None, threshold=None, threshold_averaged=False):
         """
         Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
         The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
         2. if not set manually, all
 
-        :param data: str
-        :param time_samples:
-        :param condition_labels:
-        :param labels: list
-        :param node_metadata: dict
-        :param dataset_id: str
+        :param group_id: str
         :param threshold: float
         """
         if not os.path.exists(os.path.dirname(data_path)):
@@ -1120,7 +1026,7 @@ class CaGraphBatched:
         if group_id is not None:
             self._group_id = group_id
 
-        # Construct CaGraph objects for each datasets
+        # Construct CaGraph objects for each dataset
         self._dataset_identifiers = []
         for dataset in data_list:
             if dataset.endswith(".csv"):
@@ -1129,29 +1035,12 @@ class CaGraphBatched:
                     setattr(self, f'__{dataset[:-4]}_cagraph', CaGraph(data=data, threshold=self._threshold))
                     self._dataset_identifiers.append(dataset[:-4])
                 except Exception as e:
-                    # Todo: add this exception to other classes
                     print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
 
     # Private utility methods
     @property
-    def data(self):
-        return self._data
-
-    @property
-    def dt(self):
-        return self._dt
-
-    @property
-    def num_neurons(self):
-        return self._num_neurons
-
-    @property
     def group_id(self):
         return self._group_id
-
-    @property
-    def node_labels(self):
-        return self._node_labels
 
     @property
     def threshold(self):
@@ -1250,23 +1139,19 @@ class CaGraphBatched:
         # Iterate through all datasets and save report for each
         for key in self.dataset_identifiers:
             cagraph_obj = self.get_cagraph(key)
-            cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key+'_report', save_filetype=save_filetype)
+            cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key + '_report',
+                                   save_filetype=save_filetype)
 
-#%%  Matched analyses
-
-
-
+# %%  Matched analyses
 
 
 
 
-
-
-#%% Remaining updates
-# Todo: CaGraphBatched -> allow user to specify labels and also pass loaded numpy arrays
-# Todo: CaGraphBatched -> add option to add cell metadata
-# Todo: CaGraphBatched -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
-# Todo: CaGraphBatched -> make a constructor function that can pass loaded data, numpy arrays
+# %% Remaining updates
+# Todo: CaGraphBatches -> allow user to specify labels and also pass loaded numpy arrays
+# Todo: CaGraphBatches -> add option to add cell metadata
+# Todo: CaGraphBatches -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
+# Todo: CaGraphBatches -> make a constructor function that can pass loaded data, numpy arrays
 # Todo: All classes -> add check that all save_paths exist, otherwise create them
 # Todo: All classes -> check docstrings again
 # Todo: dd whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()

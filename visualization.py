@@ -9,7 +9,6 @@ File Creation Date:
 Description: 
 """
 # General imports
-from cagraph import CaGraph
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
