@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated requirements.txt">
-      <change afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates to tutorial notebooks.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -333,14 +331,7 @@
       <workItem from="1683308730777" duration="311000" />
       <workItem from="1683309046732" duration="788000" />
       <workItem from="1683309841989" duration="763000" />
-      <workItem from="1683311082629" duration="434000" />
-    </task>
-    <task id="LOCAL-00009" summary="Updated README.md.">
-      <created>1678302694688</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1678302694688</updated>
+      <workItem from="1683311082629" duration="906000" />
     </task>
     <task id="LOCAL-00010" summary="Updated visualization.py functions with save_plot functionality.">
       <created>1679602195669</created>
@@ -678,7 +669,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683298573883</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Minor updates to tutorial notebooks.">
+      <created>1683312744526</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1683312744526</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,7 +694,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added api.rst." />
     <MESSAGE value="Updated documentation files." />
     <MESSAGE value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
     <MESSAGE value="Attempt autosummary for readthedocs documentation." />
@@ -721,7 +718,8 @@
     <MESSAGE value="Updated class attributes to be immutable when necessary." />
     <MESSAGE value="Updated docstrings and resolved warnings on cagraph.py." />
     <MESSAGE value="Updated requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated requirements.txt" />
+    <MESSAGE value="Minor updates to tutorial notebooks." />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor updates to tutorial notebooks." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
