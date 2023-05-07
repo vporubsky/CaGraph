@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Resolving readthedocs error.">
-      <change afterPath="$PROJECT_DIR$/.readthedocs.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.readthedocs.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.readthedocs.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -332,14 +332,7 @@
       <workItem from="1683309046732" duration="788000" />
       <workItem from="1683309841989" duration="763000" />
       <workItem from="1683311082629" duration="906000" />
-      <workItem from="1683392139031" duration="3856000" />
-    </task>
-    <task id="LOCAL-00019" summary="Updated documentation files.">
-      <created>1681796343262</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1681796343262</updated>
+      <workItem from="1683392139031" duration="3915000" />
     </task>
     <task id="LOCAL-00020" summary="Updated documentation files.">
       <created>1681796521962</created>
@@ -677,7 +670,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683425397349</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Resolving readthedocs error.">
+      <created>1683425559469</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1683425559469</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
