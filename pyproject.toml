@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "cagraph"
 version = "0.0.1"
 dependencies = [
-    "numpy",
+    "numpy >= 1.21.6",
     "matplotlib",
     "networkx",
     "pynwb",
