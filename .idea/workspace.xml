@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates to tutorial notebooks.">
-      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Resolving readthedocs error.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -335,21 +331,7 @@
       <workItem from="1683309046732" duration="788000" />
       <workItem from="1683309841989" duration="763000" />
       <workItem from="1683311082629" duration="906000" />
-      <workItem from="1683392139031" duration="1882000" />
-    </task>
-    <task id="LOCAL-00011" summary="Updated GitHub actions pytest specification.">
-      <created>1680204976471</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1680204976471</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Updated requirements.txt name.">
-      <created>1680206128880</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1680206128880</updated>
+      <workItem from="1683392139031" duration="2296000" />
     </task>
     <task id="LOCAL-00013" summary="Updated test_CaGraph.py">
       <created>1680206214036</created>
@@ -680,7 +662,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683404509337</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Resolving readthedocs error.">
+      <created>1683423470227</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1683423470228</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Resolving readthedocs error.">
+      <created>1683423801473</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1683423801473</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -701,7 +697,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated documentation files." />
     <MESSAGE value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
     <MESSAGE value="Attempt autosummary for readthedocs documentation." />
     <MESSAGE value="Revert change." />
@@ -726,7 +721,8 @@
     <MESSAGE value="Updated docstrings and resolved warnings on cagraph.py." />
     <MESSAGE value="Updated requirements.txt" />
     <MESSAGE value="Minor updates to tutorial notebooks." />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor updates to tutorial notebooks." />
+    <MESSAGE value="Resolving readthedocs error." />
+    <option name="LAST_COMMIT_MESSAGE" value="Resolving readthedocs error." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
