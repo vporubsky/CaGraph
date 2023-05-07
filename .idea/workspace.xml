@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Resolving readthedocs error.">
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.readthedocs.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -331,14 +332,7 @@
       <workItem from="1683309046732" duration="788000" />
       <workItem from="1683309841989" duration="763000" />
       <workItem from="1683311082629" duration="906000" />
-      <workItem from="1683392139031" duration="3533000" />
-    </task>
-    <task id="LOCAL-00018" summary="Updated documentation files.">
-      <created>1681795803227</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1681795803227</updated>
+      <workItem from="1683392139031" duration="3856000" />
     </task>
     <task id="LOCAL-00019" summary="Updated documentation files.">
       <created>1681796343262</created>
@@ -676,7 +670,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683425033448</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Resolving readthedocs error.">
+      <created>1683425397349</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1683425397349</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
