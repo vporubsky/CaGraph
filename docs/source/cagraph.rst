@@ -14,7 +14,7 @@ Install with pip
     pip install cagraph
 
 preprocessing
-----
+--------------
 .. automethod:: preprocessing
    :members:
    :undoc-members:
