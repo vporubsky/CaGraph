@@ -1,4 +1,4 @@
-numpy~=1.24.3
+numpy~=1.23.5
 matplotlib~=3.6.3
 networkx~=3.0
 pynwb~=2.2.0
