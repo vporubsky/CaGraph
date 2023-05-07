@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates to tutorial notebooks.">
+      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +55,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -332,13 +335,7 @@
       <workItem from="1683309046732" duration="788000" />
       <workItem from="1683309841989" duration="763000" />
       <workItem from="1683311082629" duration="906000" />
-    </task>
-    <task id="LOCAL-00010" summary="Updated visualization.py functions with save_plot functionality.">
-      <created>1679602195669</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1679602195669</updated>
+      <workItem from="1683392139031" duration="1882000" />
     </task>
     <task id="LOCAL-00011" summary="Updated GitHub actions pytest specification.">
       <created>1680204976471</created>
@@ -676,11 +673,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683312744526</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Minor updates to tutorial notebooks.">
+      <created>1683404509337</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1683404509337</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
