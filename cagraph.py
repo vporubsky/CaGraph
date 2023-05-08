@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pynwb import NWBHDF5IO
 import pandas as pd
+from IPython.display import display
+pd.set_option('display.max_rows', 10)
+pd.set_option('display.max_columns', 10)
+pd.set_option('display.width', 150)
 import os
 
 
@@ -236,7 +240,7 @@ class CaGraph:
 
         :return: float
         """
-        return prep.generate_threshold(data=self._neuron_dynamics)
+        return prep.generate_average_threshold(data=self._neuron_dynamics, shuffle_iterations=10)
 
     def __parse_by_node(self, node_data, node_list) -> list:
         """
@@ -263,6 +267,18 @@ class CaGraph:
         self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio()
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
+
+    def show_dataset(self):
+        """
+        Uses pandas to show the dataset in a Jupyter notebook.
+
+        """
+        data_df = pd.DataFrame(self.data)
+        build_index = ['time']
+        for i in range(self.data.shape[0] - 1):
+            build_index.append('neuron ' + str(i))
+        data_df.index = build_index
+        display(data_df.style)
 
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
@@ -971,7 +987,7 @@ class CaGraphTimeSamples:
 
         :return: float
         """
-        return prep.generate_threshold(data=self.data)
+        return prep.generate_average_threshold(data=self.data[1:,:], shuffle_iterations=10)
 
     # Public utility methods
     def get_cagraph(self, condition_label):
@@ -1093,7 +1109,7 @@ class CaGraphBatch:
         store_thresholds = []
         for dataset in dataset_keys:
             data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(prep.generate_threshold(data=data))
+            store_thresholds.append(prep.generate_average_threshold(data=data[1:,:], shuffle_iterations=10))
         return np.mean(store_thresholds)
 
     # Public utility methods

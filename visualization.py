@@ -11,7 +11,6 @@ the cagraph module.
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use('CaGraph.mplstyle')
 import seaborn as sns
 from scipy import stats
 import pandas as pd

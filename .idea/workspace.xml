@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Resolving readthedocs error.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/source/cagraph.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/cagraph.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -337,14 +335,37 @@
       <workItem from="1683309841989" duration="763000" />
       <workItem from="1683311082629" duration="906000" />
       <workItem from="1683392139031" duration="6614000" />
-      <workItem from="1683511044969" duration="2001000" />
-    </task>
-    <task id="LOCAL-00022" summary="Updated documentation files.">
-      <created>1681797139846</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1681797139846</updated>
+      <workItem from="1683511044969" duration="4748000" />
+      <workItem from="1683576048231" duration="31000" />
+      <workItem from="1683576081669" duration="54000" />
+      <workItem from="1683576138963" duration="1694000" />
+      <workItem from="1683578991713" duration="239000" />
+      <workItem from="1683579292700" duration="93000" />
+      <workItem from="1683579387838" duration="104000" />
+      <workItem from="1683579495028" duration="106000" />
+      <workItem from="1683579603446" duration="207000" />
+      <workItem from="1683579813480" duration="150000" />
+      <workItem from="1683579966535" duration="141000" />
+      <workItem from="1683580111274" duration="37000" />
+      <workItem from="1683580151409" duration="36000" />
+      <workItem from="1683580190394" duration="378000" />
+      <workItem from="1683580571547" duration="136000" />
+      <workItem from="1683580710021" duration="116000" />
+      <workItem from="1683580828333" duration="172000" />
+      <workItem from="1683581002757" duration="69000" />
+      <workItem from="1683581074518" duration="99000" />
+      <workItem from="1683581176012" duration="117000" />
+      <workItem from="1683581296302" duration="56000" />
+      <workItem from="1683581355439" duration="981000" />
+      <workItem from="1683583490992" duration="872000" />
+      <workItem from="1683584377148" duration="149000" />
+      <workItem from="1683584528334" duration="139000" />
+      <workItem from="1683584669910" duration="122000" />
+      <workItem from="1683584794252" duration="273000" />
+      <workItem from="1683585070431" duration="591000" />
+      <workItem from="1683585682406" duration="54000" />
+      <workItem from="1683585746820" duration="73000" />
+      <workItem from="1683585829309" duration="43000" />
     </task>
     <task id="LOCAL-00023" summary="Updated documentation files.">
       <created>1681797423964</created>
@@ -682,7 +703,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683426108250</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Minor updates.">
+      <created>1683521111993</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1683521111994</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -703,7 +731,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules." />
     <MESSAGE value="Attempt autosummary for readthedocs documentation." />
     <MESSAGE value="Revert change." />
     <MESSAGE value="Updated private method in cagraph.py for automatic threshold generation." />
@@ -728,7 +755,8 @@
     <MESSAGE value="Updated requirements.txt" />
     <MESSAGE value="Minor updates to tutorial notebooks." />
     <MESSAGE value="Resolving readthedocs error." />
-    <option name="LAST_COMMIT_MESSAGE" value="Resolving readthedocs error." />
+    <MESSAGE value="Minor updates." />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor updates." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -745,13 +773,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>27</line>
+          <line>26</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>461</line>
+          <line>475</line>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocess.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

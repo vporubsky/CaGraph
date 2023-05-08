@@ -235,13 +235,13 @@ def _event_bins(data_row, events):
         build_binned_list.append(data[start_val:idx])
         start_val = idx
     np.random.shuffle(build_binned_list)
-    flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
+    flat_shuffled_binned_list = [item for sublist in build_binned_list for item in sublist]
     threshold = 0.01
-    flat_random_binned_list = [0 if value < threshold else value for value in flat_random_binned_list]
-    return flat_random_binned_list
+    flat_shuffled_binned_list = [0 if value < threshold else value for value in flat_shuffled_binned_list]
+    return flat_shuffled_binned_list
 
 
-def generate_event_shuffle(data: numpy.ndarray, event_data: list) -> np.ndarray:
+def generate_event_shuffle(data: numpy.ndarray, event_data=None) -> np.ndarray:
     """
     Generates a shuffled dataset using events to break each neuron's calcium fluorescence timeseries.
 
@@ -249,7 +249,12 @@ def generate_event_shuffle(data: numpy.ndarray, event_data: list) -> np.ndarray:
     :param event_data: list
     :return numpy.ndarray
     """
+    if event_data is not None:
+        event_data = event_data
+    else:
+        event_data = get_events(data=data)
     time = data[0, :].copy()
+
     # build event-binned array
     flatten_array = time.copy()
     for row in range(np.shape(data[1:, :])[0]):
@@ -257,8 +262,7 @@ def generate_event_shuffle(data: numpy.ndarray, event_data: list) -> np.ndarray:
         flatten_array = np.vstack([flatten_array, binned_row])
     return flatten_array
 
-
-def generate_randomized(data: numpy.ndarray, bin_size: int) -> np.ndarray:
+def generate_shuffled(data: numpy.ndarray, bin_size: int) -> np.ndarray:
     """
     Shuffle bin_size-sized bins randomly within each neuron's calcium fluorescence timeseries.
 
@@ -273,7 +277,6 @@ def generate_randomized(data: numpy.ndarray, bin_size: int) -> np.ndarray:
         binned_row = _bins(data_row=data[row + 2, :], bin_size=bin_size)
         flatten_array = np.vstack([flatten_array, binned_row])
     return flatten_array
-
 
 def generate_population_event_shuffle(data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
     """
@@ -296,17 +299,17 @@ def generate_population_event_shuffle(data: np.ndarray, event_data: np.ndarray) 
         for idx in event_idx:
             build_binned_list.append(data[start_val:idx])
             start_val = idx
-    flat_random_binned_list = [item for sublist in build_binned_list for item in sublist]
-    np.random.shuffle(flat_random_binned_list)  # shuffles list of all neural data
+    flat_shuffled_binned_list = [item for sublist in build_binned_list for item in sublist]
+    np.random.shuffle(flat_shuffled_binned_list)  # shuffles list of all neural data
 
-    flat_random_binned_list = [item for sublist in flat_random_binned_list for item in sublist]
+    flat_shuffled_binned_list = [item for sublist in flat_shuffled_binned_list for item in sublist]
 
     # Rebuild a shuffled data matrix the size of original data matrix
     shuffled_data = time.copy()
     start_idx = 0
     end_idx = len(time)
     for row in range(np.shape(data[1:, :])[0]):
-        binned_row = flat_random_binned_list[start_idx: end_idx]
+        binned_row = flat_shuffled_binned_list[start_idx: end_idx]
         shuffled_data = np.vstack([shuffled_data, binned_row])
         start_idx = end_idx
         end_idx += len(time)
@@ -344,6 +347,18 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
     if show_plot:
         plt.show()
 
+def generate_average_threshold(data, shuffle_iterations=100):
+    """
+    Performs multiple random shuffles to identify threshold values, and averages them.
+
+    :param data: numpy.ndarray
+    :param shuffle_iterations: int
+    :return:
+    """
+    thresholds = []
+    for i in range(shuffle_iterations):
+        thresholds += [generate_threshold(data=data)]
+    return np.mean(thresholds)
 
 def generate_threshold(data, shuffled_data=None, event_data=None, report_threshold=False, report_test=False):
     """
@@ -365,8 +380,8 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
-    Q1 = np.percentile(x, 25, interpolation='midpoint')
-    Q3 = np.percentile(x, 75, interpolation='midpoint')
+    Q1 = np.percentile(x, 20, interpolation='midpoint')
+    Q3 = np.percentile(x, 80, interpolation='midpoint')
 
     IQR = Q3 - Q1
     outlier_threshold = round(Q3 + 1.5 * IQR, 2)
@@ -374,16 +389,16 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
     y = get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
-    random_vals = np.tril(x).flatten()
+    shuffled_vals = np.tril(x).flatten()
     data_vals = np.tril(y).flatten()
-    ks_statistic = scipy.stats.ks_2samp(random_vals, data_vals)
+    ks_statistic = scipy.stats.ks_2samp(shuffled_vals, data_vals)
     p_val = ks_statistic.pvalue
     if p_val < 0.05 and report_threshold:
         print(f"The threshold is: {outlier_threshold:.2f}")
-    else:
+    elif report_threshold:
         warnings.warn(
             'The KS-test performed on the shuffled and ground truth datasets show that the p-value is greater '
-            'than a 5% significance level. Confirm that correlations in dataset are differentiable from random correlations '
+            'than a 5% significance level. Confirm that correlations in dataset are differentiable from shuffled correlations '
             'before setting a threshold.')
     if report_test:
         print(f"KS-statistic: {ks_statistic.statistic}")
@@ -394,8 +409,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
         return threshold_dict
     return outlier_threshold
 
-# Todo: update with bin-size adjustment below
-def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
+def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_plot=True):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
@@ -413,8 +427,8 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
 
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
-    Q1 = np.percentile(x, 25, interpolation='midpoint')
-    Q3 = np.percentile(x, 75, interpolation='midpoint')
+    Q1 = np.percentile(x, 20, interpolation='midpoint')
+    Q3 = np.percentile(x, 80, interpolation='midpoint')
 
     IQR = Q3 - Q1
     outlier_threshold = Q3 + 1.5 * IQR
@@ -428,9 +442,9 @@ def plot_threshold(data, shuffled_data=None, event_data=None, show_plot=True):
     # calculate the number of bins
     x_bins = int(np.ceil((x.max() - x.min()) / bin_width))
     y_bins = int(np.ceil((y.max() - y.min()) / bin_width))
-
-    # Todo: consider adding ylim
-    # plt.ylim(0, 100)
+    plt.xlim(-0.3, 1.0)
+    if y_lim is not None:
+        plt.ylim(0, y_lim)
     plt.hist(np.tril(x).flatten(), bins=x_bins, color='grey', alpha=0.3)
     plt.hist(np.tril(y).flatten(), bins=y_bins, color='blue', alpha=0.3)
     plt.axvline(x=outlier_threshold, color='red')
