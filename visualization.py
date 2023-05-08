@@ -4,9 +4,8 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-File Creation Date: 
-
-Description: 
+Description: a visualization module to generate interactive graph visuals and plot graph theory analyses generated using
+the cagraph module.
 """
 # General imports
 import networkx as nx

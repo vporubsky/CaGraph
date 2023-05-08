@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cagraph"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
     "numpy",
     "matplotlib",

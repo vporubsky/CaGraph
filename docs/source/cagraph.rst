@@ -20,13 +20,13 @@ preprocessing
    :undoc-members:
 
 cagraph
-----
+-------
 .. automodule:: cagraph
    :members:
    :undoc-members:
 
 visualization
-----
+-------------
 .. automethod:: visualization
    :members:
    :undoc-members:

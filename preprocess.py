@@ -4,9 +4,8 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-File Creation Date: 
-
-Description: 
+Description: a preprocessing module to process the uploaded calcium imaging datasets before they are used in the
+the CaGraph class to perform graph theory analysis.
 """
 # Imports
 import random

@@ -21,7 +21,7 @@
     Graph theory analysis and visualization package for calcium imaging timeseries data. The package makes it simple for experimental researchers to generate graphs 
     of functional networks and inspect their topology, using NetworkX to compute useful graph theory metrics. Bokeh is used to assist with interactive plotting of graph networks.
     <br />
-    <a href="https://github.com/vporubsky/CaGraph"><strong>Explore the docs »</strong></a>
+    <a href="https://cagraph.readthedocs.io/en/latest/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/vporubsky/CaGraph">View Demo</a>
