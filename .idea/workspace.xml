@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added averaging to threshold generation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -365,14 +363,7 @@
       <workItem from="1683585070431" duration="591000" />
       <workItem from="1683585682406" duration="54000" />
       <workItem from="1683585746820" duration="73000" />
-      <workItem from="1683585829309" duration="43000" />
-    </task>
-    <task id="LOCAL-00023" summary="Updated documentation files.">
-      <created>1681797423964</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1681797423964</updated>
+      <workItem from="1683585829309" duration="522000" />
     </task>
     <task id="LOCAL-00024" summary="Updated documentation files.">
       <created>1681797869064</created>
@@ -710,7 +701,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683521111994</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="Added averaging to threshold generation.">
+      <created>1683585967393</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1683585967393</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -731,7 +729,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Attempt autosummary for readthedocs documentation." />
     <MESSAGE value="Revert change." />
     <MESSAGE value="Updated private method in cagraph.py for automatic threshold generation." />
     <MESSAGE value="Updated color palette options in visualization.py to include all Bokeh.io palette options" />
@@ -756,7 +753,8 @@
     <MESSAGE value="Minor updates to tutorial notebooks." />
     <MESSAGE value="Resolving readthedocs error." />
     <MESSAGE value="Minor updates." />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor updates." />
+    <MESSAGE value="Added averaging to threshold generation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added averaging to threshold generation." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pynwb import NWBHDF5IO
 import pandas as pd
-from IPython.display import display
-pd.set_option('display.max_rows', 10)
-pd.set_option('display.max_columns', 10)
-pd.set_option('display.width', 150)
 import os
 
 
@@ -267,18 +263,6 @@ class CaGraph:
         self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio()
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
-
-    def show_dataset(self):
-        """
-        Uses pandas to show the dataset in a Jupyter notebook.
-
-        """
-        data_df = pd.DataFrame(self.data)
-        build_index = ['time']
-        for i in range(self.data.shape[0] - 1):
-            build_index.append('neuron ' + str(i))
-        data_df.index = build_index
-        display(data_df.style)
 
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
