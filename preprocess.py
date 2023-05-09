@@ -380,8 +380,8 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
-    Q1 = np.percentile(x, 20, interpolation='midpoint')
-    Q3 = np.percentile(x, 80, interpolation='midpoint')
+    Q1 = np.percentile(x, 25, interpolation='midpoint')
+    Q3 = np.percentile(x, 75, interpolation='midpoint')
 
     IQR = Q3 - Q1
     outlier_threshold = round(Q3 + 1.5 * IQR, 2)
@@ -427,8 +427,8 @@ def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_p
 
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
-    Q1 = np.percentile(x, 20, interpolation='midpoint')
-    Q3 = np.percentile(x, 80, interpolation='midpoint')
+    Q1 = np.percentile(x, 25, interpolation='midpoint')
+    Q3 = np.percentile(x, 75, interpolation='midpoint')
 
     IQR = Q3 - Q1
     outlier_threshold = Q3 + 1.5 * IQR
