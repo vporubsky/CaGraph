@@ -116,7 +116,10 @@ dmypy.json
 
 # DS_Store
 .DS_Store
+
+# Scratch files and example datasets
 /scratch.py
+/scratch_today.py
 scratch_files/
 /datasets/bla_dataset.csv
 /datasets/bla_events.csv
@@ -124,3 +127,10 @@ scratch_files/
 /datasets/dg_dataset.csv
 /datasets/dg_events.csv
 scratch.py
+
+
+# Final exam
+/final_exam
+/final_exam.py
+/datasets/DG_FC
+/datasets/14-0_DG

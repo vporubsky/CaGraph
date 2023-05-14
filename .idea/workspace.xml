@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Removed show_dataset() functionality">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,6 +44,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -366,14 +368,19 @@
       <workItem from="1683585746820" duration="73000" />
       <workItem from="1683585829309" duration="1520000" />
       <workItem from="1683588796608" duration="26000" />
-      <workItem from="1683588826873" duration="991000" />
-    </task>
-    <task id="LOCAL-00025" summary="Updated documentation files.">
-      <created>1681798344376</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1681798344376</updated>
+      <workItem from="1683588826873" duration="1507000" />
+      <workItem from="1683740593685" duration="17000" />
+      <workItem from="1684006061047" duration="4205000" />
+      <workItem from="1684096910542" duration="58000" />
+      <workItem from="1684096971852" duration="61000" />
+      <workItem from="1684097035400" duration="32000" />
+      <workItem from="1684097070020" duration="146000" />
+      <workItem from="1684097219406" duration="31000" />
+      <workItem from="1684097253426" duration="279000" />
+      <workItem from="1684097537489" duration="130000" />
+      <workItem from="1684097670293" duration="718000" />
+      <workItem from="1684098394070" duration="24000" />
+      <workItem from="1684098421174" duration="114000" />
     </task>
     <task id="LOCAL-00026" summary="Updated documentation files.">
       <created>1681799155236</created>
@@ -711,7 +718,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683586409712</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Minor updates">
+      <created>1683594020329</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1683594020329</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -732,7 +746,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated private method in cagraph.py for automatic threshold generation." />
     <MESSAGE value="Updated color palette options in visualization.py to include all Bokeh.io palette options" />
     <MESSAGE value="Updated visualization.py." />
     <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
@@ -757,7 +770,8 @@
     <MESSAGE value="Minor updates." />
     <MESSAGE value="Added averaging to threshold generation." />
     <MESSAGE value="Removed show_dataset() functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed show_dataset() functionality" />
+    <MESSAGE value="Minor updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor updates" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -779,7 +793,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>475</line>
+          <line>476</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

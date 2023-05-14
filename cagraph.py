@@ -119,13 +119,14 @@ class CaGraph:
         self._communities = self.graph_theory.get_communities(return_type='dict')
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
         self._hits = self.graph_theory.get_hits_values(return_type='dict')
-        self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+        # Todo: check eigenvector centrality convergence error
+        #self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
         # Build private attribute dictionary
         self.__attribute_dictionary = {'hubs': self.hubs, 'degree': self.degree,
                                        'clustering coefficient': self.clustering_coefficient,
                                        'communities': self.communities,
-                                       'eigenvector centrality': self.eigenvector_centrality,
+                                       #'eigenvector centrality': self.eigenvector_centrality,
                                        'correlated pair ratio': self.correlated_pair_ratio, 'HITS': self.hits}
 
         # Add node metadata
@@ -209,9 +210,10 @@ class CaGraph:
     def hits(self):
         return self._hits
 
-    @property
-    def eigenvector_centrality(self):
-        return self._eigenvector_centrality
+    # Todo: check eigenvector centrality convergence error
+    # @property
+    # def eigenvector_centrality(self):
+    #     return self._eigenvector_centrality
 
     @property
     def threshold(self):
@@ -228,7 +230,8 @@ class CaGraph:
         self._communities = self.graph_theory.get_communities(return_type='dict')
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
         self._hits = self.graph_theory.get_hits_values(return_type='dict')
-        self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+        # Todo: check eigenvector centrality convergence error
+        #self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
     def __generate_threshold(self) -> float:
         """
@@ -264,6 +267,37 @@ class CaGraph:
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
 
+    def sensitivity_analysis(self, data, threshold=None, show_plot=True):
+        """
+        Generates a series of graphs around the recommended or user-specified threshold and shows
+        the number of edits required to transform the original graph to the series of graphs.
+
+        If many edits are required, the graphs are dissimilar.
+
+        :param data:
+        :param threshold:
+        :param show_plot:
+        :return:
+        """
+        if threshold is None:
+            threshold = prep.generate_threshold(data=data)
+
+        starting_graph = self.get_graph(threshold=threshold)
+        interval = [-0.3, -0.2, -0.1, -0.05, -0.025, -0.01, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+        thresholds = []
+        similarity = []
+        for value in interval:
+            if 0 < threshold+value <= 1:
+                thresholds.append(threshold+value)
+                similarity.append(nx.graph_edit_distance(starting_graph, self.get_graph(threshold=threshold+value)))
+        if show_plot:
+            plt.plot(thresholds, similarity, '.-')
+            plt.xlabel('threshold')
+            plt.ylabel('Graph edit distance')
+            plt.show()
+        return similarity
+
+
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
         """
@@ -280,7 +314,7 @@ class CaGraph:
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
 
     # Todo: determine if you need this to be adjusted so you can set multiple thresholds (< 0.1, > 0.5)
-    def get_adjacency_matrix(self) -> np.ndarray:
+    def get_adjacency_matrix(self, threshold=None) -> np.ndarray:
         """
         Returns the adjacency matrix of a graph where edges exist when greater than the provided threshold.
 
@@ -288,7 +322,10 @@ class CaGraph:
 
         :return: numpy.ndarray
         """
-        adj_mat = (self._pearsons_correlation_matrix > self._threshold).astype(int)
+        if threshold is None:
+            adj_mat = (self._pearsons_correlation_matrix > self._threshold).astype(int)
+        else:
+            adj_mat = (self._pearsons_correlation_matrix > threshold).astype(int)
         np.fill_diagonal(adj_mat, 0)
         return adj_mat
 
@@ -314,7 +351,7 @@ class CaGraph:
         return weight_matrix
 
     # Graph construction methods
-    def get_graph(self, weighted=False) -> nx.Graph:
+    def get_graph(self, threshold=None, weighted=False) -> nx.Graph:
         """
         Automatically generate graph object from numpy adjacency matrix.
 
@@ -322,7 +359,7 @@ class CaGraph:
         :return: networkx.Graph object
         """
         if not weighted:
-            return nx.from_numpy_array(self.get_adjacency_matrix())
+            return nx.from_numpy_array(self.get_adjacency_matrix(threshold=threshold))
         return nx.from_numpy_array(self.get_weight_matrix())
 
     def get_random_graph(self, graph=None) -> nx.Graph:
@@ -595,8 +632,7 @@ class CaGraph:
             if return_type == 'list':
                 return list(correlated_pair_ratio_dict.values())
 
-        # Todo: adapt for directed - current total possible edges is for undirected
-        def get_graph_density(self, graph=None):
+        def get_undirected_graph_density(self, graph=None):
             """
             Returns the ratio of edges present in the graph out of the total possible edges.
             The equation used to calculate this ratio is only relevant to undirected graphs.
@@ -619,7 +655,7 @@ class CaGraph:
             """
             if graph is None:
                 graph = self._graph
-            eigenvector_centrality = nx.eigenvector_centrality(graph)
+            eigenvector_centrality = nx.eigenvector_centrality(graph, max_iter=500)
             if return_type == 'dict':
                 return eigenvector_centrality
             if return_type == 'list':
@@ -973,6 +1009,7 @@ class CaGraphTimeSamples:
         """
         return prep.generate_average_threshold(data=self.data[1:,:], shuffle_iterations=10)
 
+
     # Public utility methods
     def get_cagraph(self, condition_label):
         """
@@ -981,6 +1018,7 @@ class CaGraphTimeSamples:
         :return:
         """
         return getattr(self, f'__{condition_label}_cagraph')
+
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
@@ -1174,7 +1212,12 @@ class CaGraphBatch:
 # Todo: CaGraphBatch -> make a constructor function that can pass loaded data, numpy arrays
 # Todo: All classes -> add check that all save_paths exist, otherwise create them
 # Todo: All classes -> check docstrings again
-# Todo: dd whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
+# Todo: add whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
 # Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
 # Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
+
+
+
+
+# %% plot graph edit distance on x axis, deviation from recommended threshold on y

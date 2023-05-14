@@ -360,6 +360,7 @@ def generate_average_threshold(data, shuffle_iterations=100):
         thresholds += [generate_threshold(data=data)]
     return np.mean(thresholds)
 
+# Todo: add checks on dataset --> if numpy, if csv
 def generate_threshold(data, shuffled_data=None, event_data=None, report_threshold=False, report_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
@@ -593,3 +594,7 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
 #         print(f'Null hypothesis is rejected. KS P-value = {p_val:.3}')
 #     else:
 #         print(f'Null hypothesis is not rejected. KS P-value = {p_val:.3}')
+
+
+
+
