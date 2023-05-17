@@ -12,7 +12,8 @@ dependencies = [
     "pynwb",
     "scipy",
     "seaborn",
-    "bokeh <= 2.4.3"
+    "bokeh <= 2.4.3",
+    "oasis-deconv"
 ]
 authors = [
     { name="Veronica Porubsky", email="verosky@uw.edu" },

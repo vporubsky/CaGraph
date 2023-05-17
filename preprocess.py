@@ -8,8 +8,13 @@ Description: a preprocessing module to process the uploaded calcium imaging data
 the CaGraph class to perform graph theory analysis.
 """
 # Imports
-import random
+# Todo: test oasis for deconvolution/ CNMF
+from oasis.functions import gen_data, gen_sinusoidal_data, deconvolve, estimate_parameters
+from oasis.plotting import simpleaxis
+from oasis.oasis_methods import oasisAR1, oasisAR2
 
+
+import random
 import numpy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,27 +41,33 @@ def get_pearsons_correlation_matrix(data):
 
 
 # ---------------- Clean data --------------------------------------
-# Todo: add function with smoothing algorithm used for CNMF for calcium imaging data
-def smooth(data):
+# Todo: added function with deconvolution functionality -- check for redundant functions in rest of preprocess
+def deconvolve_dataset(data):
     """
-    Smooth unprocessed data to remove noise.
+    Uses OASIS algorithm implementation by J. Friedrich (https://github.com/j-friedrich/OASIS) to deconvolve the
+    caclium imaging trace and infer neural activity.
 
-    :param data: numpy.ndarray
-    :return: numpy.ndarray
+    The inferred neural activity is converted to a binary array to construct the event data.
+
+    :param data:
+    :return:
     """
-    smoothed_data = data
-    return smoothed_data
+    decon_data = data[0,:]
+    event_data = data[0,:]
+    for neuron in range(1, data.shape[0]):
 
+        # Perform OASIS deconvolution
+        decon_trace, event_trace = deconvolve(data[neuron, :], penalty=0)[0:2]
 
-# Todo: add auto-clean option for raw extracted calcium imaging time-series
-def auto_preprocess(data):
-    """
+        # Binarize event trace
+        event_trace[event_trace<1]=0
+        event_trace[event_trace>=1] = 1
 
-    :param data: numpy.ndarray
-    :return: preprocessed_data: numpy.ndarray
-    """
-    preprocessed_data = smooth(data)
-    return preprocessed_data
+        # Stack trace onto datasets
+        decon_data = np.vstack((decon_data, decon_trace))
+        event_data = np.vstack((event_data, event_trace))
+    return decon_data, event_data
+
 
 
 # Todo: try to incorporate MCMC spike inference code for event detection, this is used in the CNMF
@@ -107,8 +118,7 @@ def get_row_event_data(row_data):
 
 def _count_sign_switch(row_data):
     """
-    Searches time-series data for points at which the time-series changes from increasing to
-    decreasing or from decreasing to increasing.
+    Searches time-series data for points at which the time-series changes sign.
 
     :param row_data: numpy.ndarray
     :return: numpy.ndarray
@@ -410,6 +420,35 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
         return threshold_dict
     return outlier_threshold
 
+# Todo: remove this
+def generate_threshold_distributions(data, shuffled_data=None, event_data=None, report_threshold=False, report_test=False):
+    """
+    Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
+
+    Provides warning if the correlation distribution of the provided dataset is not statistically different from that of
+    the shuffled dataset.
+
+    :param data: numpy.ndarray
+    :param shuffled_data: numpy.ndarray
+    :param event_data:
+    :param report_test: bool
+    :return: float or dict
+    """
+    if shuffled_data is None and event_data is not None:
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+    elif shuffled_data is None and event_data is None:
+        event_data = get_events(data=data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+    x = get_pearsons_correlation_matrix(data=shuffled_data)
+    np.fill_diagonal(x, 0)
+
+    y = get_pearsons_correlation_matrix(data=data)
+    np.fill_diagonal(y, 0)
+
+    shuffled_vals = np.tril(x).flatten()
+    data_vals = np.tril(y).flatten()
+    return shuffled_vals, data_vals
+
 def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_plot=True):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
@@ -455,14 +494,6 @@ def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_p
     if show_plot:
         plt.show()
 
-
-# Todo: function to test sensitivity analysis
-def sensitivity_analysis():
-    """
-
-    :return:
-    """
-    return
 
 
 # Todo: add function to plot event trace

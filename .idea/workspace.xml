@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Minor updates">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added sensitivity_analysis() function to CaGraph class.">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +57,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="python.debugger.dataview.autoresize" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -64,11 +67,11 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/datasets/DG_FC/WT/archive" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/docs/cagraph" />
       <recent name="$PROJECT_DIR$/docs/source" />
-      <recent name="$PROJECT_DIR$/test_data" />
     </key>
   </component>
   <component name="RunManager">
@@ -380,14 +383,25 @@
       <workItem from="1684097537489" duration="130000" />
       <workItem from="1684097670293" duration="718000" />
       <workItem from="1684098394070" duration="24000" />
-      <workItem from="1684098421174" duration="114000" />
-    </task>
-    <task id="LOCAL-00026" summary="Updated documentation files.">
-      <created>1681799155236</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1681799155236</updated>
+      <workItem from="1684098421174" duration="1453000" />
+      <workItem from="1684100464738" duration="836000" />
+      <workItem from="1684101305875" duration="4593000" />
+      <workItem from="1684106289705" duration="2990000" />
+      <workItem from="1684109547754" duration="1921000" />
+      <workItem from="1684124718750" duration="2813000" />
+      <workItem from="1684129413574" duration="131000" />
+      <workItem from="1684129547728" duration="276000" />
+      <workItem from="1684129827171" duration="3797000" />
+      <workItem from="1684169257820" duration="4140000" />
+      <workItem from="1684185369003" duration="128000" />
+      <workItem from="1684185499938" duration="325000" />
+      <workItem from="1684185828559" duration="128000" />
+      <workItem from="1684185959160" duration="718000" />
+      <workItem from="1684189084263" duration="16044000" />
+      <workItem from="1684221673571" duration="2422000" />
+      <workItem from="1684225214673" duration="402000" />
+      <workItem from="1684286038013" duration="657000" />
+      <workItem from="1684340548490" duration="5704000" />
     </task>
     <task id="LOCAL-00027" summary="Updated documentation files.">
       <created>1681799439388</created>
@@ -725,7 +739,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683594020329</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Added sensitivity_analysis() function to CaGraph class.">
+      <created>1684098590594</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1684098590595</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -746,7 +767,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated color palette options in visualization.py to include all Bokeh.io palette options" />
     <MESSAGE value="Updated visualization.py." />
     <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
     <MESSAGE value="Testing continuous integration framework." />
@@ -771,7 +791,8 @@
     <MESSAGE value="Added averaging to threshold generation." />
     <MESSAGE value="Removed show_dataset() functionality" />
     <MESSAGE value="Minor updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor updates" />
+    <MESSAGE value="Added sensitivity_analysis() function to CaGraph class." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sensitivity_analysis() function to CaGraph class." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -793,12 +814,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>476</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>10</line>
+          <line>16</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>

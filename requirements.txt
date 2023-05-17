@@ -6,3 +6,4 @@ scipy~=1.10.0
 seaborn~=0.12.2
 bokeh==2.4.3
 nose~=1.3.7
+oasis-deconv
