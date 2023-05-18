@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -411,14 +413,20 @@
       <workItem from="1684369741734" duration="167000" />
       <workItem from="1684369911335" duration="238000" />
       <workItem from="1684370152717" duration="119000" />
-      <workItem from="1684370276762" duration="993000" />
-    </task>
-    <task id="LOCAL-00028" summary="Updated documentation files.">
-      <created>1681799655547</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1681799655547</updated>
+      <workItem from="1684370276762" duration="3309000" />
+      <workItem from="1684384803224" duration="1021000" />
+      <workItem from="1684385848905" duration="64000" />
+      <workItem from="1684385915382" duration="698000" />
+      <workItem from="1684386793661" duration="248000" />
+      <workItem from="1684387044613" duration="70000" />
+      <workItem from="1684387117670" duration="91000" />
+      <workItem from="1684387211922" duration="86000" />
+      <workItem from="1684387300944" duration="427000" />
+      <workItem from="1684387730880" duration="29000" />
+      <workItem from="1684387763625" duration="1730000" />
+      <workItem from="1684390818686" duration="3230000" />
+      <workItem from="1684394189367" duration="48000" />
+      <workItem from="1684394240276" duration="854000" />
     </task>
     <task id="LOCAL-00029" summary="Updated documentation files.">
       <created>1681799852446</created>
@@ -756,7 +764,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684351377385</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list.">
+      <created>1684371416801</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1684371416801</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -777,7 +792,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
     <MESSAGE value="Testing continuous integration framework." />
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
     <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
@@ -802,7 +816,8 @@
     <MESSAGE value="Minor updates" />
     <MESSAGE value="Added sensitivity_analysis() function to CaGraph class." />
     <MESSAGE value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
+    <MESSAGE value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

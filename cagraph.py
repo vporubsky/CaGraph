@@ -7,6 +7,7 @@ import seaborn as sns
 from pynwb import NWBHDF5IO
 import pandas as pd
 import os
+from scipy import stats
 
 
 # %% CaGraph class
@@ -267,7 +268,8 @@ class CaGraph:
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
 
-    def sensitivity_analysis(self, data, threshold=None, show_plot=True):
+    def sensitivity_analysis(self, data, threshold=None, show_plot=True, save_plot=False, save_path=None,
+                             dpi=300, save_format='png'):
         """
         Generates a series of graphs around the recommended or user-specified threshold and shows
         the number of edits required to transform the original graph to the series of graphs.
@@ -290,10 +292,15 @@ class CaGraph:
             if 0 < threshold+value <= 1:
                 thresholds.append(threshold+value)
                 similarity.append(nx.graph_edit_distance(starting_graph, self.get_graph(threshold=threshold+value)))
+
+        plt.plot(thresholds, similarity, '.-')
+        plt.xlabel('threshold')
+        plt.ylabel('Graph edit distance')
+        if save_plot:
+            if save_path is None:
+                save_path = os.getcwd() + f'fig'
+            plt.savefig(fname=save_path, dpi=dpi, format=save_format)
         if show_plot:
-            plt.plot(thresholds, similarity, '.-')
-            plt.xlabel('threshold')
-            plt.ylabel('Graph edit distance')
             plt.show()
         return similarity
 
@@ -517,9 +524,9 @@ class CaGraph:
                 hubs, authorities = nx.hits(self._graph, max_iter=500)
             else:
                 hubs, authorities = nx.hits(graph, max_iter=500)
-            med_hubs = np.median(list(hubs.values()))
+            mean_hubs = np.mean(list(hubs.values()))
             std_hubs = np.std(list(hubs.values()))
-            hubs_threshold = med_hubs + 2.5 * std_hubs
+            hubs_threshold = mean_hubs + 2.5 * std_hubs
             hubs_list = []
             [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
             hub_dict = {i: 1 if i in list(set(hubs_list) & set(self._node_labels)) else 0 for i in self._node_labels}
@@ -528,6 +535,51 @@ class CaGraph:
             if return_type == 'list':
                 return list(hub_dict.values())
 
+        # Todo: update and substitute for hubs if necessary
+        def get_betweenness_centrality_hubs(self, graph=None, return_type='list'):
+            """
+            :param graph:
+            :param return_type:
+            :return:
+            """
+            if graph is None:
+                graph = self._graph
+
+            # Calculate betweenness centrality
+            bc = nx.betweenness_centrality(graph)
+
+            # Calculate the p-value for each node's betweenness centrality using a two-tailed test
+            p_values = stats.t.sf(abs(stats.t.ppf(0.025, len(graph) - 2)), len(graph) - 2) * 2
+            p_values = [p_values for _ in range(len(graph.nodes()))]
+            for i, node in enumerate(graph.nodes()):
+                t, p = stats.ttest_1samp([bc[node]], 0)
+                p_values[i] = p
+
+            # Set the significance level for the cutoff value
+            alpha = 0.05
+
+            # Identify the nodes with betweenness centrality values that exceed the cutoff value
+            # cutoff = stats.t.ppf(1 - alpha / 2, len(graph) - 2) * (1 / np.sqrt(len(graph) - 2))
+            # hub_nodes = [node for node, centrality in bc.items() if centrality >= cutoff]
+
+            # Alternatively, you can set the cutoff value based on the p-value directly
+            hub_nodes = [node for node, p_value in zip(graph.nodes(), p_values) if p_value <= alpha]
+            return hub_nodes
+
+        def get_betweenness_centrality(self, graph=None, return_type='list'):
+            """
+
+            :param graph:
+            :param return_type:
+            :return:
+            """
+            if graph is None:
+                graph = self._graph
+
+            # Calculate betweenness centrality
+            return nx.betweenness_centrality(graph)
+
+        # Todo: replace with betweenness centrality scores
         def get_hits_values(self, graph=None, return_type='list'):
             """
             Computes hub nodes in the graph and returns a list of nodes identified as hubs.
@@ -1119,6 +1171,162 @@ class CaGraphBatch:
     @property
     def dataset_identifiers(self):
         return self._dataset_identifiers
+
+    def __generate_averaged_threshold(self, data_path, dataset_keys):
+        """
+        Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
+
+        :param data_path:
+        :param dataset_keys:
+        :return:
+        """
+        store_thresholds = []
+        for dataset in dataset_keys:
+            data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
+            store_thresholds.append(prep.generate_average_threshold(data=data[1:,:], shuffle_iterations=10))
+        return np.mean(store_thresholds)
+
+    # Public utility methods
+    def get_cagraph(self, condition_label) -> CaGraph:
+        """
+        Return a CaGraph object for the specified dataset condition_label
+
+        :param condition_label: str
+        :return: CaGraph
+        """
+        return getattr(self, f'__{condition_label}_cagraph')
+
+    def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+        """
+        Generates an organized report of all data in the batched sample. It will report on the
+        base analyses included in the CaGraph object get_report() method, and output a single
+        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
+        :return:
+        """
+        store_reports = {}
+        for key in self.dataset_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            store_reports[key] = cagraph_obj.get_report()
+
+        # For each column in the individual reports, append to the full report
+        full_report_df = pd.DataFrame()
+        for col in store_reports[key].columns:
+            for key in store_reports.keys():
+                df = store_reports[key]
+                df = df.rename(columns={col: f'{key}_{col}'})
+                full_report_df = pd.concat([full_report_df, df[f'{key}_{col}']], axis=1)
+
+        # Save the report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                full_report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return full_report_df
+
+    def save_individual_dataset_reports(self, save_path=None, save_filetype=None):
+        """
+        Saves individual reports for each of the specified datasets.
+        Individual filenames will be generated using the filename name of the dataset from which the analysis is derived.
+
+        This will result in the same analysis that can be done by creating a CaGraph object using a single dataset.
+
+        :param save_path: str
+        :param save_filetype: str ('csv', 'HDF5', 'xlsx')
+        :return:
+        """
+        # Iterate through all datasets and save report for each
+        for key in self.dataset_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key + '_report',
+                                   save_filetype=save_filetype)
+
+# Todo: check that functionality of batched and timesampled works
+# %% Batched and Timesampled analyses
+class CaGraphBatchTimeSamples:
+    """
+    Class for running batched and timesampled analyses.
+
+    Only directories can be passed to CaGraphBatchTimeSamples. Node metadata cannot be added to CaGraph objects in the batched
+    analysis. Future versions will include the node_metadata attribute.
+    """
+
+    def __init__(self, data_path, group_id=None, time_samples=None, condition_labels=None,  threshold=None, threshold_averaged=False):
+        """
+        Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
+        The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
+        2. if not set manually, all
+
+        :param group_id: str
+        :param threshold: float
+        """
+        if not os.path.exists(os.path.dirname(data_path)):
+            raise ValueError('Path provided for data_path parameter does not exist.')
+        data_list = os.listdir(data_path)
+
+        # Set threshold
+        if threshold is not None:
+            self._threshold = threshold
+        elif threshold_averaged:
+            threshold_keys = []
+            for dataset in data_list:
+                if dataset.endswith(".csv"):
+                    threshold_keys.append(dataset[:-4])
+            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
+        else:
+            self._threshold = None
+        if group_id is not None:
+            self._group_id = group_id
+
+        # Construct CaGraph objects for each dataset
+        self._dataset_identifiers = []
+        for dataset in data_list:
+            if dataset.endswith(".csv"):
+                data = np.genfromtxt(data_path + dataset, delimiter=",")
+                if self._threshold is None:
+                    self._threshold = self.__generate_threshold(data=data)
+                try:
+                    # Add a series of private attributes which are CaGraph objects
+                    for i, sample in enumerate(time_samples):
+                        setattr(self, f'__{dataset[:-4]}_{condition_labels[i]}_cagraph',
+                                CaGraph(data=data[:, sample[0]:sample[1]], threshold=self._threshold))
+                        self._dataset_identifiers.append(dataset[:-4] + '_' + condition_labels[i])
+                except Exception as e:
+                    print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
+
+
+
+    # Private utility methods
+    @property
+    def group_id(self):
+        return self._group_id
+
+    @property
+    def threshold(self):
+        return self._threshold
+
+    @property
+    def dataset_identifiers(self):
+        return self._dataset_identifiers
+
+    def __generate_threshold(self, data) -> float:
+        """
+        Generates a threshold for the provided dataset as described in the preprocess module.
+
+        :return: float
+        """
+        return prep.generate_average_threshold(data=data, shuffle_iterations=10)
 
     def __generate_averaged_threshold(self, data_path, dataset_keys):
         """

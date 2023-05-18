@@ -168,40 +168,7 @@ def interactive_network(cagraph_obj, graph=None,
     if return_position:
         return position
 
-# Todo: make flexible for multiple datasets and remove plot_CDFs() function
-def plot_CDF(data=None, color='black', marker='o', x_label='', y_label='CDF', show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
-    """
-    Plots the cumulative distribution function of the provided list of data.
-
-    :param data: list of float values
-    :param color: str matplotlib color style
-    :param marker: str matplotlib marker style
-    :param x_label: str
-    :param y_label: str
-    :param show_plot: bool
-    """
-
-    # sort the dataset in ascending order
-    sorted_data = np.sort(data)
-
-    # get the cdf values of dataset
-    cdf = np.arange(len(data)) / float(len(data))
-
-    # plotting
-    plt.plot(sorted_data, cdf, color=color, marker=marker)
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-
-    if show_plot:
-        plt.show()
-
-    if save_plot:
-        if save_path is None:
-            save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
-
-
-def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
+def plot_CDF(data_list, colors=['black', 'black'], marker='o', x_label='',
                                  y_label='CDF', legend=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
@@ -231,7 +198,8 @@ def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
         plt.legend([legend[0], legend[1]])
     plt.ylabel(y_label)
     plt.xlabel(x_label)
-    plt.title(f'P value: {stat_level.pvalue:.2e}')
+    # Todo: remove the statistical test
+    # plt.title(f'P value: {stat_level.pvalue:.2e}')
 
     if show_plot:
         plt.show()
@@ -241,43 +209,51 @@ def plot_CDFs(data_list=None, colors=['black', 'black'], marker='o', x_label='',
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
 
-# Todo: harmonize with preprocess version
-def plot_histograms(data_list=None, colors=['black', 'black'], x_label='',
-                    y_label='count', bin_size=20, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
+                   save_path=None, dpi=300, format='png'):
     """
-    Plots histograms of the provided data and prints the associated P-value for assessing
-    the Kolmogorov-Smirnov distance between the distributions.
+    Plot histograms of the provided datasets in data.
 
-    :param data_list: list of lists containing float values to compare with KS-test
-    :param colors: list of str containing matplotlib color styles
-    :param marker: str matplotlib marker style
-    :param x_label: str
-    :param y_label: str
-    :param bin_size: int
-    :param show_plot: bool
-    :param save_plot: bool
-    :param save_path: str
-    :param dpi: int
-    :param format: str
+    :param data_list: list
+    :param colors: list
+    :param legend: list
+    :param title:
+    :param y_label:
+    :param x_label:
+    :param show_plot:
+    :param save_plot:
+    :param save_path:
+    :param dpi:
+    :param format:
+    :return:
     """
+    # specify the bin width
+    bin_width = 0.01
 
-    # Evaluate KS-test statistic
-    stat_level = stats.ks_2samp(data_list[0], data_list[1])
+    for dataset in data_list:
+        # calculate the number of bins
+        dataset_bins = int(np.ceil((dataset.max() - dataset.min()) / bin_width))
 
-    for idx, data in enumerate(data_list):
-        # plotting
-        plt.hist(data, color=colors[idx], bins=bin_size, alpha=0.4)
+        # plot histogram
+        plt.hist(dataset, bins=dataset_bins, color=colors[0], alpha=0.3)
 
-    plt.ylabel(y_label)
-    plt.xlabel(x_label)
-    plt.title(f'P value: {stat_level.pvalue:.2e}')
-
+    if legend is not None:
+        plt.legend(legend)
+    if title is not None:
+        plt.title(title)
+    if y_label is not None:
+        plt.ylabel(y_label)
+    if x_label is not None:
+        plt.xlabel(x_label)
+    else:
+        plt.ylabel("Frequency")
     if show_plot:
         plt.show()
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+
 
 def plot_matched_data(sample_1: list, sample_2: list, labels: list, colors=['grey', 'grey'],
                       x_label=None, y_label=None, show_plot=True, save_plot=False, save_path=None,
