@@ -8,12 +8,7 @@ Description: a preprocessing module to process the uploaded calcium imaging data
 the CaGraph class to perform graph theory analysis.
 """
 # Imports
-# Todo: test oasis for deconvolution/ CNMF
-from oasis.functions import gen_data, gen_sinusoidal_data, deconvolve, estimate_parameters
-from oasis.plotting import simpleaxis
-from oasis.oasis_methods import oasisAR1, oasisAR2
-
-
+from oasis.functions import deconvolve
 import random
 import numpy
 import numpy as np
@@ -41,7 +36,6 @@ def get_pearsons_correlation_matrix(data):
 
 
 # ---------------- Clean data --------------------------------------
-# Todo: added function with deconvolution functionality -- check for redundant functions in rest of preprocess
 def deconvolve_dataset(data):
     """
     Uses OASIS algorithm implementation by J. Friedrich (https://github.com/j-friedrich/OASIS) to deconvolve the
@@ -68,10 +62,8 @@ def deconvolve_dataset(data):
         event_data = np.vstack((event_data, event_trace))
     return decon_data, event_data
 
-
-
-# Todo: try to incorporate MCMC spike inference code for event detection, this is used in the CNMF
-def get_events(data):
+# Todo: add option to use OASIS or the simple event detection
+def get_event_data(data):
     """
     Generates event data using smoothed calcium imaging trace.
 
@@ -80,15 +72,15 @@ def get_events(data):
     """
     event_data = data[0, :]
     for i in range(1, np.shape(data)[0]):
-        event_row = get_row_event_data(row_data=data[i])
+        event_row = _get_row_event_data(row_data=data[i])
         event_data = np.vstack((event_data, event_row))
     return event_data
 
 
 # Todo: clean up functionality - repurpose count_sign_switch code
-def get_row_event_data(row_data):
+def _get_row_event_data(row_data):
     """
-
+    Processes a single row of calcium imaging data to approximate the location of events.
 
     :param row_data: numpy.ndarray
     :return: numpy.ndarray
@@ -130,113 +122,27 @@ def _count_sign_switch(row_data):
     return np.sum(signchange)
 
 
-# Todo: confirm functionality is useful and check threshold value
-def remove_low_activity(data, event_data, event_num_threshold=5):
-    """
-    Removes neurons with fewer than event_num_threshold events.
-    Returns a new array of data without neurons that have low activity.
-
-    :param data: numpy.ndarray
-    :param event_data: numpy.ndarray
-    :param event_num_threshold: int
-    :return: numpy.ndarray
-    """
-    # apply activity treshold
-    new_event_data = np.zeros((1, np.shape(event_data)[1]))
-    new_data = np.zeros((1, np.shape(data)[1]))
-    for row in range(np.shape(data)[0]):
-        if _count_sign_switch(row_data=data[row, :]) <= 5 and not row == 0:
-            continue
-        else:
-            new_event_data = np.vstack((new_event_data, event_data[row, :]))
-            new_data = np.vstack((new_data, data[row, :]))
-    return new_data[1:, :], new_event_data[1:, :]
-
-
-# Todo: determine if this is still required
-def remove_quiescent(data, event_data, event_num_threshold=5):
-    """
-    Removes inactive neurons from the dataset using event_data which the user must pass.
-
-    :param data: numpy.ndarray
-    :param event_data: numpy.ndarray
-    :param event_num_threshold: int
-    """
-    binarized_event_data = np.where(event_data > 0.0005, 1, 0)
-    new_event_data = np.zeros((1, np.shape(event_data)[1]))
-    new_data = np.zeros((1, np.shape(data)[1]))
-    for row in range(np.shape(binarized_event_data)[0]):
-        if np.sum(binarized_event_data[row, :]) <= event_num_threshold:
-            continue
-        else:
-            new_event_data = np.vstack((new_event_data, event_data[row, :]))
-            new_data = np.vstack((new_data, data[row, :]))
-    return new_data[1:, :], new_event_data[1:, :]
-
 
 # %% Suitability for graph theory analysis
-def _bins(data_row, bin_size):
-    """
-    Return successive bin_size-sized chunks from data_row.
-
-    :param data_row: numpy.ndarry or list
-    :param bin_size: int
-    :return: list
-    """
-    data_row = list(data_row)
-    build_binned_list = []
-    for i in range(0, len(data_row), bin_size):
-        build_binned_list.append(data_row[i:i + bin_size])
-    return build_binned_list
-
-
-def generate_noise_shuffle(data: list) -> np.ndarray:
-    """
-    Shuffle every data point randomly within each neuron's calcium fluorescence timeseries.
-
-    :param data: list
-    :return: numpy.ndarray
-    """
-    time = data[0, :].copy()
-    for row in range(np.shape(data)[0]):
-        np.random.shuffle(data[row, :])
-    data[0, :] = time.copy()  # reset time row to original sampling
-    return data
-
-
-def generate_binned_shuffle(data: list, bin_size: int) -> np.ndarray:
-    """
-    Shuffle bin_size-sized bins randomly within each neuron's calcium fluorescence timeseries.
-
-    :param data: numpy.ndarray
-    :param bin_size: int
-    :return: numpy.ndarray
-    """
-    time = data[0, :].copy()
-    build_new_array = np.array(_bins(data=data[1, :], bin_size=bin_size))
-    # build binned dist
-    for row in range(np.shape(data[2:, :])[0]):
-        binned_row = _bins(data=data[row + 2, :], bin_size=bin_size)
-        build_new_array = np.vstack([build_new_array, binned_row])
-    for row in range(np.shape(build_new_array)[0]):
-        np.random.shuffle(build_new_array[row, :])
-    flatten_array = time.copy()
-    for row in range(np.shape(build_new_array)[0]):
-        flat_row = [item for sublist in build_new_array[row, :] for item in sublist]
-        flatten_array = np.vstack([flatten_array, flat_row])
-    return flatten_array
-
-
+# Todo: Update  threshold selection using bayesian inference or other metric
 def _event_bins(data_row, events):
     """
     Generates a shuffled row of calcium fluorescence data, breaking the timeseries using predetermined events.
 
-    :param data: numpy.ndarray
+    :param data_row: numpy.ndarray
     :param events: list
     :return: list
     """
     data = list(data_row)
     build_binned_list = []
+
+    # Add all zero-valued points in the fluorescence data to the event trace
+    zero_indices = np.where(np.array(data_row) < 0.001) # 0.001 selected as threshold
+    events = np.array(events)
+    events[list(zero_indices)] = 1
+
+    # Use event trace to split timeseries into relevant chunks to be shuffled
+    events = list(events)
     event_idx = list(np.nonzero(events)[0])
     if event_idx[-1] != len(data):
         event_idx.append(len(data))
@@ -250,7 +156,6 @@ def _event_bins(data_row, events):
     flat_shuffled_binned_list = [0 if value < threshold else value for value in flat_shuffled_binned_list]
     return flat_shuffled_binned_list
 
-
 def generate_event_shuffle(data: numpy.ndarray, event_data=None) -> np.ndarray:
     """
     Generates a shuffled dataset using events to break each neuron's calcium fluorescence timeseries.
@@ -262,72 +167,20 @@ def generate_event_shuffle(data: numpy.ndarray, event_data=None) -> np.ndarray:
     if event_data is not None:
         event_data = event_data
     else:
-        event_data = get_events(data=data)
+        event_data = get_event_data(data=data)
     time = data[0, :].copy()
 
     # build event-binned array
     flatten_array = time.copy()
+
+    # iterate over the dataset and construct event-binned rows
     for row in range(np.shape(data[1:, :])[0]):
         binned_row = _event_bins(data_row=data[row + 1, :], events=event_data[row + 1, :])
         flatten_array = np.vstack([flatten_array, binned_row])
     return flatten_array
 
-def generate_shuffled(data: numpy.ndarray, bin_size: int) -> np.ndarray:
-    """
-    Shuffle bin_size-sized bins randomly within each neuron's calcium fluorescence timeseries.
-
-    :param data: numpy.ndarray
-    :param bin_size: int
-    :return: numpy.ndarray
-    """
-    time = data[0, :].copy()
-    # build binned dist
-    flatten_array = time.copy()
-    for row in range(np.shape(data[2:, :])[0]):
-        binned_row = _bins(data_row=data[row + 2, :], bin_size=bin_size)
-        flatten_array = np.vstack([flatten_array, binned_row])
-    return flatten_array
-
-def generate_population_event_shuffle(data: np.ndarray, event_data: np.ndarray) -> np.ndarray:
-    """
-    Shuffle event bins randomly across all neuron's calcium fluorescence timeseries.
-
-    :param data:
-    :param event_data:
-    :return:
-    """
-    time = data[0, :].copy()
-
-    # Build long list of all neurons time bins, then shuffle and flatten
-    build_binned_list = []
-    for row in range(1, np.shape(data)[0]):
-        data_row = list(data[row, :])
-        event_idx = list(np.nonzero(event_data[row, :])[0])
-        if event_idx[-1] != len(data_row):
-            event_idx.append(len(data_row))
-        start_val = 0
-        for idx in event_idx:
-            build_binned_list.append(data[start_val:idx])
-            start_val = idx
-    flat_shuffled_binned_list = [item for sublist in build_binned_list for item in sublist]
-    np.random.shuffle(flat_shuffled_binned_list)  # shuffles list of all neural data
-
-    flat_shuffled_binned_list = [item for sublist in flat_shuffled_binned_list for item in sublist]
-
-    # Rebuild a shuffled data matrix the size of original data matrix
-    shuffled_data = time.copy()
-    start_idx = 0
-    end_idx = len(time)
-    for row in range(np.shape(data[1:, :])[0]):
-        binned_row = flat_shuffled_binned_list[start_idx: end_idx]
-        shuffled_data = np.vstack([shuffled_data, binned_row])
-        start_idx = end_idx
-        end_idx += len(time)
-
-    return shuffled_data
-
-
-def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=True):
+# Todo: Add save functionality - this plots an example shuffled neuron
+def plot_shuffle_example(data, shuffled_data=None, event_data=None, neuron_idx = None, show_plot=True):
     """
     Plot shuffled distribution.
 
@@ -340,9 +193,10 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        event_data = get_events(data=data)
+        event_data = get_event_data(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    neuron_idx = random.randint(1, np.shape(data)[0] - 1)
+    if neuron_idx is None:
+        neuron_idx = random.randint(1, np.shape(data)[0] - 1)
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
     plt.plot(data[0, :], data[neuron_idx, :], c='blue', label='ground truth')
@@ -357,6 +211,21 @@ def plot_shuffle_example(data, shuffled_data=None, event_data=None, show_plot=Tr
     if show_plot:
         plt.show()
 
+# Todo: consider removing this function
+def generate_average_threshold(data, shuffle_iterations=100):
+    """
+    Performs multiple random shuffles to identify threshold values, and averages them.
+
+    :param data: numpy.ndarray
+    :param shuffle_iterations: int
+    :return:
+    """
+    thresholds = []
+    for i in range(shuffle_iterations):
+        thresholds += [generate_threshold(data=data)]
+    return np.mean(thresholds)
+
+# Todo: high-priority write a new version which takes a sample from a multi-shuffled distribution
 def generate_average_threshold(data, shuffle_iterations=100):
     """
     Performs multiple random shuffles to identify threshold values, and averages them.
@@ -387,7 +256,7 @@ def generate_threshold(data, shuffled_data=None, event_data=None, report_thresho
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        event_data = get_events(data=data)
+        event_data = get_event_data(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
@@ -437,7 +306,7 @@ def generate_threshold_distributions(data, shuffled_data=None, event_data=None, 
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        event_data = get_events(data=data)
+        event_data = get_event_data(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
@@ -462,8 +331,12 @@ def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_p
     if shuffled_data is None and event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif shuffled_data is None and event_data is None:
-        event_data = get_events(data=data)
+        event_data = get_event_data(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+
+    # Todo: test this further to see if it is necessary as form of data sanitization
+    # shuffled_data=shuffled_data[:, 100:]
+    # data = data[:, 100:]
 
     x = get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
@@ -493,8 +366,6 @@ def plot_threshold(data, shuffled_data=None, event_data=None, y_lim=None, show_p
     plt.ylabel("Frequency")
     if show_plot:
         plt.show()
-
-
 
 # Todo: add function to plot event trace
 def plot_event_trace():

@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added sensitivity_analysis() function to CaGraph class.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -401,14 +398,20 @@
       <workItem from="1684221673571" duration="2422000" />
       <workItem from="1684225214673" duration="402000" />
       <workItem from="1684286038013" duration="657000" />
-      <workItem from="1684340548490" duration="5704000" />
-    </task>
-    <task id="LOCAL-00027" summary="Updated documentation files.">
-      <created>1681799439388</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1681799439388</updated>
+      <workItem from="1684340548490" duration="8973000" />
+      <workItem from="1684363887869" duration="210000" />
+      <workItem from="1684364102823" duration="2055000" />
+      <workItem from="1684366166715" duration="698000" />
+      <workItem from="1684366874345" duration="140000" />
+      <workItem from="1684367017512" duration="694000" />
+      <workItem from="1684367715650" duration="31000" />
+      <workItem from="1684367748495" duration="68000" />
+      <workItem from="1684367819537" duration="66000" />
+      <workItem from="1684367888455" duration="1481000" />
+      <workItem from="1684369741734" duration="167000" />
+      <workItem from="1684369911335" duration="238000" />
+      <workItem from="1684370152717" duration="119000" />
+      <workItem from="1684370276762" duration="993000" />
     </task>
     <task id="LOCAL-00028" summary="Updated documentation files.">
       <created>1681799655547</created>
@@ -746,7 +749,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684098590595</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm.">
+      <created>1684351377384</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1684351377385</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -767,7 +777,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated visualization.py." />
     <MESSAGE value="Updated visualization.py and visualization_tutorial.ipynb" />
     <MESSAGE value="Testing continuous integration framework." />
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
@@ -792,7 +801,8 @@
     <MESSAGE value="Removed show_dataset() functionality" />
     <MESSAGE value="Minor updates" />
     <MESSAGE value="Added sensitivity_analysis() function to CaGraph class." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added sensitivity_analysis() function to CaGraph class." />
+    <MESSAGE value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -814,7 +824,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>16</line>
+          <line>11</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
