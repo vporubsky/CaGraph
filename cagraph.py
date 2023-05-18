@@ -1427,5 +1427,3 @@ class CaGraphBatchTimeSamples:
 
 
 
-
-# %% plot graph edit distance on x axis, deviation from recommended threshold on y

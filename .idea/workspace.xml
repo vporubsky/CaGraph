@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated modules to reduce superfluous functionality.">
+      <change afterPath="$PROJECT_DIR$/scratch-threshold.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,11 +67,11 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/final_exam" />
       <recent name="$PROJECT_DIR$/datasets/DG_FC/WT/archive" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/docs/cagraph" />
-      <recent name="$PROJECT_DIR$/docs/source" />
     </key>
   </component>
   <component name="RunManager">
@@ -426,14 +427,18 @@
       <workItem from="1684387763625" duration="1730000" />
       <workItem from="1684390818686" duration="3230000" />
       <workItem from="1684394189367" duration="48000" />
-      <workItem from="1684394240276" duration="854000" />
-    </task>
-    <task id="LOCAL-00029" summary="Updated documentation files.">
-      <created>1681799852446</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1681799852446</updated>
+      <workItem from="1684394240276" duration="4626000" />
+      <workItem from="1684431671274" duration="815000" />
+      <workItem from="1684433067464" duration="369000" />
+      <workItem from="1684433442245" duration="1699000" />
+      <workItem from="1684435165444" duration="900000" />
+      <workItem from="1684436097557" duration="62000" />
+      <workItem from="1684436189377" duration="361000" />
+      <workItem from="1684436634293" duration="828000" />
+      <workItem from="1684437467633" duration="1647000" />
+      <workItem from="1684440847517" duration="136000" />
+      <workItem from="1684440986456" duration="2428000" />
+      <workItem from="1684447287438" duration="254000" />
     </task>
     <task id="LOCAL-00030" summary="Updated documentation files.">
       <created>1681801323093</created>
@@ -771,7 +776,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684371416801</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="Updated modules to reduce superfluous functionality.">
+      <created>1684395486034</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1684395486034</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -792,7 +804,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Testing continuous integration framework." />
     <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
     <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
     <MESSAGE value="Updated docstrings with all parameter and return values." />
@@ -817,7 +828,8 @@
     <MESSAGE value="Added sensitivity_analysis() function to CaGraph class." />
     <MESSAGE value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
     <MESSAGE value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
+    <MESSAGE value="Updated modules to reduce superfluous functionality." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated modules to reduce superfluous functionality." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -839,7 +851,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>11</line>
+          <line>12</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>

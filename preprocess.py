@@ -9,6 +9,7 @@ the CaGraph class to perform graph theory analysis.
 """
 # Imports
 from oasis.functions import deconvolve
+from pynwb import NWBHDF5IO
 import random
 import numpy
 import numpy as np
@@ -20,8 +21,33 @@ import os
 
 # Todo: check alternative options to report (with print statements currently)
 
-#%%
-def get_pearsons_correlation_matrix(data):
+#%% Utility functions
+def _input_validator(data):
+    """
+    Validates the input dataset by checking that it is a numpy.ndarray or path to CSV or NWB file.
+
+    :param data:
+    :return:
+    """
+    if isinstance(data, np.ndarray):
+        return data
+    elif isinstance(data, str):
+        if data.endswith('csv'):
+            return np.genfromtxt(data, delimiter=",")
+        elif data.endswith('nwb'):
+            with NWBHDF5IO(data, 'r') as io:
+                nwbfile_read = io.read()
+                nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                neuron_dynamics = ca_from_nwb.data[:]
+                time = ca_from_nwb.timestamps[:]
+                return np.vstack((time, neuron_dynamics))
+        else:
+            raise TypeError('File path must have a .csv or .nwb file to load.')
+    else:
+        raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+
+def _get_pearsons_correlation_matrix(data):
     """
     Returns the Pearson's correlation for all neuron pairs.
 
@@ -42,6 +68,7 @@ def deconvolve_dataset(data):
     :param data:
     :return:
     """
+    data = _input_validator(data=data)
     decon_data = data[0, :]
     event_data = data[0, :]
     for neuron in range(1, data.shape[0]):
@@ -102,8 +129,9 @@ def generate_event_shuffle(data: numpy.ndarray, event_data=None) -> np.ndarray:
     :param event_data: list
     :return numpy.ndarray
     """
+    data = _input_validator(data=data)
     if event_data is not None:
-        event_data = event_data
+        event_data = _input_validator(data=event_data)
     else:
         _, event_data = deconvolve_dataset(data=data)
     time = data[0, :].copy()
@@ -127,13 +155,14 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     :param shuffle_iterations: int
     :return:
     """
+    data = _input_validator(data)
     thresholds = []
     for i in range(shuffle_iterations):
         thresholds += [generate_threshold(data=data, event_data=event_data)]
     return np.mean(thresholds)
 
 # Todo: remove this
-def generate_threshold_distributions(data, shuffled_data=None, event_data=None, report_threshold=False, report_test=False):
+def generate_threshold_distributions(data, event_data=None, report_threshold=False, report_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -146,15 +175,16 @@ def generate_threshold_distributions(data, shuffled_data=None, event_data=None, 
     :param report_test: bool
     :return: float or dict
     """
-    if shuffled_data is None and event_data is not None:
+    data = _input_validator(data)
+    if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    elif shuffled_data is None and event_data is None:
+    elif event_data is None:
         _, event_data = deconvolve_dataset(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    x = get_pearsons_correlation_matrix(data=shuffled_data)
+    x = _get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
 
-    y = get_pearsons_correlation_matrix(data=data)
+    y = _get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
     shuffled_vals = np.tril(x).flatten()
@@ -176,6 +206,8 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     :param report_test: bool
     :return: float or dict
     """
+    # Check that the input data is in the correct format and load dataset
+    data = _input_validator(data=data)
     if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif event_data is None:
@@ -183,15 +215,13 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     else:
         shuffled_data = generate_event_shuffle(data=data)
-    x = get_pearsons_correlation_matrix(data=shuffled_data)
+    x = _get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
-    Q1 = np.percentile(x, 25, interpolation='midpoint')
-    Q3 = np.percentile(x, 75, interpolation='midpoint')
 
-    IQR = Q3 - Q1
-    outlier_threshold = round(Q3 + 1.5 * IQR, 2)
+    # set threshold as the 99th percentile of the shuffle distribution
+    threshold = np.percentile(x, 99, interpolation='midpoint')
 
-    y = get_pearsons_correlation_matrix(data=data)
+    y = _get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
     shuffled_vals = np.tril(x).flatten()
@@ -199,7 +229,7 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     ks_statistic = scipy.stats.ks_2samp(shuffled_vals, data_vals)
     p_val = ks_statistic.pvalue
     if p_val < 0.05 and report_threshold:
-        print(f"The threshold is: {outlier_threshold:.2f}")
+        print(f"The threshold is: {threshold:.2f}")
     elif report_threshold:
         warnings.warn(
             'The KS-test performed on the shuffled and ground truth datasets show that the p-value is greater '
@@ -210,9 +240,9 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
         print(f"P-val: {p_val}")
         threshold_dict = {"KS-statistic": ks_statistic.statistic}
         threshold_dict["P-val"] = p_val
-        threshold_dict["threshold"] = outlier_threshold
+        threshold_dict["threshold"] = threshold
         return threshold_dict
-    return outlier_threshold
+    return threshold
 
 
 def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300):
@@ -224,6 +254,7 @@ def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=
     :param show_plot: bool
     :return:
     """
+    data = _input_validator(data=data)
     if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif event_data is None:
@@ -231,18 +262,13 @@ def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     else:
         shuffled_data = generate_event_shuffle(data=data)
-    x = get_pearsons_correlation_matrix(data=shuffled_data)
+    x = _get_pearsons_correlation_matrix(data=shuffled_data)
     np.fill_diagonal(x, 0)
 
-    # Compute percentiles and IQR
-    Q1 = np.percentile(x, 25, interpolation='midpoint')
-    Q3 = np.percentile(x, 75, interpolation='midpoint')
-    IQR = Q3 - Q1
+    # set threshold as the 99th percentile of the shuffle distribution
+    threshold = np.percentile(x, 99, interpolation='midpoint')
 
-    # Compute threshold using outlier detection
-    outlier_threshold = Q3 + 1.5 * IQR
-
-    y = get_pearsons_correlation_matrix(data=data)
+    y = _get_pearsons_correlation_matrix(data=data)
     np.fill_diagonal(y, 0)
 
     # specify the bin width
@@ -257,7 +283,7 @@ def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=
         plt.ylim(0, y_lim)
     plt.hist(np.tril(x).flatten(), bins=x_bins, color='grey', alpha=0.3)
     plt.hist(np.tril(y).flatten(), bins=y_bins, color='blue', alpha=0.3)
-    plt.axvline(x=outlier_threshold, color='red')
+    plt.axvline(x=threshold, color='red')
     plt.legend(['threshold', 'shuffled', 'ground truth', ])
     plt.xlabel("Pearson's r-value")
     plt.ylabel("Frequency")
@@ -278,11 +304,11 @@ def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True,
     :param show_plot: bool
     :return:
     """
+    data = _input_validator(data=data)
     if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif event_data is None:
-        _, event_data = deconvolve_dataset(data=data)
-        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+        shuffled_data = generate_event_shuffle(data=data)
     if neuron_idx is None:
         neuron_idx = random.randint(1, np.shape(data)[0] - 1)
     plt.figure(figsize=(10, 5))
@@ -331,10 +357,11 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
     :param format:
     :return:
     """
-    x = get_pearsons_correlation_matrix(data=data[0])
+    data = _input_validator(data=data)
+    x = _get_pearsons_correlation_matrix(data=data[0])
     np.fill_diagonal(x, 0)
 
-    y = get_pearsons_correlation_matrix(data=data[1])
+    y = _get_pearsons_correlation_matrix(data=data[1])
     np.fill_diagonal(y, 0)
 
     x = np.tril(x).flatten()
@@ -375,10 +402,10 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
 #     :param data2:
 #     :return:
 #     """
-#     x = get_pearsons_correlation_matrix(data=data1)
+#     x = _get_pearsons_correlation_matrix(data=data1)
 #     np.fill_diagonal(x, 0)
 #
-#     y = get_pearsons_correlation_matrix(data=data2)
+#     y = _get_pearsons_correlation_matrix(data=data2)
 #     np.fill_diagonal(y, 0)
 #
 #     ks_statistic = scipy.stats.ks_2samp(x, y)
