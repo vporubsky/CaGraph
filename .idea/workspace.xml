@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated modules to reduce superfluous functionality.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added _input_validator() function to preprocess module.">
       <change afterPath="$PROJECT_DIR$/scratch-threshold.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,9 +67,9 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/final_exam" />
       <recent name="$PROJECT_DIR$/datasets/DG_FC/WT/archive" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/docs/cagraph" />
     </key>
@@ -438,14 +438,31 @@
       <workItem from="1684437467633" duration="1647000" />
       <workItem from="1684440847517" duration="136000" />
       <workItem from="1684440986456" duration="2428000" />
-      <workItem from="1684447287438" duration="254000" />
-    </task>
-    <task id="LOCAL-00030" summary="Updated documentation files.">
-      <created>1681801323093</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1681801323093</updated>
+      <workItem from="1684447287438" duration="1568000" />
+      <workItem from="1684448916369" duration="791000" />
+      <workItem from="1684449891665" duration="102000" />
+      <workItem from="1684449996303" duration="125000" />
+      <workItem from="1684450123906" duration="253000" />
+      <workItem from="1684450380148" duration="9500000" />
+      <workItem from="1684479264932" duration="284000" />
+      <workItem from="1684479552134" duration="178000" />
+      <workItem from="1684479732918" duration="802000" />
+      <workItem from="1684480540164" duration="382000" />
+      <workItem from="1684480925879" duration="98000" />
+      <workItem from="1684481027008" duration="88000" />
+      <workItem from="1684481118192" duration="234000" />
+      <workItem from="1684481356016" duration="113000" />
+      <workItem from="1684481472202" duration="98000" />
+      <workItem from="1684481572752" duration="69000" />
+      <workItem from="1684481644839" duration="218000" />
+      <workItem from="1684481865425" duration="1278000" />
+      <workItem from="1684483205450" duration="111000" />
+      <workItem from="1684483319382" duration="2528000" />
+      <workItem from="1684485916088" duration="274000" />
+      <workItem from="1684486193673" duration="178000" />
+      <workItem from="1684486375112" duration="109000" />
+      <workItem from="1684486487003" duration="186000" />
+      <workItem from="1684486677726" duration="206000" />
     </task>
     <task id="LOCAL-00031" summary="Updated documentation files.">
       <created>1681801879809</created>
@@ -783,7 +800,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684395486034</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="Added _input_validator() function to preprocess module.">
+      <created>1684447636685</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1684447636685</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -804,7 +828,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added test suite files for CaGraph, visualization, and preprocessing." />
     <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
     <MESSAGE value="Updated docstrings with all parameter and return values." />
     <MESSAGE value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
@@ -829,7 +852,8 @@
     <MESSAGE value="Added deconvolve_dataset() function to preprocess module for processing noisy datasets and performing event detection using the OASIS algorithm." />
     <MESSAGE value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
     <MESSAGE value="Updated modules to reduce superfluous functionality." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated modules to reduce superfluous functionality." />
+    <MESSAGE value="Added _input_validator() function to preprocess module." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added _input_validator() function to preprocess module." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -838,11 +862,6 @@
           <url>notebook:///Users/veronica_porubsky/GitHub/CaGraph/visualization_tutorial.ipynb</url>
           <line>19</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>10</line>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>

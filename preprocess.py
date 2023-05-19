@@ -245,7 +245,7 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     return threshold
 
 
-def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300):
+def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
@@ -287,15 +287,17 @@ def plot_threshold(data, event_data=None, y_lim=None, show_plot=True, save_plot=
     plt.legend(['threshold', 'shuffled', 'ground truth', ])
     plt.xlabel("Pearson's r-value")
     plt.ylabel("Frequency")
-    if show_plot:
-        plt.show()
+    if title is not None:
+        plt.title(title)
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+    if show_plot:
+        plt.show()
 
 
-def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True, save_plot=False, save_path=None, dpi=300):
+def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True, save_plot=False, save_path=None, format= 'png', dpi=300):
     """
     Plot shuffled distribution.
 
@@ -322,12 +324,14 @@ def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True,
     plt.ylabel('ΔF/F')
     plt.xlabel('Time')
     plt.legend()
-    if show_plot:
-        plt.show()
     if save_plot:
-        if save_path is None:
+        if save_path is not None:
+            save_path = save_path
+        else:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+    if show_plot:
+        plt.show()
 
 
 # Todo: add function to plot event trace

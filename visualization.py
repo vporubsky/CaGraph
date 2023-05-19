@@ -153,61 +153,78 @@ def interactive_network(cagraph_obj, graph=None,
     network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)
 
     plot.renderers.append(network_graph)
-    if show_in_notebook:
-        output_notebook()
-        show(plot)
-    elif show_plot:
-        show(plot)
-
     if save_plot:
         if save_path is not None:
             save(plot, filename=save_path)
         else:
             save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
-
+    if show_in_notebook:
+        output_notebook()
+        show(plot)
+    elif show_plot:
+        show(plot)
     if return_position:
         return position
 
-def plot_CDF(data_list, colors=['black', 'black'], marker='o', x_label='',
-                                 y_label='CDF', legend=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
+                                 y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=True,
+             show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
+
 
     :param data_list: list of lists containing float values to compare with KS-test
     :param colors: list of str containing matplotlib color styles
     :param marker: str matplotlib marker style
     :param x_label: str
     :param y_label: str
+    :param title:
+    :param show_stat:
     :param show_plot: bool
     """
-    # Evaluate KS-test statistic
-    stat_level = stats.ks_2samp(data_list[0], data_list[1])
-
+    store_cdfs = []
     for idx, data in enumerate(data_list):
         # sort the dataset in ascending order
         sorted_data = np.sort(data)
 
         # get the cdf values of dataset
-        cdf = np.arange(len(data)) / float(len(data))
+        cdf = np.cumsum(np.histogram(data, bins=len(data))[0]) / len(data)
+        store_cdfs.append(cdf)
 
         # plotting
         plt.plot(sorted_data, cdf, color=colors[idx], marker=marker)
 
     if legend is not None:
-        plt.legend([legend[0], legend[1]])
+        plt.legend([legend[0], legend[1]], loc='upper left')
+
     plt.ylabel(y_label)
     plt.xlabel(x_label)
-    # Todo: remove the statistical test
-    # plt.title(f'P value: {stat_level.pvalue:.2e}')
+    if x_lim is not None:
+        plt.xlim(x_lim)
+    if y_lim is not None:
+        plt.ylim(y_lim)
+    if title is not None:
+        plt.title(title)
+    if show_stat:
+        if len(store_cdfs) != 2:
+            IndexError('show_stat argument only compatible with a data_list containing two datasets.')
 
-    if show_plot:
-        plt.show()
+        # Evaluate KS-test statistic
+        stat_level = stats.ks_2samp(store_cdfs[0], store_cdfs[1])
 
+        if stat_level.pvalue < 0.05:
+            # Add the text annotation
+            plt.text(0.01, 0.8, f'* p-val: {stat_level.pvalue:.2e}')
+        else:
+            plt.text(0.01, 0.8, f'n.s.')
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+    if show_plot:
+        plt.show()
+
 
 def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
                    save_path=None, dpi=300, format='png'):
@@ -247,12 +264,12 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
         plt.xlabel(x_label)
     else:
         plt.ylabel("Frequency")
-    if show_plot:
-        plt.show()
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+    if show_plot:
+        plt.show()
 
 
 def plot_matched_data(sample_1: list, sample_2: list, labels: list, colors=['grey', 'grey'],
@@ -303,10 +320,9 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list, colors=['gre
         plt.ylabel(y_label)
     if x_label is None:
         plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
-
-    if show_plot:
-        plt.show()
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
         plt.savefig(fname=save_path, dpi=dpi, format=format)
+    if show_plot:
+        plt.show()

@@ -131,8 +131,8 @@ scratch.py
 
 # Final exam
 /final_exam
-/final_exam/final_exam.py
-/final_exam/final_exam_utils.py
+/final_exam.py
+/final_exam_utils.py
 /datasets/DG_FC
 /datasets/14-0_DG
 /datasets/BLA_EZM
