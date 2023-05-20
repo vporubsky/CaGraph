@@ -9,6 +9,7 @@ the cagraph module.
 """
 # General imports
 import networkx as nx
+import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -26,8 +27,22 @@ from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
 
+# %% Interactive graph visualization
+import cagraph
+
+def _interactive_network_input_validator(input_object):
+    """
+    :param input_object:
+    :return:
+    """
+    if isinstance(input_object, cagraph.CaGraph):
+        return input_object
+    else:
+        raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
+
+
 def interactive_network(cagraph_obj, graph=None,
-                        attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
+                        attributes=['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering'],
                         additional_attributes=None,
                         hover_attributes=None,
                         adjust_node_size=5, adjust_node_size_by='degree', adjust_node_color_by='communities',
@@ -55,8 +70,11 @@ def interactive_network(cagraph_obj, graph=None,
     :param: save_path: str
 
     """
+    # Set default analyses to incorporate in interactive visualization
+    default_analyses = ['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering']
+
     # Initialize cagraph and graph
-    cg = cagraph_obj
+    cg = _interactive_network_input_validator(cagraph_obj)
     if graph is None:
         graph = cg.graph
     else:
@@ -71,9 +89,9 @@ def interactive_network(cagraph_obj, graph=None,
             # Compute the degree of each node and add attribute
             attribute_dict['degree'] = cg.graph_theory.get_degree(return_type='dict')
 
-        elif attribute == 'HITS':
+        elif attribute == 'betweenness centrality':
             # Add HITS attribute
-            attribute_dict['HITS'] = cg.graph_theory.get_hits_values(return_type='dict')
+            attribute_dict['betweenness centrality'] = cg.graph_theory.get_betweenness_centrality(return_type='dict')
 
         elif attribute == 'hubs':
             # Add hubs attribute
@@ -130,7 +148,7 @@ def interactive_network(cagraph_obj, graph=None,
 
     # Establish which categories will appear when hovering over each node
     if hover_attributes is None:
-        hover_attributes = ['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'] + add_hover_attributes
+        hover_attributes = default_analyses + add_hover_attributes
     hover_tooltips = [("Neuron", "@index")]
     for value in hover_attributes:
         hover_tooltips.append((value, "@" + value))
@@ -174,7 +192,24 @@ def interactive_network(cagraph_obj, graph=None,
         return position
 
 
-def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
+# %% Plotting utilities
+def _plotting_input_validator(input_data):
+    """
+
+    :param input_data:
+    :return:
+    """
+    if isinstance(input_data, list):
+        for item in input_data:
+            if isinstance(item, list):
+                continue
+            else:
+                TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
+        return input_data
+    else:
+        TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
+
+def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
              y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=True,
              show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
@@ -198,6 +233,8 @@ def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
     :param show_stat:
     :param show_plot: bool
     """
+    data_list = _plotting_input_validator(data_list)
+
     store_cdf = []
     for idx, data in enumerate(data_list):
         # sort the dataset in ascending order
@@ -228,15 +265,17 @@ def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
         # Evaluate KS-test statistic
         stat_level = stats.ks_2samp(store_cdf[0], store_cdf[1])
 
+        # Add the text annotation below the figure legend
         if stat_level.pvalue < 0.05:
-            # Add the text annotation
             plt.text(0.01, 0.8, f'* p-val: {stat_level.pvalue:.2e}')
         else:
             plt.text(0.01, 0.8, f'n.s.')
+
+    sns.despine(offset=10, trim=True)
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
@@ -260,6 +299,8 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
     :param save_format:
     :return:
     """
+    data = _plotting_input_validator(data_list)
+
     # specify the bin width
     bin_width = 0.01
 
@@ -271,7 +312,7 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
         plt.hist(dataset, bins=dataset_bins, color=colors[0], alpha=0.3)
 
     if legend is not None:
-        plt.legend(legend)
+        plt.legend(legend, loc='upper left')
     if title is not None:
         plt.title(title)
     if y_label is not None:
@@ -283,12 +324,12 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_matched_data(sample_1: list, sample_2: list, labels: list,
+def plot_matched_data(data_list: list, labels: list,
                       figsize=(6, 10), line_color='lightgrey', linewidth=0.5, marker_colors=['grey', 'grey'],
                       marker=None,
                       show_boxplot=False, plot_rectangle=False, rectangle_index=None, rectangle_colors=None,
@@ -312,8 +353,13 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list,
     :param plot_rectangle: bool indicating whether to plot a rectangle over locs2
     :param rectangle_color: str indicating the color of the rectangle
     """
+    # Check input
+    data = _plotting_input_validator(data_list)
+    if len(data) != 2:
+        ValueError('plot_matched_data() supports analysis of two matched datasets. Length of data_list parameter must equal 2.')
+
     # Put into dataframe
-    df = pd.DataFrame({labels[0]: sample_1, labels[1]: sample_2})
+    df = pd.DataFrame({labels[0]: data[0], labels[1]: data[1]})
     data = pd.melt(df)
 
     # Plot
@@ -341,7 +387,6 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list,
                    whiskerprops=dict(linewidth=0.5, color=box_color),
                    boxprops=dict(linewidth=0.5, color=box_color, facecolor=(0, 0, 0, 0)),
                    medianprops=dict(color=box_color), patch_artist=True)
-
     # Create a rectangle patch
     if plot_rectangle:
         if rectangle_index == 1:
@@ -380,7 +425,7 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list,
     if y_label is not None:
         plt.ylabel(y_label)
     if x_label is None:
-        plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
+        plt.xlabel(f'P-value = {stats.ttest_rel(data[0], data[1]).pvalue:.3}')
     sns.despine(offset=10, trim=True)
     if save_plot:
         if save_path is None:
@@ -388,4 +433,3 @@ def plot_matched_data(sample_1: list, sample_2: list, labels: list,
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=format)
     if show_plot:
         plt.show()
-

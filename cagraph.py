@@ -119,7 +119,7 @@ class CaGraph:
         self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
         self._communities = self.graph_theory.get_communities(return_type='dict')
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
-        self._hits = self.graph_theory.get_hits_values(return_type='dict')
+        self._betweenness_centrality = self.graph_theory.get_betweenness_centrality(return_type='dict')
         # Todo: check eigenvector centrality convergence error
         # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
@@ -230,7 +230,7 @@ class CaGraph:
         self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
         self._communities = self.graph_theory.get_communities(return_type='dict')
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
-        self._hits = self.graph_theory.get_hits_values(return_type='dict')
+        self._betweenness_centrality = self.graph_theory.get_betweenness_centrality(return_type='dict')
         # Todo: check eigenvector centrality convergence error
         # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
@@ -395,11 +395,11 @@ class CaGraph:
         """
         if graph is None:
             num_nodes = self._num_neurons
-            con_probability = self.graph_theory.get_graph_density()
+            edge_probability = self.graph_theory.get_graph_density()
         else:
             num_nodes = len(graph.nodes)
-            con_probability = self.graph_theory.get_graph_density(graph=graph)
-        return nx.erdos_renyi_graph(n=num_nodes, p=con_probability)
+            edge_probability = self.graph_theory.get_graph_density(graph=graph)
+        return nx.erdos_renyi_graph(n=num_nodes, p=edge_probability)
 
     # Todo: add additional arguments to expand functionality
     # Todo: add show and save functionality
@@ -518,63 +518,40 @@ class CaGraph:
         # Graph theory analysis
         def get_hubs(self, graph=None, return_type='list'):
             """
-            Computes hub nodes in the graph using the HITS algorithm. Hubs are identified by finding
-            those nodes which have a hub value greater than the median of the hubs values plus 2.5 time the standard deviation.
+            Computes hub nodes using the normalized betweenness centrality scores. This method sets an
+            outlier threshold using the interquartile range of the betweenness centrality score distribution
+            and returns nodes with with scores above the outlier threshold.
 
-            :param graph: networkx.Graph object
-            :param return_type: str
+            :param graph:
+            :param return_type:
+            :return:
             """
             if graph is None:
-                hubs, authorities = nx.hits(self._graph, max_iter=500)
-            else:
-                hubs, authorities = nx.hits(graph, max_iter=500)
-            mean_hubs = np.mean(list(hubs.values()))
-            std_hubs = np.std(list(hubs.values()))
-            hubs_threshold = mean_hubs + 2.5 * std_hubs
+                graph = self._graph
+
+            # Calculate betweenness centrality
+            betweenness_centrality = nx.betweenness_centrality(graph, normalized=True, endpoints=False)
+            betweenness_centrality_scores = list(betweenness_centrality.values())
+            betweenness_centrality_scores.sort()
+
+            # Compute the outlier threshold using the interquartile range
+            Q1 = np.percentile(betweenness_centrality_scores, 25, method='midpoint')
+            Q3 = np.percentile(betweenness_centrality_scores, 75, method='midpoint')
+            IQR = Q3 - Q1
+            outlier_threshold = round(Q3 + 1.5 * IQR, 2)
+
+            # Iterate over nodes and determine if each betweenness centrality score exceeds the outlier threshold
             hubs_list = []
-            [hubs_list.append(x) for x in hubs.keys() if hubs[x] > hubs_threshold]
+            [hubs_list.append(x) for x in betweenness_centrality.keys() if betweenness_centrality[x] > outlier_threshold]
             hub_dict = {i: 1 if i in list(set(hubs_list) & set(self._node_labels)) else 0 for i in self._node_labels}
             if return_type == 'dict':
                 return hub_dict
             if return_type == 'list':
                 return list(hub_dict.values())
 
-        # Todo: update and substitute for hubs if necessary
-        # Todo: accommodate return_type
-        # Todo: rename to get_hubs when updated
-        def get_betweenness_centrality_hubs(self, graph=None, return_type='list'):
-            """
-            :param graph:
-            :param return_type:
-            :return:
-            """
-            if graph is None:
-                graph = self._graph
-
-            # Calculate betweenness centrality
-            bc = nx.betweenness_centrality(graph)
-
-            # Calculate the p-value for each node's betweenness centrality using a two-tailed test
-            p_values = stats.t.sf(abs(stats.t.ppf(0.025, len(graph) - 2)), len(graph) - 2) * 2
-            p_values = [p_values for _ in range(len(graph.nodes()))]
-            for i, node in enumerate(graph.nodes()):
-                t, p = stats.ttest_1samp([bc[node]], 0)
-                p_values[i] = p
-
-            # Set the significance level for the cutoff value
-            alpha = 0.05
-
-            # Identify the nodes with betweenness centrality values that exceed the cutoff value
-            # cutoff = stats.t.ppf(1 - alpha / 2, len(graph) - 2) * (1 / np.sqrt(len(graph) - 2))
-            # hub_nodes = [node for node, centrality in bc.items() if centrality >= cutoff]
-
-            # Alternatively, you can set the cutoff value based on the p-value directly
-            hub_nodes = [node for node, p_value in zip(graph.nodes(), p_values) if p_value <= alpha]
-            return hub_nodes
-
-        # Todo: Add return_type method
         def get_betweenness_centrality(self, graph=None, return_type='list'):
             """
+            Returns the betweenness centrality scores for all nodes.
 
             :param graph:
             :param return_type:
@@ -584,24 +561,10 @@ class CaGraph:
                 graph = self._graph
 
             # Calculate betweenness centrality
-            return nx.betweenness_centrality(graph)
-
-        # Todo: replace with betweenness centrality scores
-        def get_hits_values(self, graph=None, return_type='list'):
-            """
-            Computes hub nodes in the graph and returns a list of nodes identified as hubs.
-            HITS and authorities values match due to bidirectional edges.
-
-            :param graph: networkx.Graph object
-            :param return_type: str
-            """
-            if graph is None:
-                graph = self._graph
-            hits_dict, authorities_dict = nx.hits(graph, max_iter=500)
             if return_type == 'dict':
-                return hits_dict
-            if return_type == 'list':
-                return list(hits_dict.values())
+                return nx.betweenness_centrality(graph, normalized=True, endpoints=False)
+            elif return_type == 'list':
+                return list(nx.betweenness_centrality(graph, normalized=True, endpoints=False).values())
 
         def get_connected_components(self, graph=None) -> list:
             """
@@ -1418,6 +1381,10 @@ class CaGraphBatchTimeSamples:
 # %%  Matched analyses
 
 
+
+
+
+
 # %% Remaining updates
 # Todo: CaGraphBatch -> allow user to specify labels and also pass loaded numpy arrays
 # Todo: CaGraphBatch -> add option to add cell metadata
@@ -1429,3 +1396,4 @@ class CaGraphBatchTimeSamples:
 # Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
 # Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
+# Todo: extend input validator functionality (include all relevant inputs)

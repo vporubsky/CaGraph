@@ -17,9 +17,6 @@ import scipy
 import warnings
 import os
 
-
-# Todo: check alternative options to report (with print statements currently)
-
 # %% Utility functions
 def _input_validator(data):
     """
@@ -86,7 +83,6 @@ def deconvolve_dataset(data):
 
 
 # %% --------- Suitability for graph theory analysis -------------------------
-# Todo: Update  threshold selection using bayesian inference or other metric
 # Todo: update _event_bins() --> check that end threshold is necessary
 def _event_bins(data_row, events):
     """
@@ -102,7 +98,7 @@ def _event_bins(data_row, events):
     # Add all zero-valued points in the fluorescence data to the event trace
     zero_indices = np.where(np.array(data_row) < 0.001)  # 0.001 selected as threshold
     events = np.array(events)
-    events[list(zero_indices)] = 1
+    events[tuple(list(zero_indices))] = 1
 
     # Use event trace to split timeseries into relevant chunks to be shuffled
     events = list(events)
@@ -116,8 +112,8 @@ def _event_bins(data_row, events):
         start_val = idx
     np.random.shuffle(build_binned_list)
     flat_shuffled_binned_list = [item for sublist in build_binned_list for item in sublist]
-    threshold = 0.01
-    flat_shuffled_binned_list = [0 if value < threshold else value for value in flat_shuffled_binned_list]
+    # threshold = 0.01
+    # flat_shuffled_binned_list = [0 if value < threshold else value for value in flat_shuffled_binned_list]
     return flat_shuffled_binned_list
 
 
@@ -146,6 +142,32 @@ def generate_event_shuffle(data: np.ndarray, event_data=None) -> np.ndarray:
     return flatten_array
 
 
+def generate_pearsons_distributions(data, event_data=None):
+    """
+    Returns the distributions of Pearson's correlation coefficients for the
+    ground truth data and the shuffled data.
+
+    :param data: numpy.ndarray
+    :param event_data:
+    :return: shuffled_vals, data_vals
+    """
+    data = _input_validator(data)
+    if event_data is not None:
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+    elif event_data is None:
+        _, event_data = deconvolve_dataset(data=data)
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+    x = _get_pearsons_correlation_matrix(data=shuffled_data)
+    np.fill_diagonal(x, 0)
+
+    y = _get_pearsons_correlation_matrix(data=data)
+    np.fill_diagonal(y, 0)
+
+    shuffled_vals = np.tril(x).flatten()
+    data_vals = np.tril(y).flatten()
+    return shuffled_vals, data_vals
+
+
 def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     """
     Performs multiple random shuffles to identify threshold values, and averages them.
@@ -162,8 +184,7 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     return np.mean(thresholds)
 
 
-# Todo: add checks on dataset --> if numpy, if csv
-def generate_threshold(data, event_data=None, report_threshold=False, report_test=False):
+def generate_threshold(data, event_data=None, report_threshold=False, report_test=False, return_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -185,18 +206,19 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     else:
         shuffled_data = generate_event_shuffle(data=data)
-    x = _get_pearsons_correlation_matrix(data=shuffled_data)
-    np.fill_diagonal(x, 0)
+    data_correlation = _get_pearsons_correlation_matrix(data=data)
+    np.fill_diagonal(data_correlation, 0)
+
+    shuffle_correlation = _get_pearsons_correlation_matrix(data=shuffled_data)
+    np.fill_diagonal(shuffle_correlation, 0)
 
     # set threshold as the 99th percentile of the shuffle distribution
-    threshold = np.percentile(x, 99, interpolation='midpoint')
+    threshold = np.percentile(shuffle_correlation, 99, interpolation='midpoint')
 
-    y = _get_pearsons_correlation_matrix(data=data)
-    np.fill_diagonal(y, 0)
+    shuffled_correlation = np.tril(shuffle_correlation).flatten()
+    data_correlation = np.tril(data_correlation).flatten()
 
-    shuffled_vals = np.tril(x).flatten()
-    data_vals = np.tril(y).flatten()
-    ks_statistic = scipy.stats.ks_2samp(shuffled_vals, data_vals)
+    ks_statistic = scipy.stats.ks_2samp(shuffled_correlation, data_correlation)
     p_val = ks_statistic.pvalue
     if p_val < 0.05 and report_threshold:
         print(f"The threshold is: {threshold:.2f}")
@@ -208,13 +230,16 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     if report_test:
         print(f"KS-statistic: {ks_statistic.statistic}")
         print(f"P-val: {p_val}")
+    if return_test:
         threshold_dict = {"KS-statistic": ks_statistic.statistic, "P-val": p_val, "threshold": threshold}
         return threshold_dict
-    return threshold
+    else:
+        return threshold
 
 
-def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True, save_plot=False, save_path=None,
-                   dpi=300, save_format='png'):
+def plot_threshold(data, event_data=None, data_id=None,
+                   data_color='blue', shuffle_color='grey', threshold_color='red',
+                   title=None, x_lim=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
@@ -222,7 +247,7 @@ def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True
     :param dpi:
     :param save_path:
     :param save_plot:
-    :param y_lim:
+    :param y_lim: tuple
     :param title:
     :param data: numpy.ndarray
     :param event_data: list
@@ -237,29 +262,39 @@ def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     else:
         shuffled_data = generate_event_shuffle(data=data)
-    x = _get_pearsons_correlation_matrix(data=shuffled_data)
-    np.fill_diagonal(x, 0)
+
+    data_correlation = _get_pearsons_correlation_matrix(data=data)
+    np.fill_diagonal(data_correlation, 0)
+
+    shuffle_correlation = _get_pearsons_correlation_matrix(data=shuffled_data)
+    np.fill_diagonal(shuffle_correlation, 0)
 
     # set threshold as the 99th percentile of the shuffle distribution
-    threshold = np.percentile(x, 99, interpolation='midpoint')
-
-    y = _get_pearsons_correlation_matrix(data=data)
-    np.fill_diagonal(y, 0)
-
-    # specify the bin width
-    bin_width = 0.01
+    threshold = np.percentile(shuffle_correlation, 99, interpolation='midpoint')
 
     # calculate the number of bins
-    x_bins = int(np.ceil((x.max() - x.min()) / bin_width))
-    y_bins = int(np.ceil((y.max() - y.min()) / bin_width))
+    bin_width = 0.01
+    x_bins = int(np.ceil((shuffle_correlation.max() - shuffle_correlation.min()) / bin_width))
+    y_bins = int(np.ceil((data_correlation.max() - data_correlation.min()) / bin_width))
 
-    plt.xlim(-1.0, 1.0)
+
     if y_lim is not None:
-        plt.ylim(0, y_lim)
-    plt.hist(np.tril(x).flatten(), bins=x_bins, color='grey', alpha=0.3)
-    plt.hist(np.tril(y).flatten(), bins=y_bins, color='blue', alpha=0.3)
-    plt.axvline(x=threshold, color='red')
-    plt.legend(['threshold', 'shuffled', 'ground truth', ])
+        plt.ylim(y_lim)
+    if x_lim is not None:
+        plt.xlim(x_lim)
+    else:
+        plt.xlim(-1.0, 1.0)
+
+    # Plot histograms of shuffle, data, and threshold
+    plt.hist(np.tril(shuffle_correlation).flatten(), bins=x_bins, color=shuffle_color, alpha=0.3)
+    plt.hist(np.tril(data_correlation).flatten(), bins=y_bins, color=data_color, alpha=0.3)
+    plt.axvline(x=threshold, color=threshold_color)
+
+    # Specify plot details
+    if data_id is not None:
+        plt.legend(['threshold', f'shuffled {data_id}', f'{data_id}'], loc='upper left')
+    elif data_id is None:
+        plt.legend(['threshold', 'shuffled', 'ground truth'], loc='upper left')
     plt.xlabel("Pearson's r-value")
     plt.ylabel("Frequency")
     if title is not None:
@@ -267,12 +302,12 @@ def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_shuffle_example(data, event_data=None, neuron_index=None, show_plot=True, save_plot=False, save_path=None,
+def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None, show_plot=True, save_plot=False, save_path=None,
                          save_format='png', dpi=300):
     """
     Plot shuffled distribution.
@@ -295,37 +330,30 @@ def plot_shuffle_example(data, event_data=None, neuron_index=None, show_plot=Tru
         shuffled_data = generate_event_shuffle(data=data)
     if neuron_index is None:
         neuron_index = random.randint(1, np.shape(data)[0] - 1)
+    else:
+        neuron_index += 1 # Adjusted to accomodate time row
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
-    plt.plot(data[0, :], data[neuron_index, :], c='blue', label='ground truth')
+    plt.plot(data[0, :], data[neuron_index, :], c=data_color, label='ground truth')
     plt.ylabel('ΔF/F')
-    plt.legend()
+    plt.legend(loc='upper left')
     plt.subplot(212)
-    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c='grey', label='shuffled')
+    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c=shuffle_color, label='shuffled')
     plt.ylabel('')
     plt.ylabel('ΔF/F')
     plt.xlabel('Time')
-    plt.legend()
+    plt.legend(loc='upper left')
     if save_plot:
         if save_path is not None:
             save_path = save_path
         else:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path,  bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-# Todo: add function to plot event trace
-def plot_event_trace():
-    """
-
-    :return:
-    """
-    return
-
-
-def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True,
+def plot_correlation_hist(data, colors, labels, title=None, y_label=None, x_label=None, show_plot=True,
                           save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plot histograms of the Pearson's correlation coefficient distributions for the provided datasets.
@@ -363,8 +391,8 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
     # plot histograms
     plt.hist(x, bins=x_bins, color=colors[0], alpha=0.3)
     plt.hist(y, bins=y_bins, color=colors[1], alpha=0.3)
-    if legend is not None:
-        plt.legend(legend)
+    if labels is not None:
+        plt.legend(labels, loc='upper left')
     if title is not None:
         plt.title(title)
     if y_label is not None:
@@ -378,25 +406,6 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
 
-# Todo: formally include
-# def compute_ks(data1, data2, sig_level = 0.05):
-#     """
-#
-#     :param data1:
-#     :param data2:
-#     :return:
-#     """
-#     x = _get_pearsons_correlation_matrix(data=data1)
-#     np.fill_diagonal(x, 0)
-#
-#     y = _get_pearsons_correlation_matrix(data=data2)
-#     np.fill_diagonal(y, 0)
-#
-#     ks_statistic = scipy.stats.ks_2samp(x, y)
-#     p_val = ks_statistic.pvalue
-#     if p_val < sig_level:
-#         print(f'Null hypothesis is rejected. KS P-value = {p_val:.3}')
-#     else:
-#         print(f'Null hypothesis is not rejected. KS P-value = {p_val:.3}')
+
