@@ -79,6 +79,10 @@ class CaGraphTestSuite(unittest.TestCase):
         self.assertEqual(cg_obj.threshold,init_threshold)
 
 
+    # Todo: test that input data must be in right format - error when file not found or wrong filetype passed
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

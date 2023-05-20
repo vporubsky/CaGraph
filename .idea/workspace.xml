@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added _input_validator() function to preprocess module.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated plot_cdf() function in visualization module.">
       <change afterPath="$PROJECT_DIR$/scratch-threshold.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
@@ -39,6 +40,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="2MRtWDq4t9S7efzBz8ZFJnqEUIQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -67,8 +71,8 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/final_exam" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/datasets/DG_FC/WT/archive" />
       <recent name="$PROJECT_DIR$/cagraph" />
       <recent name="$PROJECT_DIR$/docs/cagraph" />
@@ -101,9 +105,6 @@
       <module name="CaGraph" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scratch_files" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -462,14 +463,8 @@
       <workItem from="1684486193673" duration="178000" />
       <workItem from="1684486375112" duration="109000" />
       <workItem from="1684486487003" duration="186000" />
-      <workItem from="1684486677726" duration="206000" />
-    </task>
-    <task id="LOCAL-00031" summary="Updated documentation files.">
-      <created>1681801879809</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1681801879809</updated>
+      <workItem from="1684486677726" duration="274000" />
+      <workItem from="1684511059313" duration="22607000" />
     </task>
     <task id="LOCAL-00032" summary="Updated cagraph.rst file to use autoclass for preprocessing and visualization modules.">
       <created>1681802259972</created>
@@ -807,7 +802,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684447636685</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Updated plot_cdf() function in visualization module.">
+      <created>1684486885551</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1684486885551</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -828,7 +830,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers." />
     <MESSAGE value="Updated docstrings with all parameter and return values." />
     <MESSAGE value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
     <MESSAGE value="Example datasets added due to failed continuous integration workflow." />
@@ -853,7 +854,8 @@
     <MESSAGE value="Updated _event_bins() function to add all zero-valued timepoints in the fluorescence timeseries to the event list." />
     <MESSAGE value="Updated modules to reduce superfluous functionality." />
     <MESSAGE value="Added _input_validator() function to preprocess module." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added _input_validator() function to preprocess module." />
+    <MESSAGE value="Updated plot_cdf() function in visualization module." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated plot_cdf() function in visualization module." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -865,7 +867,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>26</line>
+          <line>28</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

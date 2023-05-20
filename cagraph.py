@@ -121,13 +121,13 @@ class CaGraph:
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
         self._hits = self.graph_theory.get_hits_values(return_type='dict')
         # Todo: check eigenvector centrality convergence error
-        #self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+        # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
         # Build private attribute dictionary
         self.__attribute_dictionary = {'hubs': self.hubs, 'degree': self.degree,
                                        'clustering coefficient': self.clustering_coefficient,
                                        'communities': self.communities,
-                                       #'eigenvector centrality': self.eigenvector_centrality,
+                                       # 'eigenvector centrality': self.eigenvector_centrality,
                                        'correlated pair ratio': self.correlated_pair_ratio, 'HITS': self.hits}
 
         # Add node metadata
@@ -232,7 +232,7 @@ class CaGraph:
         self._hubs = self.graph_theory.get_hubs(return_type='dict')
         self._hits = self.graph_theory.get_hits_values(return_type='dict')
         # Todo: check eigenvector centrality convergence error
-        #self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+        # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
     def __generate_threshold(self) -> float:
         """
@@ -276,6 +276,10 @@ class CaGraph:
 
         If many edits are required, the graphs are dissimilar.
 
+        :param save_format:
+        :param dpi:
+        :param save_path:
+        :param save_plot:
         :param data:
         :param threshold:
         :param show_plot:
@@ -289,9 +293,9 @@ class CaGraph:
         thresholds = []
         similarity = []
         for value in interval:
-            if 0 < threshold+value <= 1:
-                thresholds.append(threshold+value)
-                similarity.append(nx.graph_edit_distance(starting_graph, self.get_graph(threshold=threshold+value)))
+            if 0 < threshold + value <= 1:
+                thresholds.append(threshold + value)
+                similarity.append(nx.graph_edit_distance(starting_graph, self.get_graph(threshold=threshold + value)))
 
         plt.plot(thresholds, similarity, '.-')
         plt.xlabel('threshold')
@@ -303,7 +307,6 @@ class CaGraph:
         if show_plot:
             plt.show()
         return similarity
-
 
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
@@ -362,6 +365,7 @@ class CaGraph:
         """
         Automatically generate graph object from numpy adjacency matrix.
 
+        :param threshold:
         :param weighted: bool
         :return: networkx.Graph object
         """
@@ -536,6 +540,8 @@ class CaGraph:
                 return list(hub_dict.values())
 
         # Todo: update and substitute for hubs if necessary
+        # Todo: accommodate return_type
+        # Todo: rename to get_hubs when updated
         def get_betweenness_centrality_hubs(self, graph=None, return_type='list'):
             """
             :param graph:
@@ -566,6 +572,7 @@ class CaGraph:
             hub_nodes = [node for node, p_value in zip(graph.nodes(), p_values) if p_value <= alpha]
             return hub_nodes
 
+        # Todo: Add return_type method
         def get_betweenness_centrality(self, graph=None, return_type='list'):
             """
 
@@ -967,6 +974,7 @@ class CaGraphTimeSamples:
     """
     Class for running time-sample analyses on a single dataset.
     """
+
     def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None,
                  dataset_id=None,
                  threshold=None):
@@ -1059,8 +1067,7 @@ class CaGraphTimeSamples:
 
         :return: float
         """
-        return prep.generate_average_threshold(data=self.data[1:,:], shuffle_iterations=10)
-
+        return prep.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
 
     # Public utility methods
     def get_cagraph(self, condition_label):
@@ -1070,7 +1077,6 @@ class CaGraphTimeSamples:
         :return:
         """
         return getattr(self, f'__{condition_label}_cagraph')
-
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
@@ -1183,7 +1189,7 @@ class CaGraphBatch:
         store_thresholds = []
         for dataset in dataset_keys:
             data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(prep.generate_average_threshold(data=data[1:,:], shuffle_iterations=10))
+            store_thresholds.append(prep.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
         return np.mean(store_thresholds)
 
     # Public utility methods
@@ -1252,17 +1258,19 @@ class CaGraphBatch:
             cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key + '_report',
                                    save_filetype=save_filetype)
 
-# Todo: check that functionality of batched and timesampled works
-# %% Batched and Timesampled analyses
+
+# %% Batched and sampled analyses
 class CaGraphBatchTimeSamples:
     """
-    Class for running batched and timesampled analyses.
+    Class for running batched analyses on datasets that have distinct time periods to
+    separate into samples.
 
     Only directories can be passed to CaGraphBatchTimeSamples. Node metadata cannot be added to CaGraph objects in the batched
     analysis. Future versions will include the node_metadata attribute.
     """
 
-    def __init__(self, data_path, group_id=None, time_samples=None, condition_labels=None,  threshold=None, threshold_averaged=False):
+    def __init__(self, data_path, group_id=None, time_samples=None, condition_labels=None, threshold=None,
+                 threshold_averaged=False):
         """
         Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
         The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
@@ -1273,6 +1281,7 @@ class CaGraphBatchTimeSamples:
         """
         if not os.path.exists(os.path.dirname(data_path)):
             raise ValueError('Path provided for data_path parameter does not exist.')
+        # Todo: extend to include numpy.ndarray inputs
         data_list = os.listdir(data_path)
 
         # Set threshold
@@ -1304,8 +1313,6 @@ class CaGraphBatchTimeSamples:
                         self._dataset_identifiers.append(dataset[:-4] + '_' + condition_labels[i])
                 except Exception as e:
                     print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
-
-
 
     # Private utility methods
     @property
@@ -1339,7 +1346,7 @@ class CaGraphBatchTimeSamples:
         store_thresholds = []
         for dataset in dataset_keys:
             data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(prep.generate_average_threshold(data=data[1:,:], shuffle_iterations=10))
+            store_thresholds.append(prep.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
         return np.mean(store_thresholds)
 
     # Public utility methods
@@ -1411,8 +1418,6 @@ class CaGraphBatchTimeSamples:
 # %%  Matched analyses
 
 
-
-
 # %% Remaining updates
 # Todo: CaGraphBatch -> allow user to specify labels and also pass loaded numpy arrays
 # Todo: CaGraphBatch -> add option to add cell metadata
@@ -1424,6 +1429,3 @@ class CaGraphBatchTimeSamples:
 # Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
 # Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
-
-
-

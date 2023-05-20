@@ -11,6 +11,7 @@ the cagraph module.
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import seaborn as sns
 from scipy import stats
 import pandas as pd
@@ -24,13 +25,14 @@ from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
+
 def interactive_network(cagraph_obj, graph=None,
                         attributes=['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'],
-                        additional_attributes = None,
+                        additional_attributes=None,
                         hover_attributes=None,
-                        adjust_node_size=5, adjust_size_by='degree', adjust_color_by='communities',
+                        adjust_node_size=5, adjust_node_size_by='degree', adjust_node_color_by='communities',
                         palette='Blues8',
-                        position = None, return_position = False,
+                        position=None, return_position=False,
                         title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
     """
     Generates an interactive Bokeh.io plot of the graph network.
@@ -42,7 +44,7 @@ def interactive_network(cagraph_obj, graph=None,
     :param: hover_attributes: list
     :param: adjust_node_size: int
     :param: adjust_size_by: str
-    :param: adjust_color_by: str
+    :param: adjust_node_color_by: str
     :param: palette: tuple a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
     :param: position: dict
     :param: return_position: bool
@@ -56,9 +58,9 @@ def interactive_network(cagraph_obj, graph=None,
     # Initialize cagraph and graph
     cg = cagraph_obj
     if graph is None:
-        G = cg.graph
+        graph = cg.graph
     else:
-        G = graph
+        graph = graph
     label_keys = cg.node_labels
 
     #  Build attributes dictionary
@@ -96,24 +98,24 @@ def interactive_network(cagraph_obj, graph=None,
     if additional_attributes is not None:
         for key in additional_attributes.keys():
             # parse attribute
-            attribute_dict[key] = {i: j for i, j in zip(label_keys, additional_attributes[key])} # Must be same length
+            attribute_dict[key] = {i: j for i, j in zip(label_keys, additional_attributes[key])}  # Must be same length
             # store key value
             add_hover_attributes += [key]
 
     # Set node attributes
     for key, value in attribute_dict.items():
-        nx.set_node_attributes(G, name=key, values=value)
+        nx.set_node_attributes(graph, name=key, values=value)
 
     # Adjusted node size
     if adjust_node_size is not None:
         # Adjust node size
         adjusted_node_size = dict(
-            [(node, value + adjust_node_size) for node, value in attribute_dict[adjust_size_by].items()])
-        nx.set_node_attributes(G, name='adjusted_node_size', values=adjusted_node_size)
+            [(node, value + adjust_node_size) for node, value in attribute_dict[adjust_node_size_by].items()])
+        nx.set_node_attributes(graph, name='adjusted_node_size', values=adjusted_node_size)
         size_by_this_attribute = 'adjusted_node_size'
 
     # Adjust node color
-    color_by_this_attribute = adjust_color_by
+    color_by_this_attribute = adjust_node_color_by
 
     # Generate color palette
     palettes = [attr for attr in dir(bokeh.palettes) if
@@ -123,31 +125,36 @@ def interactive_network(cagraph_obj, graph=None,
     elif isinstance(palette, tuple):
         color_palette = palette
     else:
-        raise AttributeError('Must specify color palette as type string using an existing bokeh.palettes palette or generate a tuple containing hex codes.')
+        raise AttributeError(
+            'Must specify color palette as type string using an existing bokeh.palettes palette or generate a tuple containing hex codes.')
 
     # Establish which categories will appear when hovering over each node
     if hover_attributes is None:
         hover_attributes = ['degree', 'HITS', 'hubs', 'CPR', 'communities', 'clustering'] + add_hover_attributes
-    HOVER_TOOLTIPS = [("Neuron", "@index")]
+    hover_tooltips = [("Neuron", "@index")]
     for value in hover_attributes:
-        HOVER_TOOLTIPS.append((value, "@" + value))
+        hover_tooltips.append((value, "@" + value))
 
     # Create a plot with set dimensions, toolbar, and title
-    plot = figure(tooltips=HOVER_TOOLTIPS,
+    plot = figure(tooltips=hover_tooltips,
                   tools="pan,wheel_zoom,save,reset", active_scroll='wheel_zoom',
                   x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), title=title)
 
     # Create a network graph object
     if position is None:
-        position = nx.spring_layout(G)
-    network_graph = from_networkx(G, position, scale=10, center=(0, 0))
+        position = nx.spring_layout(graph)
+    network_graph = from_networkx(graph, position, scale=10, center=(0, 0))
 
     # Set node sizes and colors according to node degree (color as spectrum of color palette)
     minimum_value_color = min(network_graph.node_renderer.data_source.data[color_by_this_attribute])
     maximum_value_color = max(network_graph.node_renderer.data_source.data[color_by_this_attribute])
-    network_graph.node_renderer.glyph = Circle(size=size_by_this_attribute,
-                                               fill_color=linear_cmap(color_by_this_attribute, color_palette,
-                                                                      minimum_value_color, maximum_value_color))
+    if adjust_node_size_by is None:
+        network_graph.node_renderer.glyph = Circle(fill_color=linear_cmap(color_by_this_attribute, color_palette,
+                                                                          minimum_value_color, maximum_value_color))
+    else:
+        network_graph.node_renderer.glyph = Circle(size=size_by_this_attribute,
+                                                   fill_color=linear_cmap(color_by_this_attribute, color_palette,
+                                                                          minimum_value_color, maximum_value_color))
 
     # Set edge opacity and width
     network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)
@@ -166,14 +173,22 @@ def interactive_network(cagraph_obj, graph=None,
     if return_position:
         return position
 
+
 def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
-                                 y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=True,
-             show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+             y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=True,
+             show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
 
 
+    :param save_format:
+    :param dpi:
+    :param save_path:
+    :param save_plot:
+    :param legend:
+    :param y_lim:
+    :param x_lim:
     :param data_list: list of lists containing float values to compare with KS-test
     :param colors: list of str containing matplotlib color styles
     :param marker: str matplotlib marker style
@@ -183,14 +198,14 @@ def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
     :param show_stat:
     :param show_plot: bool
     """
-    store_cdfs = []
+    store_cdf = []
     for idx, data in enumerate(data_list):
         # sort the dataset in ascending order
         sorted_data = np.sort(data)
 
         # get the cdf values of dataset
         cdf = np.cumsum(np.histogram(data, bins=len(data))[0]) / len(data)
-        store_cdfs.append(cdf)
+        store_cdf.append(cdf)
 
         # plotting
         plt.plot(sorted_data, cdf, color=colors[idx], marker=marker)
@@ -207,11 +222,11 @@ def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
     if title is not None:
         plt.title(title)
     if show_stat:
-        if len(store_cdfs) != 2:
+        if len(store_cdf) != 2:
             IndexError('show_stat argument only compatible with a data_list containing two datasets.')
 
         # Evaluate KS-test statistic
-        stat_level = stats.ks_2samp(store_cdfs[0], store_cdfs[1])
+        stat_level = stats.ks_2samp(store_cdf[0], store_cdf[1])
 
         if stat_level.pvalue < 0.05:
             # Add the text annotation
@@ -221,13 +236,14 @@ def plot_CDF(data_list, colors=['black', 'black'], marker='.', x_label='',
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
-                   save_path=None, dpi=300, format='png'):
+def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True,
+                   save_plot=False,
+                   save_path=None, dpi=300, save_format='png'):
     """
     Plot histograms of the provided datasets in data.
 
@@ -241,7 +257,7 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
     :param save_plot:
     :param save_path:
     :param dpi:
-    :param format:
+    :param save_format:
     :return:
     """
     # specify the bin width
@@ -267,62 +283,109 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_matched_data(sample_1: list, sample_2: list, labels: list, colors=['grey', 'grey'],
-                      x_label=None, y_label=None, show_plot=True, save_plot=False, save_path=None,
-                      dpi=300, format='png'):
+def plot_matched_data(sample_1: list, sample_2: list, labels: list,
+                      figsize=(6, 10), line_color='lightgrey', linewidth=0.5, marker_colors=['grey', 'grey'],
+                      marker=None,
+                      show_boxplot=False, plot_rectangle=False, rectangle_index=None, rectangle_colors=None,
+                      x_label=None, y_label=None, y_lim=None, y_ticks=None,
+                      show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
     Plots two samples of matched data. Each sample will be plotted as points stacked vertically within condition.
     Lines will be drawn to connect the matching pairs.
 
     :param sample_1:
     :param sample_2:
+    :param labels: list of str containing the labels for sample_1 and sample_2
     :param colors: list of str containing matplotlib color styles
     :param x_label: str
     :param y_label: str
     :param show_plot: bool
     :param save_plot: bool
+    :param save_path: str containing the file path for saving the plot
     :param dpi: int
     :param format: str containing file extension supported by matplotlib.pyplot.savefig
+    :param plot_rectangle: bool indicating whether to plot a rectangle over locs2
+    :param rectangle_color: str indicating the color of the rectangle
     """
     # Put into dataframe
     df = pd.DataFrame({labels[0]: sample_1, labels[1]: sample_2})
     data = pd.melt(df)
 
     # Plot
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=figsize)
     sns.swarmplot(data=data, x='variable', y='value', ax=ax, size=0)
     idx0 = 0
     idx1 = 1
     locs1 = ax.get_children()[idx0].get_offsets()
     locs2 = ax.get_children()[idx1].get_offsets()
 
-    y_all = np.zeros(2)
     for i in range(locs1.shape[0]):
         x = [locs1[i, 0], locs2[i, 0]]
         y = [locs1[i, 1], locs2[i, 1]]
-        ax.plot(x, y, color='lightgrey', linewidth=0.5)
-        ax.plot(locs1[i, 0], locs1[i, 1], '.', color=colors[0])
-        ax.plot(locs2[i, 0], locs2[i, 1], '.', color=colors[1])
+        ax.plot(x, y, color=line_color, linewidth=linewidth)
+        ax.plot(locs1[i, 0], locs1[i, 1], marker=marker, color=marker_colors[0])
+        ax.plot(locs2[i, 0], locs2[i, 1], marker=marker, color=marker_colors[1])
         data = [locs1[:, 1], locs2[:, 1]]
-        ax.boxplot(data, positions=[0, 1], capprops=dict(linewidth=0.5, color='k'),
-                   whiskerprops=dict(linewidth=0.5, color='k'),
-                   boxprops=dict(linewidth=0.5, color='k'),
-                   medianprops=dict(color='k'))
-        plt.xticks([])
-        y_all = np.vstack((y_all, y))
+        if show_boxplot:
+            box_color = 'k'
+            sym_color = 'k'
+        else:
+            box_color = (0, 0, 0, 0)
+            sym_color = 'none'
+        ax.boxplot(data, positions=[0, 1], sym=sym_color, capprops=dict(linewidth=0.5, color=box_color),
+                   whiskerprops=dict(linewidth=0.5, color=box_color),
+                   boxprops=dict(linewidth=0.5, color=box_color, facecolor=(0, 0, 0, 0)),
+                   medianprops=dict(color=box_color), patch_artist=True)
 
+    # Create a rectangle patch
+    if plot_rectangle:
+        if rectangle_index == 1:
+            # Add rectangle to rightmost boxplot
+            start_x = 0.6
+            start_y = y_lim[0]
+            width_x = 0.8
+            width_y = y_lim[1] - y_lim[0]
+            rect = patches.Rectangle((start_x, start_y), width_x, width_y, linewidth=1, edgecolor='none',
+                                     facecolor=rectangle_colors[0], alpha=0.2)
+            ax.add_patch(rect)
+        elif rectangle_index == 0:
+            # Add rectangle to leftmost data
+            start_x = -0.4
+            start_y = y_lim[0]
+            width_x = 0.8
+            width_y = y_lim[1] - y_lim[0]
+            rect = patches.Rectangle((start_x, start_y), width_x, width_y, linewidth=1, edgecolor='none',
+                                     facecolor=rectangle_colors[0], alpha=0.2)
+            ax.add_patch(rect)
+        else:
+            left_rect = patches.Rectangle((-0.4, y_lim[0]), 0.8, y_lim[1] - y_lim[0], linewidth=1, edgecolor='none',
+                                          facecolor=rectangle_colors[0], alpha=0.2)
+            right_rect = patches.Rectangle((0.6, y_lim[0]), 0.8, y_lim[1] - y_lim[0], linewidth=1, edgecolor='none',
+                                           facecolor=rectangle_colors[1], alpha=0.2)
+            ax.add_patch(left_rect)
+            ax.add_patch(right_rect)
+
+        # Add the rectangle patch to the plot
+
+    if y_ticks is not None:
+        plt.yticks(y_ticks)
+    plt.xticks([])
+    if y_lim is not None:
+        plt.ylim(y_lim)
     if y_label is not None:
         plt.ylabel(y_label)
     if x_label is None:
         plt.xlabel(f'P-value = {stats.ttest_rel(sample_1, sample_2).pvalue:.3}')
+    sns.despine(offset=10, trim=True)
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=format)
     if show_plot:
         plt.show()
+

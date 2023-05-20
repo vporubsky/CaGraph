@@ -5,13 +5,12 @@ Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
 Description: a preprocessing module to process the uploaded calcium imaging datasets before they are used in the
-the CaGraph class to perform graph theory analysis.
+CaGraph class to perform graph theory analysis.
 """
 # Imports
 from oasis.functions import deconvolve
 from pynwb import NWBHDF5IO
 import random
-import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
@@ -21,7 +20,7 @@ import os
 
 # Todo: check alternative options to report (with print statements currently)
 
-#%% Utility functions
+# %% Utility functions
 def _input_validator(data):
     """
     Validates the input dataset by checking that it is a numpy.ndarray or path to CSV or NWB file.
@@ -47,21 +46,22 @@ def _input_validator(data):
     else:
         raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
+
 def _get_pearsons_correlation_matrix(data):
     """
     Returns the Pearson's correlation for all neuron pairs.
 
     :param data: numpy.ndarray
-    :param time_points: tuple
     :return: numpy.ndarray
     """
     return np.nan_to_num(np.corrcoef(data, rowvar=True))
 
-#%% ---------------- Clean data --------------------------------------
+
+# %% ---------------- Clean data --------------------------------------
 def deconvolve_dataset(data):
     """
     Uses OASIS algorithm implementation by J. Friedrich (https://github.com/j-friedrich/OASIS) to deconvolve the
-    caclium imaging trace and infer neural activity.
+    calcium imaging trace and infer neural activity.
 
     The inferred neural activity is converted to a binary array to construct the event data.
 
@@ -85,7 +85,7 @@ def deconvolve_dataset(data):
     return decon_data, event_data
 
 
-#%% --------- Suitability for graph theory analysis -------------------------
+# %% --------- Suitability for graph theory analysis -------------------------
 # Todo: Update  threshold selection using bayesian inference or other metric
 # Todo: update _event_bins() --> check that end threshold is necessary
 def _event_bins(data_row, events):
@@ -121,7 +121,7 @@ def _event_bins(data_row, events):
     return flat_shuffled_binned_list
 
 
-def generate_event_shuffle(data: numpy.ndarray, event_data=None) -> np.ndarray:
+def generate_event_shuffle(data: np.ndarray, event_data=None) -> np.ndarray:
     """
     Generates a shuffled dataset using events to break each neuron's calcium fluorescence timeseries.
 
@@ -161,35 +161,6 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
         thresholds += [generate_threshold(data=data, event_data=event_data)]
     return np.mean(thresholds)
 
-# Todo: remove this
-def generate_threshold_distributions(data, event_data=None, report_threshold=False, report_test=False):
-    """
-    Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
-
-    Provides warning if the correlation distribution of the provided dataset is not statistically different from that of
-    the shuffled dataset.
-
-    :param data: numpy.ndarray
-    :param shuffled_data: numpy.ndarray
-    :param event_data:
-    :param report_test: bool
-    :return: float or dict
-    """
-    data = _input_validator(data)
-    if event_data is not None:
-        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    elif event_data is None:
-        _, event_data = deconvolve_dataset(data=data)
-        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    x = _get_pearsons_correlation_matrix(data=shuffled_data)
-    np.fill_diagonal(x, 0)
-
-    y = _get_pearsons_correlation_matrix(data=data)
-    np.fill_diagonal(y, 0)
-
-    shuffled_vals = np.tril(x).flatten()
-    data_vals = np.tril(y).flatten()
-    return shuffled_vals, data_vals
 
 # Todo: add checks on dataset --> if numpy, if csv
 def generate_threshold(data, event_data=None, report_threshold=False, report_test=False):
@@ -201,7 +172,6 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
 
     :param report_threshold:
     :param data: numpy.ndarray
-    :param shuffled_data: numpy.ndarray
     :param event_data:
     :param report_test: bool
     :return: float or dict
@@ -238,17 +208,22 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     if report_test:
         print(f"KS-statistic: {ks_statistic.statistic}")
         print(f"P-val: {p_val}")
-        threshold_dict = {"KS-statistic": ks_statistic.statistic}
-        threshold_dict["P-val"] = p_val
-        threshold_dict["threshold"] = threshold
+        threshold_dict = {"KS-statistic": ks_statistic.statistic, "P-val": p_val, "threshold": threshold}
         return threshold_dict
     return threshold
 
 
-def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True, save_plot=False, save_path=None,
+                   dpi=300, save_format='png'):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
+    :param save_format:
+    :param dpi:
+    :param save_path:
+    :param save_plot:
+    :param y_lim:
+    :param title:
     :param data: numpy.ndarray
     :param event_data: list
     :param show_plot: bool
@@ -292,15 +267,22 @@ def plot_threshold(data, event_data=None, title=None, y_lim=None, show_plot=True
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True, save_plot=False, save_path=None, format= 'png', dpi=300):
+def plot_shuffle_example(data, event_data=None, neuron_index=None, show_plot=True, save_plot=False, save_path=None,
+                         save_format='png', dpi=300):
     """
     Plot shuffled distribution.
 
+    :param dpi:
+    :param save_format:
+    :param neuron_index:
+    :param save_path:
+    :param save_plot:
+    :param neuron_index:
     :param data: numpy.ndarray
     :param event_data: list
     :param show_plot: bool
@@ -311,15 +293,15 @@ def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True,
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     elif event_data is None:
         shuffled_data = generate_event_shuffle(data=data)
-    if neuron_idx is None:
-        neuron_idx = random.randint(1, np.shape(data)[0] - 1)
+    if neuron_index is None:
+        neuron_index = random.randint(1, np.shape(data)[0] - 1)
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
-    plt.plot(data[0, :], data[neuron_idx, :], c='blue', label='ground truth')
+    plt.plot(data[0, :], data[neuron_index, :], c='blue', label='ground truth')
     plt.ylabel('ΔF/F')
     plt.legend()
     plt.subplot(212)
-    plt.plot(shuffled_data[0, :], shuffled_data[neuron_idx, :], c='grey', label='shuffled')
+    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c='grey', label='shuffled')
     plt.ylabel('')
     plt.ylabel('ΔF/F')
     plt.xlabel('Time')
@@ -329,7 +311,7 @@ def plot_shuffle_example(data, event_data=None, neuron_idx=None, show_plot=True,
             save_path = save_path
         else:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
@@ -344,7 +326,7 @@ def plot_event_trace():
 
 
 def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True,
-                          save_plot=False, save_path=None, dpi=300, format='png'):
+                          save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plot histograms of the Pearson's correlation coefficient distributions for the provided datasets.
 
@@ -358,7 +340,7 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
     :param save_plot:
     :param save_path:
     :param dpi:
-    :param format:
+    :param save_format:
     :return:
     """
     data = _input_validator(data=data)
@@ -396,7 +378,7 @@ def plot_correlation_hist(data, colors, legend=None, title=None, y_label=None, x
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, dpi=dpi, format=format)
+        plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
 # Todo: formally include
 # def compute_ks(data1, data2, sig_level = 0.05):
