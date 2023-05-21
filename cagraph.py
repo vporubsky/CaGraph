@@ -127,8 +127,10 @@ class CaGraph:
         self.__attribute_dictionary = {'hubs': self.hubs, 'degree': self.degree,
                                        'clustering coefficient': self.clustering_coefficient,
                                        'communities': self.communities,
+                                       # Todo: decide if best to remove
                                        # 'eigenvector centrality': self.eigenvector_centrality,
-                                       'correlated pair ratio': self.correlated_pair_ratio, 'HITS': self.hits}
+                                       'correlated pair ratio': self.correlated_pair_ratio,
+                                       'betweenness centrality': self.betweenness_centrality}
 
         # Add node metadata
         if node_metadata is not None:
@@ -208,8 +210,8 @@ class CaGraph:
         return self._hubs
 
     @property
-    def hits(self):
-        return self._hits
+    def betweenness_centrality(self):
+        return self._betweenness_centrality
 
     # Todo: check eigenvector centrality convergence error
     # @property
@@ -323,7 +325,6 @@ class CaGraph:
             data_matrix = self._neuron_dynamics
         return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
 
-    # Todo: determine if you need this to be adjusted so you can set multiple thresholds (< 0.1, > 0.5)
     def get_adjacency_matrix(self, threshold=None) -> np.ndarray:
         """
         Returns the adjacency matrix of a graph where edges exist when greater than the provided threshold.
@@ -1392,8 +1393,9 @@ class CaGraphBatchTimeSamples:
 # Todo: CaGraphBatch -> make a constructor function that can pass loaded data, numpy arrays
 # Todo: All classes -> add check that all save_paths exist, otherwise create them
 # Todo: All classes -> check docstrings again
-# Todo: add whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
+# Todo: Add whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
 # Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
 # Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
 # Todo: extend input validator functionality (include all relevant inputs)
+# Todo: Allow user to set multiple thresholds (< 0.1, > 0.5)

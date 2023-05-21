@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in visualization module and cleaned up syntax.">
-      <change afterPath="$PROJECT_DIR$/scratch-threshold.py" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph, visualization, and preprocess modules.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/matplotlib/pyplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/matplotlib/pyplot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/matplotlib/tests/test_axes.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/matplotlib/tests/test_axes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/plotting/_matplotlib/boxplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/plotting/_matplotlib/boxplot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/tests/plotting/test_boxplot_method.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/tests/plotting/test_boxplot_method.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/seaborn/categorical.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/seaborn/categorical.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/graphics/boxplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/graphics/boxplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/multivariate/pca.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/multivariate/pca.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -489,14 +481,12 @@
       <workItem from="1684616987670" duration="149000" />
       <workItem from="1684617139410" duration="622000" />
       <workItem from="1684617792832" duration="110000" />
-      <workItem from="1684617905693" duration="2399000" />
-    </task>
-    <task id="LOCAL-00033" summary="Attempt autosummary for readthedocs documentation.">
-      <created>1681802771581</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1681802771581</updated>
+      <workItem from="1684617905693" duration="2861000" />
+      <workItem from="1684627819641" duration="475000" />
+      <workItem from="1684628378074" duration="459000" />
+      <workItem from="1684629080481" duration="505000" />
+      <workItem from="1684630376550" duration="846000" />
+      <workItem from="1684631269372" duration="697000" />
     </task>
     <task id="LOCAL-00034" summary="Revert change.">
       <created>1681802958498</created>
@@ -834,7 +824,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684561919095</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="Updated functionality in cagraph, visualization, and preprocess modules.">
+      <created>1684620865801</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1684620865802</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -855,7 +852,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests." />
     <MESSAGE value="Example datasets added due to failed continuous integration workflow." />
     <MESSAGE value="Fixing continuous integration workflow." />
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
@@ -880,7 +876,8 @@
     <MESSAGE value="Added _input_validator() function to preprocess module." />
     <MESSAGE value="Updated plot_cdf() function in visualization module." />
     <MESSAGE value="Updated functionality in visualization module and cleaned up syntax." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated functionality in visualization module and cleaned up syntax." />
+    <MESSAGE value="Updated functionality in cagraph, visualization, and preprocess modules." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated functionality in cagraph, visualization, and preprocess modules." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

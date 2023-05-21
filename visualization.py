@@ -210,7 +210,7 @@ def _plotting_input_validator(input_data):
         TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
 
 def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
-             y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=True,
+             y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=False,
              show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
@@ -280,12 +280,13 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
         plt.show()
 
 
-def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_label=None, show_plot=True,
+def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_label=None, x_label=None, show_plot=True,
                    save_plot=False,
                    save_path=None, dpi=300, save_format='png'):
     """
     Plot histograms of the provided datasets in data.
 
+    :param num_bins:
     :param data_list: list
     :param colors: list
     :param legend: list
@@ -299,17 +300,19 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
     :param save_format:
     :return:
     """
-    data = _plotting_input_validator(data_list)
-
-    # specify the bin width
-    bin_width = 0.01
+    data_list = _plotting_input_validator(data_list)
 
     for dataset in data_list:
-        # calculate the number of bins
-        dataset_bins = int(np.ceil((dataset.max() - dataset.min()) / bin_width))
+        if num_bins is None:
+            # specify the bin width
+            bin_width = 0.01
+
+            # calculate the number of bins
+            dataset = np.array(dataset)
+            num_bins = int(np.ceil((dataset.max() - dataset.min()) / bin_width))
 
         # plot histogram
-        plt.hist(dataset, bins=dataset_bins, color=colors[0], alpha=0.3)
+        plt.hist(dataset, bins=num_bins, color=colors[0], alpha=0.3)
 
     if legend is not None:
         plt.legend(legend, loc='upper left')
@@ -330,9 +333,9 @@ def plot_histogram(data_list, colors, legend=None, title=None, y_label=None, x_l
 
 
 def plot_matched_data(data_list: list, labels: list,
-                      figsize=(6, 10), line_color='lightgrey', linewidth=0.5, marker_colors=['grey', 'grey'],
-                      marker=None,
-                      show_boxplot=False, plot_rectangle=False, rectangle_index=None, rectangle_colors=None,
+                      figsize=(10, 10), line_color='lightgrey', linewidth=0.5,
+                      marker_colors=['black', 'black'], marker='o',
+                      show_boxplot=True, plot_rectangle=False, rectangle_index=None, rectangle_colors=None,
                       x_label=None, y_label=None, y_lim=None, y_ticks=None,
                       show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
     """
@@ -387,8 +390,12 @@ def plot_matched_data(data_list: list, labels: list,
                    whiskerprops=dict(linewidth=0.5, color=box_color),
                    boxprops=dict(linewidth=0.5, color=box_color, facecolor=(0, 0, 0, 0)),
                    medianprops=dict(color=box_color), patch_artist=True)
+
     # Create a rectangle patch
     if plot_rectangle:
+        if y_lim is None:
+            # Todo: find max value, do not simply set to 1
+            y_lim = (0,1)
         if rectangle_index == 1:
             # Add rectangle to rightmost boxplot
             start_x = 0.6
