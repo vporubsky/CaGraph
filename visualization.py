@@ -8,12 +8,14 @@ Description: a visualization module to generate interactive graph visuals and pl
 the cagraph module.
 """
 # General imports
+import cagraph
 import networkx as nx
-import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import seaborn as sns
+
+sns.set_style('white')
 from scipy import stats
 import pandas as pd
 import os
@@ -26,9 +28,7 @@ from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
 
-
 # %% Interactive graph visualization
-import cagraph
 
 def _interactive_network_input_validator(input_object):
     """
@@ -209,6 +209,7 @@ def _plotting_input_validator(input_data):
     else:
         TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
 
+
 def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
              y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=False,
              show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
@@ -275,12 +276,13 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_label=None, x_label=None, show_plot=True,
+def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_label=None, x_label=None,
+                   show_plot=True,
                    save_plot=False,
                    save_path=None, dpi=300, save_format='png'):
     """
@@ -327,7 +329,7 @@ def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
@@ -359,7 +361,8 @@ def plot_matched_data(data_list: list, labels: list,
     # Check input
     data = _plotting_input_validator(data_list)
     if len(data) != 2:
-        ValueError('plot_matched_data() supports analysis of two matched datasets. Length of data_list parameter must equal 2.')
+        ValueError(
+            'plot_matched_data() supports analysis of two matched datasets. Length of data_list parameter must equal 2.')
 
     # Put into dataframe
     df = pd.DataFrame({labels[0]: data[0], labels[1]: data[1]})
@@ -395,7 +398,7 @@ def plot_matched_data(data_list: list, labels: list,
     if plot_rectangle:
         if y_lim is None:
             # Todo: find max value, do not simply set to 1
-            y_lim = (0,1)
+            y_lim = (0, 1)
         if rectangle_index == 1:
             # Add rectangle to rightmost boxplot
             start_x = 0.6
@@ -434,6 +437,20 @@ def plot_matched_data(data_list: list, labels: list,
     if x_label is None:
         plt.xlabel(f'P-value = {stats.ttest_rel(data[0], data[1]).pvalue:.3}')
     sns.despine(offset=10, trim=True)
+    if save_plot:
+        if save_path is None:
+            save_path = os.getcwd() + f'fig'
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=format)
+    if show_plot:
+        plt.show()
+
+
+# Todo: test functionality
+def plot_heatmap(data_matrix, title=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png',
+                 **kwargs):
+    sns.heatmap(data=data_matrix, xticklabels=False, yticklabels=False, **kwargs)
+    if title is not None:
+        plt.title(title)
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'

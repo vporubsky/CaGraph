@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph, visualization, and preprocess modules.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -486,14 +484,7 @@
       <workItem from="1684628378074" duration="459000" />
       <workItem from="1684629080481" duration="505000" />
       <workItem from="1684630376550" duration="846000" />
-      <workItem from="1684631269372" duration="697000" />
-    </task>
-    <task id="LOCAL-00034" summary="Revert change.">
-      <created>1681802958498</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1681802958498</updated>
+      <workItem from="1684631269372" duration="8699000" />
     </task>
     <task id="LOCAL-00035" summary="Updated private method in cagraph.py for automatic threshold generation.">
       <created>1682091712626</created>
@@ -831,7 +822,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684620865802</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="Updated functionality in cagraph, visualization, and preprocess modules.">
+      <created>1684632520387</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1684632520387</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -886,11 +884,6 @@
           <url>notebook:///Users/veronica_porubsky/GitHub/CaGraph/visualization_tutorial.ipynb</url>
           <line>19</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/visualization.py</url>
-          <line>43</line>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
