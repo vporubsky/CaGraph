@@ -17,6 +17,7 @@ import scipy
 import warnings
 import os
 
+
 # %% Utility functions
 def _input_validator(data):
     """
@@ -103,9 +104,10 @@ def _event_bins(data_row, events):
     # Use event trace to split timeseries into relevant chunks to be shuffled
     events = list(events)
     event_idx = list(np.nonzero(events)[0])
+    if len(event_idx) == 0:
+        event_idx = [len(data)]
     if event_idx[-1] != len(data):
         event_idx.append(len(data))
-
     start_val = 0
     for idx in event_idx:
         build_binned_list.append(data[start_val:idx])
@@ -178,6 +180,8 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     :return:
     """
     data = _input_validator(data)
+    if event_data is None:
+        _, event_data = deconvolve_dataset(data=data)
     thresholds = []
     for i in range(shuffle_iterations):
         thresholds += [generate_threshold(data=data, event_data=event_data)]
@@ -239,7 +243,8 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
 
 def plot_threshold(data, event_data=None, data_id=None,
                    data_color='blue', shuffle_color='grey', threshold_color='red',
-                   title=None, x_lim=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
+                   title=None, x_lim=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300,
+                   save_format='png'):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
@@ -277,7 +282,6 @@ def plot_threshold(data, event_data=None, data_id=None,
     x_bins = int(np.ceil((shuffle_correlation.max() - shuffle_correlation.min()) / bin_width))
     y_bins = int(np.ceil((data_correlation.max() - data_correlation.min()) / bin_width))
 
-
     if y_lim is not None:
         plt.ylim(y_lim)
     if x_lim is not None:
@@ -307,7 +311,8 @@ def plot_threshold(data, event_data=None, data_id=None,
         plt.show()
 
 
-def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None, show_plot=True, save_plot=False, save_path=None,
+def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None,
+                         show_plot=True, save_plot=False, save_path=None,
                          save_format='png', dpi=300):
     """
     Plot shuffled distribution.
@@ -331,7 +336,7 @@ def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color
     if neuron_index is None:
         neuron_index = random.randint(1, np.shape(data)[0] - 1)
     else:
-        neuron_index += 1 # Adjusted to accomodate time row
+        neuron_index += 1  # Adjusted to accomodate time row
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
     plt.plot(data[0, :], data[neuron_index, :], c=data_color, label='ground truth')
@@ -348,7 +353,7 @@ def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color
             save_path = save_path
         else:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path,  bbox_inches='tight', dpi=dpi, format=save_format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
@@ -406,6 +411,4 @@ def plot_correlation_hist(data, colors, labels, title=None, y_label=None, x_labe
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, bbox_inches='tight',  dpi=dpi, format=save_format)
-
-
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)

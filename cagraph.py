@@ -8,6 +8,7 @@ from pynwb import NWBHDF5IO
 import pandas as pd
 import os
 from scipy import stats
+import pickle
 
 
 # %% CaGraph class
@@ -77,7 +78,9 @@ class CaGraph:
 
         # Add dataset identifier
         if dataset_id is not None:
-            self._data_id = dataset_id
+            self._dataset_id = dataset_id
+        else:
+            self._dataset_id = None
 
         # Compute time interval and number of neurons
         self._dt = self._time[1] - self._time[0]
@@ -174,8 +177,8 @@ class CaGraph:
         return self._num_neurons
 
     @property
-    def data_id(self):
-        return self._data_id
+    def dataset_id(self):
+        return self._dataset_id
 
     @property
     def node_labels(self):
@@ -270,6 +273,33 @@ class CaGraph:
         self._communities = self.graph_theory.get_communities()
         self._hubs = self.graph_theory.get_hubs()
 
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            if self.dataset_id is not None:
+                file_path = self.dataset_id + '.cagraph'
+            else:
+                file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraph_obj = pickle.load(file)
+        return cagraph_obj
+
+    # Todo: improve interval selection
     def sensitivity_analysis(self, data, threshold=None, show_plot=True, save_plot=False, save_path=None,
                              dpi=300, save_format='png'):
         """
@@ -396,10 +426,10 @@ class CaGraph:
         """
         if graph is None:
             num_nodes = self._num_neurons
-            edge_probability = self.graph_theory.get_graph_density()
+            edge_probability = self.graph_theory.get_density()
         else:
             num_nodes = len(graph.nodes)
-            edge_probability = self.graph_theory.get_graph_density(graph=graph)
+            edge_probability = self.graph_theory.get_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=edge_probability)
 
     # Todo: add additional arguments to expand functionality
@@ -655,18 +685,16 @@ class CaGraph:
             if return_type == 'list':
                 return list(correlated_pair_ratio_dict.values())
 
-        def get_undirected_graph_density(self, graph=None):
+        def get_density(self, graph=None):
             """
             Returns the ratio of edges present in the graph out of the total possible edges.
-            The equation used to calculate this ratio is only relevant to undirected graphs.
 
             :param graph: networkx.Graph object
             :return: float
             """
-            possible_edges = (self._num_neurons * (self._num_neurons - 1)) / 2
             if graph is None:
                 graph = self._graph
-            return len(graph.edges) / possible_edges
+            return nx.density(graph)
 
         def get_eigenvector_centrality(self, graph=None, return_type='list'):
             """
@@ -723,11 +751,13 @@ class CaGraph:
                     'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
         # Todo: high priority add function
-        def compare_graphs(self):
+        # Todo: make more functional
+        def compare_graphs(self, graph1, graph2):
             """
 
             :return:
             """
+            return nx.graph_edit_distance(graph1, graph2)
 
     class Plotting:
         def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons):
@@ -1034,6 +1064,29 @@ class CaGraphTimeSamples:
         return prep.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
 
     # Public utility methods
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraphtimesamples_obj = pickle.load(file)
+        return cagraphtimesamples_obj
+
     def get_cagraph(self, condition_label):
         """
 
@@ -1157,6 +1210,29 @@ class CaGraphBatch:
         return np.mean(store_thresholds)
 
     # Public utility methods
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraphbatch_obj = pickle.load(file)
+        return cagraphbatch_obj
+
     def get_cagraph(self, condition_label) -> CaGraph:
         """
         Return a CaGraph object for the specified dataset condition_label
@@ -1259,6 +1335,8 @@ class CaGraphBatchTimeSamples:
             self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
         else:
             self._threshold = None
+            # Todo:  consider renaming this
+            self._group_threshold = None
         if group_id is not None:
             self._group_id = group_id
 
@@ -1267,9 +1345,9 @@ class CaGraphBatchTimeSamples:
         for dataset in data_list:
             if dataset.endswith(".csv"):
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
-                if self._threshold is None:
-                    self._threshold = self.__generate_threshold(data=data)
                 try:
+                    if hasattr(self, '_group_threshold'):  # If the _group_threshold attribute exists, the threshold should be set for each dataset
+                        self._threshold = self.__generate_threshold(data=data)
                     # Add a series of private attributes which are CaGraph objects
                     for i, sample in enumerate(time_samples):
                         setattr(self, f'__{dataset[:-4]}_{condition_labels[i]}_cagraph',
@@ -1314,6 +1392,29 @@ class CaGraphBatchTimeSamples:
         return np.mean(store_thresholds)
 
     # Public utility methods
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraphbatchtimesamples_obj = pickle.load(file)
+        return cagraphbatchtimesamples_obj
+
     def get_cagraph(self, condition_label) -> CaGraph:
         """
         Return a CaGraph object for the specified dataset condition_label

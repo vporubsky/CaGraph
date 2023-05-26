@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph, visualization, and preprocess modules.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,14 +68,14 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/final_exam/pickle_individual_dataset_thresholds" />
       <recent name="$PROJECT_DIR$/final_exam" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/datasets/DG_FC/WT/archive" />
       <recent name="$PROJECT_DIR$/cagraph" />
-      <recent name="$PROJECT_DIR$/docs/cagraph" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.final_exam">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="CaGraph" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -88,6 +90,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="final_exam" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CaGraph" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/final_exam.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -120,6 +144,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.final_exam" />
         <item itemvalue="Python.tutorial" />
       </list>
     </recent_temporary>
@@ -484,14 +509,20 @@
       <workItem from="1684628378074" duration="459000" />
       <workItem from="1684629080481" duration="505000" />
       <workItem from="1684630376550" duration="846000" />
-      <workItem from="1684631269372" duration="8699000" />
-    </task>
-    <task id="LOCAL-00035" summary="Updated private method in cagraph.py for automatic threshold generation.">
-      <created>1682091712626</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1682091712627</updated>
+      <workItem from="1684631269372" duration="11362000" />
+      <workItem from="1684767801752" duration="3151000" />
+      <workItem from="1684942151303" duration="927000" />
+      <workItem from="1684943607288" duration="14764000" />
+      <workItem from="1685047805981" duration="1934000" />
+      <workItem from="1685049848649" duration="2440000" />
+      <workItem from="1685055219051" duration="856000" />
+      <workItem from="1685059182863" duration="850000" />
+      <workItem from="1685063589310" duration="351000" />
+      <workItem from="1685063944326" duration="623000" />
+      <workItem from="1685064571680" duration="1317000" />
+      <workItem from="1685066171187" duration="1656000" />
+      <workItem from="1685068027077" duration="8667000" />
+      <workItem from="1685130416893" duration="534000" />
     </task>
     <task id="LOCAL-00036" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
       <created>1682095430730</created>
@@ -829,7 +860,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684632520387</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Updated functionality in cagraph, visualization, and preprocess modules.">
+      <created>1684736630757</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1684736630757</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -892,5 +930,8 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CaGraph$final_exam.coverage" NAME="final_exam Coverage Results" MODIFIED="1685073462537" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
