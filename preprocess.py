@@ -84,7 +84,6 @@ def deconvolve_dataset(data):
 
 
 # %% --------- Suitability for graph theory analysis -------------------------
-# Todo: update _event_bins() --> check that end threshold is necessary
 def _event_bins(data_row, events):
     """
     Generates a shuffled row of calcium fluorescence data, breaking the timeseries using predetermined events.
@@ -114,8 +113,6 @@ def _event_bins(data_row, events):
         start_val = idx
     np.random.shuffle(build_binned_list)
     flat_shuffled_binned_list = [item for sublist in build_binned_list for item in sublist]
-    # threshold = 0.01
-    # flat_shuffled_binned_list = [0 if value < threshold else value for value in flat_shuffled_binned_list]
     return flat_shuffled_binned_list
 
 
@@ -156,7 +153,7 @@ def generate_pearsons_distributions(data, event_data=None):
     data = _input_validator(data)
     if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    elif event_data is None:
+    else:
         _, event_data = deconvolve_dataset(data=data)
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
     x = _get_pearsons_correlation_matrix(data=shuffled_data)
@@ -188,13 +185,14 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     return np.mean(thresholds)
 
 
-def generate_threshold(data, event_data=None, report_threshold=False, report_test=False, return_test=False):
+def generate_threshold(data, event_data=None, report_threshold=True, report_test=False, return_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
 
     Provides warning if the correlation distribution of the provided dataset is not statistically different from that of
     the shuffled dataset.
 
+    :param return_test:
     :param report_threshold:
     :param data: numpy.ndarray
     :param event_data:
@@ -242,17 +240,23 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
 
 
 def plot_threshold(data, event_data=None, data_id=None,
-                   data_color='blue', shuffle_color='grey', threshold_color='red',
-                   title=None, x_lim=None, y_lim=None, show_plot=True, save_plot=False, save_path=None, dpi=300,
-                   save_format='png'):
+                   data_color='blue', shuffle_color='grey', threshold_color='red', alpha=0.3,
+                   title=None, xlim=None, ylim=None, show_plot=True, save_plot=False, save_path=None, dpi=300,
+                   save_format='png', **kwargs):
     """
     Plots the correlation distributions of the dataset and the shuffled dataset, along with the identified threshold value.
 
+    :param xlim:
+    :param alpha:
+    :param threshold_color: 
+    :param shuffle_color: 
+    :param data_color: 
+    :param data_id:
     :param save_format:
     :param dpi:
     :param save_path:
     :param save_plot:
-    :param y_lim: tuple
+    :param ylim: tuple
     :param title:
     :param data: numpy.ndarray
     :param event_data: list
@@ -282,16 +286,16 @@ def plot_threshold(data, event_data=None, data_id=None,
     x_bins = int(np.ceil((shuffle_correlation.max() - shuffle_correlation.min()) / bin_width))
     y_bins = int(np.ceil((data_correlation.max() - data_correlation.min()) / bin_width))
 
-    if y_lim is not None:
-        plt.ylim(y_lim)
-    if x_lim is not None:
-        plt.xlim(x_lim)
+    if ylim is not None:
+        plt.ylim(ylim)
+    if xlim is not None:
+        plt.xlim(xlim)
     else:
         plt.xlim(-1.0, 1.0)
 
     # Plot histograms of shuffle, data, and threshold
-    plt.hist(np.tril(shuffle_correlation).flatten(), bins=x_bins, color=shuffle_color, alpha=0.3)
-    plt.hist(np.tril(data_correlation).flatten(), bins=y_bins, color=data_color, alpha=0.3)
+    plt.hist(np.tril(shuffle_correlation).flatten(), bins=x_bins, color=shuffle_color, alpha=alpha, **kwargs)
+    plt.hist(np.tril(data_correlation).flatten(), bins=y_bins, color=data_color, alpha=alpha, **kwargs)
     plt.axvline(x=threshold, color=threshold_color)
 
     # Specify plot details
@@ -311,12 +315,14 @@ def plot_threshold(data, event_data=None, data_id=None,
         plt.show()
 
 
-def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None,
+def plot_shuffled_neuron(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None,
                          show_plot=True, save_plot=False, save_path=None,
-                         save_format='png', dpi=300):
+                         save_format='png', dpi=300, **kwargs):
     """
     Plot shuffled distribution.
 
+    :param shuffle_color:
+    :param data_color:
     :param dpi:
     :param save_format:
     :param neuron_index:
@@ -331,19 +337,19 @@ def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color
     data = _input_validator(data=data)
     if event_data is not None:
         shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    elif event_data is None:
+    else:
         shuffled_data = generate_event_shuffle(data=data)
     if neuron_index is None:
         neuron_index = random.randint(1, np.shape(data)[0] - 1)
     else:
-        neuron_index += 1  # Adjusted to accomodate time row
+        neuron_index += 1  # Adjusted to accommodate time row
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
-    plt.plot(data[0, :], data[neuron_index, :], c=data_color, label='ground truth')
+    plt.plot(data[0, :], data[neuron_index, :], c=data_color, label='ground truth', **kwargs)
     plt.ylabel('ΔF/F')
     plt.legend(loc='upper left')
     plt.subplot(212)
-    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c=shuffle_color, label='shuffled')
+    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c=shuffle_color, label='shuffled', **kwargs)
     plt.ylabel('')
     plt.ylabel('ΔF/F')
     plt.xlabel('Time')
@@ -358,17 +364,18 @@ def plot_shuffle_example(data, event_data=None, data_color='blue', shuffle_color
         plt.show()
 
 
-def plot_correlation_hist(data, colors, labels, title=None, y_label=None, x_label=None, show_plot=True,
-                          save_plot=False, save_path=None, dpi=300, save_format='png'):
+def plot_correlation_hist(data, colors, labels, title=None, ylabel=None, xlabel=None, alpha=0.3, show_plot=True,
+                          save_plot=False, save_path=None, dpi=300, save_format='png', **kwargs):
     """
     Plot histograms of the Pearson's correlation coefficient distributions for the provided datasets.
 
+    :param alpha:
+    :param labels:
     :param data: list
     :param colors: list
-    :param legend: list
     :param title:
-    :param y_label:
-    :param x_label:
+    :param ylabel:
+    :param xlabel:
     :param show_plot:
     :param save_plot:
     :param save_path:
@@ -394,16 +401,16 @@ def plot_correlation_hist(data, colors, labels, title=None, y_label=None, x_labe
     y_bins = int(np.ceil((y.max() - y.min()) / bin_width))
 
     # plot histograms
-    plt.hist(x, bins=x_bins, color=colors[0], alpha=0.3)
-    plt.hist(y, bins=y_bins, color=colors[1], alpha=0.3)
+    plt.hist(x, bins=x_bins, color=colors[0], alpha=alpha, **kwargs)
+    plt.hist(y, bins=y_bins, color=colors[1], alpha=alpha, **kwargs)
     if labels is not None:
         plt.legend(labels, loc='upper left')
     if title is not None:
         plt.title(title)
-    if y_label is not None:
-        plt.ylabel(y_label)
-    if x_label is not None:
-        plt.xlabel(x_label)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    if xlabel is not None:
+        plt.xlabel(xlabel)
     else:
         plt.ylabel("Frequency")
     if show_plot:

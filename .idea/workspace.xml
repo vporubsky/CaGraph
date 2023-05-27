@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph, visualization, and preprocess modules.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins().">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -522,14 +521,8 @@
       <workItem from="1685064571680" duration="1317000" />
       <workItem from="1685066171187" duration="1656000" />
       <workItem from="1685068027077" duration="8667000" />
-      <workItem from="1685130416893" duration="534000" />
-    </task>
-    <task id="LOCAL-00036" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
-      <created>1682095430730</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1682095430730</updated>
+      <workItem from="1685130416893" duration="3058000" />
+      <workItem from="1685212216881" duration="2330000" />
     </task>
     <task id="LOCAL-00037" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
       <created>1682099185742</created>
@@ -867,7 +860,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684736630757</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins().">
+      <created>1685130984346</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1685130984347</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -888,7 +888,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Example datasets added due to failed continuous integration workflow." />
     <MESSAGE value="Fixing continuous integration workflow." />
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
@@ -913,7 +912,8 @@
     <MESSAGE value="Updated plot_cdf() function in visualization module." />
     <MESSAGE value="Updated functionality in visualization module and cleaned up syntax." />
     <MESSAGE value="Updated functionality in cagraph, visualization, and preprocess modules." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated functionality in cagraph, visualization, and preprocess modules." />
+    <MESSAGE value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

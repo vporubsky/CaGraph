@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import seaborn as sns
 
-sns.set_style('white')
 from scipy import stats
 import pandas as pd
 import os
@@ -27,6 +26,9 @@ from bokeh.models import Range1d, Circle, MultiLine
 from bokeh.plotting import figure
 from bokeh.plotting import from_networkx
 from bokeh.transform import linear_cmap
+
+sns.set_style('white')
+
 
 # %% Interactive graph visualization
 
@@ -41,7 +43,9 @@ def _interactive_network_input_validator(input_object):
         raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
 
 
-def interactive_network(cagraph_obj, graph=None,
+# Todo: create return with more information
+# Todo: add more base attributes
+def interactive_network(cagraph_obj,
                         attributes=['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering'],
                         additional_attributes=None,
                         hover_attributes=None,
@@ -75,10 +79,7 @@ def interactive_network(cagraph_obj, graph=None,
 
     # Initialize cagraph and graph
     cg = _interactive_network_input_validator(cagraph_obj)
-    if graph is None:
-        graph = cg.graph
-    else:
-        graph = graph
+    graph = cg.graph
     label_keys = cg.node_labels
 
     #  Build attributes dictionary
@@ -204,15 +205,15 @@ def _plotting_input_validator(input_data):
             if isinstance(item, list):
                 continue
             else:
-                TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
+                TypeError('input_data must be a list of lists containing  individual datasets for plotting.')
         return input_data
     else:
-        TypeError('input_data must be a list of lists containing  invidual datasets for plotting.')
+        TypeError('input_data must be a list of lists containing  individual datasets for plotting.')
 
 
-def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
-             y_label='CDF', x_lim=None, y_lim=None, legend=None, title=None, show_stat=False,
-             show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
+def plot_cdf(data_list, colors=['black', 'black'], marker='.', xlabel='',
+             ylabel='CDF', xlim=None, ylim=None, label=None, title=None, show_stat=False,
+             show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png', **kwargs):
     """
     Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
@@ -222,14 +223,14 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
     :param dpi:
     :param save_path:
     :param save_plot:
-    :param legend:
-    :param y_lim:
-    :param x_lim:
+    :param label:
+    :param ylim:
+    :param xlim:
     :param data_list: list of lists containing float values to compare with KS-test
     :param colors: list of str containing matplotlib color styles
     :param marker: str matplotlib marker style
-    :param x_label: str
-    :param y_label: str
+    :param xlabel: str
+    :param ylabel: str
     :param title:
     :param show_stat:
     :param show_plot: bool
@@ -246,17 +247,17 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
         store_cdf.append(cdf)
 
         # plotting
-        plt.plot(sorted_data, cdf, color=colors[idx], marker=marker)
+        plt.plot(sorted_data, cdf, color=colors[idx], marker=marker, **kwargs)
 
-    if legend is not None:
-        plt.legend([legend[0], legend[1]], loc='upper left')
+    if label is not None:
+        plt.legend([label[0], label[1]], loc='upper left')
 
-    plt.ylabel(y_label)
-    plt.xlabel(x_label)
-    if x_lim is not None:
-        plt.xlim(x_lim)
-    if y_lim is not None:
-        plt.ylim(y_lim)
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    if xlim is not None:
+        plt.xlim(xlim)
+    if ylim is not None:
+        plt.ylim(ylim)
     if title is not None:
         plt.title(title)
     if show_stat:
@@ -281,20 +282,21 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', x_label='',
         plt.show()
 
 
-def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_label=None, x_label=None,
+def plot_histogram(data_list, colors, label=None, num_bins=None, title=None, ylabel=None, xlabel=None, alpha=0.3,
                    show_plot=True,
                    save_plot=False,
-                   save_path=None, dpi=300, save_format='png'):
+                   save_path=None, dpi=300, save_format='png', **kwargs):
     """
     Plot histograms of the provided datasets in data.
 
+    :param alpha:
     :param num_bins:
     :param data_list: list
     :param colors: list
-    :param legend: list
+    :param label: list
     :param title:
-    :param y_label:
-    :param x_label:
+    :param ylabel:
+    :param xlabel:
     :param show_plot:
     :param save_plot:
     :param save_path:
@@ -314,16 +316,16 @@ def plot_histogram(data_list, colors, legend=None, num_bins=None, title=None, y_
             num_bins = int(np.ceil((dataset.max() - dataset.min()) / bin_width))
 
         # plot histogram
-        plt.hist(dataset, bins=num_bins, color=colors[0], alpha=0.3)
+        plt.hist(dataset, bins=num_bins, color=colors[0], alpha=alpha, **kwargs)
 
-    if legend is not None:
-        plt.legend(legend, loc='upper left')
+    if label is not None:
+        plt.legend(label, loc='upper left')
     if title is not None:
         plt.title(title)
-    if y_label is not None:
-        plt.ylabel(y_label)
-    if x_label is not None:
-        plt.xlabel(x_label)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    if xlabel is not None:
+        plt.xlabel(xlabel)
     else:
         plt.ylabel("Frequency")
     if save_plot:
@@ -338,25 +340,32 @@ def plot_matched_data(data_list: list, labels: list,
                       figsize=(10, 10), line_color='lightgrey', linewidth=0.5,
                       marker_colors=['black', 'black'], marker='o',
                       show_boxplot=True, plot_rectangle=False, rectangle_index=None, rectangle_colors=None,
-                      x_label=None, y_label=None, y_lim=None, y_ticks=None,
-                      show_plot=True, save_plot=False, save_path=None, dpi=300, format='png'):
+                      xlabel=None, ylabel=None, ylim=None, yticks=None,
+                      show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
     """
     Plots two samples of matched data. Each sample will be plotted as points stacked vertically within condition.
     Lines will be drawn to connect the matching pairs.
 
-    :param sample_1:
-    :param sample_2:
+    :param save_format:
+    :param yticks:
+    :param rectangle_index:
+    :param ylim:
+    :param show_boxplot:
+    :param marker:
+    :param linewidth:
+    :param line_color:
+    :param figsize:
+    :param data_list:
     :param labels: list of str containing the labels for sample_1 and sample_2
-    :param colors: list of str containing matplotlib color styles
-    :param x_label: str
-    :param y_label: str
+    :param marker_colors: list of str containing matplotlib color styles
+    :param xlabel: str
+    :param ylabel: str
     :param show_plot: bool
     :param save_plot: bool
     :param save_path: str containing the file path for saving the plot
     :param dpi: int
-    :param format: str containing file extension supported by matplotlib.pyplot.savefig
     :param plot_rectangle: bool indicating whether to plot a rectangle over locs2
-    :param rectangle_color: str indicating the color of the rectangle
+    :param rectangle_colors: str indicating the color of the rectangle
     """
     # Check input
     data = _plotting_input_validator(data_list)
@@ -396,57 +405,56 @@ def plot_matched_data(data_list: list, labels: list,
 
     # Create a rectangle patch
     if plot_rectangle:
-        if y_lim is None:
+        if ylim is None:
             # Todo: find max value, do not simply set to 1
-            y_lim = (0, 1)
+            ylim = (0, 1)
         if rectangle_index == 1:
             # Add rectangle to rightmost boxplot
             start_x = 0.6
-            start_y = y_lim[0]
+            start_y = ylim[0]
             width_x = 0.8
-            width_y = y_lim[1] - y_lim[0]
+            width_y = ylim[1] - ylim[0]
             rect = patches.Rectangle((start_x, start_y), width_x, width_y, linewidth=1, edgecolor='none',
                                      facecolor=rectangle_colors[0], alpha=0.2)
             ax.add_patch(rect)
         elif rectangle_index == 0:
             # Add rectangle to leftmost data
             start_x = -0.4
-            start_y = y_lim[0]
+            start_y = ylim[0]
             width_x = 0.8
-            width_y = y_lim[1] - y_lim[0]
+            width_y = ylim[1] - ylim[0]
             rect = patches.Rectangle((start_x, start_y), width_x, width_y, linewidth=1, edgecolor='none',
                                      facecolor=rectangle_colors[0], alpha=0.2)
             ax.add_patch(rect)
         else:
-            left_rect = patches.Rectangle((-0.4, y_lim[0]), 0.8, y_lim[1] - y_lim[0], linewidth=1, edgecolor='none',
+            left_rect = patches.Rectangle((-0.4, ylim[0]), 0.8, ylim[1] - ylim[0], linewidth=1, edgecolor='none',
                                           facecolor=rectangle_colors[0], alpha=0.2)
-            right_rect = patches.Rectangle((0.6, y_lim[0]), 0.8, y_lim[1] - y_lim[0], linewidth=1, edgecolor='none',
+            right_rect = patches.Rectangle((0.6, ylim[0]), 0.8, ylim[1] - ylim[0], linewidth=1, edgecolor='none',
                                            facecolor=rectangle_colors[1], alpha=0.2)
             ax.add_patch(left_rect)
             ax.add_patch(right_rect)
 
         # Add the rectangle patch to the plot
 
-    if y_ticks is not None:
-        plt.yticks(y_ticks)
+    if yticks is not None:
+        plt.yticks(yticks)
     plt.xticks([])
-    if y_lim is not None:
-        plt.ylim(y_lim)
-    if y_label is not None:
-        plt.ylabel(y_label)
-    if x_label is None:
+    if ylim is not None:
+        plt.ylim(ylim)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    if xlabel is None:
         plt.xlabel(f'P-value = {stats.ttest_rel(data[0], data[1]).pvalue:.3}')
     sns.despine(offset=10, trim=True)
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
 
-# Todo: test functionality
-def plot_heatmap(data_matrix, title=None, show_plot=True, save_plot=False, save_path=None, dpi=300, format='png',
+def plot_heatmap(data_matrix, title=None, show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png',
                  **kwargs):
     sns.heatmap(data=data_matrix, xticklabels=False, yticklabels=False, **kwargs)
     if title is not None:
@@ -454,6 +462,6 @@ def plot_heatmap(data_matrix, title=None, show_plot=True, save_plot=False, save_
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
-        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=format)
+        plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
