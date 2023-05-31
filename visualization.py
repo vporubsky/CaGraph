@@ -29,6 +29,17 @@ from bokeh.transform import linear_cmap
 
 sns.set_style('white')
 
+#%% Set-up
+# Todo: set up defaults
+CONFIGURABLE_PARAMETERS = [
+    'alpha',
+    'color',
+    ''
+]
+
+_DEFAULT_VALUES = {
+    "alpha": 0.3,
+}
 
 # %% Interactive graph visualization
 

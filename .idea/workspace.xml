@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins().">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -522,14 +523,17 @@
       <workItem from="1685066171187" duration="1656000" />
       <workItem from="1685068027077" duration="8667000" />
       <workItem from="1685130416893" duration="3058000" />
-      <workItem from="1685212216881" duration="2330000" />
-    </task>
-    <task id="LOCAL-00037" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
-      <created>1682099185742</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1682099185742</updated>
+      <workItem from="1685212216881" duration="7609000" />
+      <workItem from="1685235730292" duration="9780000" />
+      <workItem from="1685549377189" duration="4483000" />
+      <workItem from="1685555487391" duration="1235000" />
+      <workItem from="1685556736510" duration="102000" />
+      <workItem from="1685556853791" duration="382000" />
+      <workItem from="1685557252667" duration="42000" />
+      <workItem from="1685557301591" duration="228000" />
+      <workItem from="1685557548349" duration="100000" />
+      <workItem from="1685557656324" duration="1341000" />
+      <workItem from="1685559287448" duration="309000" />
     </task>
     <task id="LOCAL-00038" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
       <created>1682099867422</created>
@@ -867,7 +871,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685130984347</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs.">
+      <created>1685214821577</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1685214821577</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -888,7 +899,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixing continuous integration workflow." />
     <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
@@ -913,7 +923,8 @@
     <MESSAGE value="Updated functionality in visualization module and cleaned up syntax." />
     <MESSAGE value="Updated functionality in cagraph, visualization, and preprocess modules." />
     <MESSAGE value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
+    <MESSAGE value="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

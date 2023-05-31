@@ -83,7 +83,7 @@ class CaGraph:
             self._dataset_id = None
 
         # Compute time interval and number of neurons
-        self._dt = self._time[1] - self._time[0]
+        self._dt = self._data[0, 1] - self._data[0, 0]
         self._num_neurons = np.shape(self._neuron_dynamics)[0]
 
         # Generate node labels
@@ -550,7 +550,7 @@ class CaGraph:
         def get_hubs(self, graph=None, return_type='list'):
             """
             Computes hub nodes using the normalized betweenness centrality scores. This method sets an
-            outlier threshold using the interquartile range of the betweenness centrality score distribution
+            outlier threshold using the inter-quartile range of the betweenness centrality score distribution
             and returns nodes with with scores above the outlier threshold.
 
             :param graph:
@@ -565,7 +565,7 @@ class CaGraph:
             betweenness_centrality_scores = list(betweenness_centrality.values())
             betweenness_centrality_scores.sort()
 
-            # Compute the outlier threshold using the interquartile range
+            # Compute the outlier threshold using the inter-quartile range
             Q1 = np.percentile(betweenness_centrality_scores, 25, method='midpoint')
             Q3 = np.percentile(betweenness_centrality_scores, 75, method='midpoint')
             IQR = Q3 - Q1
@@ -573,7 +573,8 @@ class CaGraph:
 
             # Iterate over nodes and determine if each betweenness centrality score exceeds the outlier threshold
             hubs_list = []
-            [hubs_list.append(x) for x in betweenness_centrality.keys() if betweenness_centrality[x] > outlier_threshold]
+            [hubs_list.append(x) for x in betweenness_centrality.keys() if
+             betweenness_centrality[x] > outlier_threshold]
             hub_dict = {i: 1 if i in list(set(hubs_list) & set(self._node_labels)) else 0 for i in self._node_labels}
             if return_type == 'dict':
                 return hub_dict
@@ -1346,7 +1347,8 @@ class CaGraphBatchTimeSamples:
             if dataset.endswith(".csv"):
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
                 try:
-                    if hasattr(self, '_group_threshold'):  # If the _group_threshold attribute exists, the threshold should be set for each dataset
+                    if hasattr(self,
+                               '_group_threshold'):  # If the _group_threshold attribute exists, the threshold should be set for each dataset
                         self._threshold = self.__generate_threshold(data=data)
                     # Add a series of private attributes which are CaGraph objects
                     for i, sample in enumerate(time_samples):
@@ -1480,12 +1482,194 @@ class CaGraphBatchTimeSamples:
             cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key + '_report',
                                    save_filetype=save_filetype)
 
+
 # %%  Matched analyses
 
 
+# %% Behavior analysis
+class CaGraphBehavior:
+    """
+    Class for running behavior-sampled analyses on a single dataset.
 
+    This class is best suited for analyses where the time spent in each behavior is well-balanced, however, methods will
+    be added to accommodate datasets with unbalanced behavior.
+    """
 
+    def __init__(self, data, behavior_data, behavior_dict, construction_method='stacked', node_labels=None,
+                 node_metadata=None,
+                 dataset_id=None, threshold=None):
+        """
+        :param data: str
+        :param behavior_data: list [0,0,0,1,1,1,1,0,0,...,0,0,1,1,1,1,1]
+        :param behavior_dict: {'freezing': 1, 'moving':0}
+        :param node_labels: list
+        :param node_metadata: dict
+        :param dataset_id: str
+        :param threshold: float
+        """
+        # Todo: convert this to input checker
+        # Check that the input data is in the correct format and load dataset
+        if isinstance(data, np.ndarray):
+            self._data = data
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self._data = np.genfromtxt(data, delimiter=",")
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
+                    nwbfile_read = io.read()
+                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                    self._data = np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:]))
+            else:
+                raise TypeError('File path must have a .csv or .nwb file to load.')
+        else:
+            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
+        # Add dataset identifier
+        if dataset_id is not None:
+            self._data_id = dataset_id
+
+        self._behavior_dict = behavior_dict
+        self._behavior_data = np.loadtxt(behavior_data, delimiter=',')
+        self._behavior_identifiers = list(behavior_dict.keys())
+
+        # Compute time interval and number of neurons
+        self._dt = self.data[0, 1] - self.data[0, 0]
+        self._num_neurons = np.shape(self.data)[0]
+        if threshold is not None:
+            self._threshold = threshold
+        else:
+            self._threshold = self.__generate_threshold()
+
+        # Generate node labels
+        if node_labels is None:
+            self._node_labels = np.linspace(0, np.shape(self.data)[0] - 2,
+                                            np.shape(self.data)[0] - 1).astype(int)
+        else:
+            self._node_labels = node_labels
+
+        # Add a series of private attributes which are CaGraph objects
+        # Todo: change this method so it only appends when you switch from one behavior to the other (fewer append operations = faster)
+        if construction_method == 'stacked':
+            for key in behavior_dict.keys():
+                # Build new behavior dataset
+                behavior_dataset = np.ndarray((self._num_neurons, 1))
+                behavior_value = behavior_dict[key]
+                for i, value in enumerate(self._behavior_data):
+                    if value == behavior_value:
+                        # Append single timepoint
+                        behavior_dataset = np.hstack((behavior_dataset, self._data[:, i].reshape(-1, 1)))
+                setattr(self, f'__{key}_cagraph', CaGraph(data=behavior_dataset[:, 1:], node_labels=self._node_labels,
+                                                          node_metadata=node_metadata, threshold=self._threshold))
+
+    # Private utility methods
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def dt(self):
+        return self._dt
+
+    @property
+    def num_neurons(self):
+        return self._num_neurons
+
+    @property
+    def data_id(self):
+        return self._data_id
+
+    @property
+    def node_labels(self):
+        return self._node_labels
+
+    @property
+    def threshold(self):
+        return self._threshold
+
+    @property
+    def behavior_identifiers(self):
+        return self._behavior_identifiers
+
+    def __generate_threshold(self) -> float:
+        """
+        Generates a threshold for the provided dataset as described in the preprocess module.
+        This threshold generation will use the full dataset.
+
+        :return: float
+        """
+        return prep.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
+
+    # Public utility methods
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraphbehavior_obj = pickle.load(file)
+        return cagraphbehavior_obj
+
+    def get_cagraph(self, condition_label):
+        """
+
+        :param condition_label:
+        :return:
+        """
+        return getattr(self, f'__{condition_label}_cagraph')
+
+    def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+        """
+        Generates an organized report of all data in the batched sample. It will report on the
+        base analyses included in the CaGraph object get_report() method, and output a single
+        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
+        :return:
+        """
+        store_reports = {}
+        for key in self._behavior_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            store_reports[key] = cagraph_obj.get_report()
+
+        # For each column in the individual reports, append to the full report
+        full_report_df = pd.DataFrame()
+        for col in store_reports[key].columns:
+            for key in store_reports.keys():
+                df = store_reports[key]
+                df = df.rename(columns={col: f'{key}_{col}'})
+                full_report_df = pd.concat([full_report_df, df[f'{key}_{col}']], axis=1)
+
+        # Save the report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                full_report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return full_report_df
 
 # %% Remaining updates
 # Todo: CaGraphBatch -> allow user to specify labels and also pass loaded numpy arrays
@@ -1500,3 +1684,5 @@ class CaGraphBatchTimeSamples:
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
 # Todo: extend input validator functionality (include all relevant inputs)
 # Todo: Allow user to set multiple thresholds (< 0.1, > 0.5)
+# Todo: CaGraphBehavior -> expand functionality
+# Todo: CaGraphBatch derivatives: input should be able to be datasets = [np.ndarray or path...], behavior_data = [np.ndarray or path], labels ['id', 'id']
