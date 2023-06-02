@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphBehavior class for processing graphs for distinct behavioral periods.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -533,14 +531,29 @@
       <workItem from="1685557301591" duration="228000" />
       <workItem from="1685557548349" duration="100000" />
       <workItem from="1685557656324" duration="1341000" />
-      <workItem from="1685559287448" duration="309000" />
-    </task>
-    <task id="LOCAL-00038" summary="Updated color palette options in visualization.py to include all Bokeh.io palette options">
-      <created>1682099867422</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1682099867422</updated>
+      <workItem from="1685559287448" duration="3666000" />
+      <workItem from="1685600016130" duration="433000" />
+      <workItem from="1685600456826" duration="30000" />
+      <workItem from="1685600492877" duration="66000" />
+      <workItem from="1685600565674" duration="24000" />
+      <workItem from="1685600598777" duration="38000" />
+      <workItem from="1685600641910" duration="171000" />
+      <workItem from="1685600820868" duration="57000" />
+      <workItem from="1685600885141" duration="172000" />
+      <workItem from="1685601066214" duration="563000" />
+      <workItem from="1685601636543" duration="173000" />
+      <workItem from="1685725531565" duration="167000" />
+      <workItem from="1685725705432" duration="148000" />
+      <workItem from="1685725859528" duration="61000" />
+      <workItem from="1685725925694" duration="55000" />
+      <workItem from="1685725987326" duration="124000" />
+      <workItem from="1685726132146" duration="31000" />
+      <workItem from="1685726169570" duration="70000" />
+      <workItem from="1685726247025" duration="154000" />
+      <workItem from="1685726409771" duration="188000" />
+      <workItem from="1685726603771" duration="36000" />
+      <workItem from="1685726645639" duration="33000" />
+      <workItem from="1685726685208" duration="868000" />
     </task>
     <task id="LOCAL-00039" summary="Updated visualization.py.">
       <created>1682106607410</created>
@@ -878,7 +891,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685214821577</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Added CaGraphBehavior class for processing graphs for distinct behavioral periods.">
+      <created>1685559624545</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1685559624545</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +919,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updating tutorials and adding functionality to each submodule of cagraph." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
     <MESSAGE value="Added get_report() method to CaGraph class." />
@@ -924,7 +943,8 @@
     <MESSAGE value="Updated functionality in cagraph, visualization, and preprocess modules." />
     <MESSAGE value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
     <MESSAGE value="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs." />
+    <MESSAGE value="Added CaGraphBehavior class for processing graphs for distinct behavioral periods." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphBehavior class for processing graphs for distinct behavioral periods." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

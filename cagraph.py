@@ -1484,6 +1484,180 @@ class CaGraphBatchTimeSamples:
 
 
 # %%  Matched analyses
+# Todo: under development
+# Todo: add option to include only matched cells or all cells - in the all-cell option, report on matched cells
+class CaGraphMatched:
+    """
+    Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
+    """
+
+    def __init__(self, data_list, dataset_labels, match_map, threshold=None):
+        """
+        :param data_list: list
+        :param node_labels: list
+        :param node_metadata: dict
+        :param dataset_id: str
+        :param threshold: float
+        """
+        # Check that the input data is in the correct format and load dataset
+        for i, data in enumerate(data_list):
+            if isinstance(data, np.ndarray):
+                setattr(self, f'_data_{i}', data)
+            elif isinstance(data, str):
+                if data.endswith('csv'):
+                    setattr(self, f'_data_{i}', np.genfromtxt(data, delimiter=","))
+                elif data.endswith('nwb'):
+                    with NWBHDF5IO(data, 'r') as io:
+                        nwbfile_read = io.read()
+                        nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                        ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                        setattr(self, f'_data_{i}',  np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:])))
+                else:
+                    raise TypeError('File path must have a .csv or .nwb file to load.')
+            else:
+                raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+
+        self._dataset_identifiers = dataset_labels
+
+        # Load the cell matching indices map
+        self._map = np.loadtxt(match_map, delimiter=',').astype(int)
+        print(np.shape(self._map))
+        print(np.shape(self._data_0))
+
+        # Compute time interval and number of neurons
+        self._dt = self._data_1[0, 1] - self._data_1[0, 0]
+
+        if threshold is not None:
+            self._threshold = threshold
+        else:
+            self._threshold = self.__generate_threshold()
+
+        # Parse datasets using map
+        dataset_0 = self._data_1[0,:].copy()
+        dataset_1 = self._data_1[0,:].copy()
+
+        for i in range(len(self._map)):
+            if self._map[i, 0] == 0 or self._map[i, 1] == 0:
+                continue
+            else:
+                dataset_0 = np.vstack((dataset_0, self._data_0[self._map[i, 0], :]))
+                print(self._map[i, 0])
+                dataset_1 = np.vstack((dataset_1, self._data_1[self._map[i, 1], :]))
+        setattr(self, f'_data_0', dataset_0)
+        setattr(self, f'_data_1', dataset_1)
+        data_list = [dataset_0, dataset_1]
+        self._num_neurons = np.shape(dataset_0)[0]
+        # Add a series of private attributes which are CaGraph objects
+        for i, dataset in enumerate(self._dataset_identifiers):
+            setattr(self, f'__{dataset}_cagraph', CaGraph(data=data_list[i], threshold=self._threshold))
+
+    # Private utility methods
+    @property
+    def dt(self):
+        return self._dt
+
+    @property
+    def num_neurons(self):
+        return self._num_neurons
+
+    @property
+    def data_id(self):
+        return self._data_id
+
+    @property
+    def node_labels(self):
+        return self._node_labels
+
+    @property
+    def threshold(self):
+        return self._threshold
+
+    @property
+    def dataset_identifiers(self):
+        return self._dataset_identifiers
+
+    def __generate_threshold(self) -> float:
+        """
+        Generates a threshold for the provided dataset as described in the preprocess module.
+        This threshold generation will use the full dataset.
+
+        :return: float
+        """
+        return prep.generate_average_threshold(data=self._data_0[1:, :], shuffle_iterations=10)
+
+    # Public utility methods
+    def save(self, file_path=None):
+        """
+
+        :param file_path:
+        :return:
+        """
+        if file_path is None:
+            file_path = 'obj.cagraph'
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file)
+
+    # Todo: add input checker
+    @staticmethod
+    def load(file_path):
+        """
+
+        :param file_path:
+        :return:
+        """
+        with open(file_path, 'rb') as file:
+            cagraphtimesamples_obj = pickle.load(file)
+        return cagraphtimesamples_obj
+
+    def get_cagraph(self, condition_label):
+        """
+
+        :param condition_label:
+        :return:
+        """
+        return getattr(self, f'__{condition_label}_cagraph')
+
+    def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+        """
+        Generates an organized report of all data in the batched sample. It will report on the
+        base analyses included in the CaGraph object get_report() method, and output a single
+        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+
+        :param save_report:
+        :param save_path:
+        :param save_filename:
+        :param save_filetype:
+        :return:
+        """
+        store_reports = {}
+        for key in self._dataset_identifiers:
+            cagraph_obj = self.get_cagraph(key)
+            store_reports[key] = cagraph_obj.get_report()
+
+        # For each column in the individual reports, append to the full report
+        full_report_df = pd.DataFrame()
+        for col in store_reports[key].columns:
+            for key in store_reports.keys():
+                df = store_reports[key]
+                df = df.rename(columns={col: f'{key}_{col}'})
+                full_report_df = pd.concat([full_report_df, df[f'{key}_{col}']], axis=1)
+
+        # Save the report
+        if save_report:
+            if save_filename is None:
+                save_filename = 'report'
+            if save_path is None:
+                save_path = os.getcwd() + '/'
+            if save_filetype is None or save_filetype == 'csv':
+                full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
+            elif save_filetype == 'HDF5':
+                full_report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
+            elif save_filetype == 'xlsx':
+                full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+        return full_report_df
+
+
+
 
 
 # %% Behavior analysis
@@ -1561,6 +1735,8 @@ class CaGraphBehavior:
                         behavior_dataset = np.hstack((behavior_dataset, self._data[:, i].reshape(-1, 1)))
                 setattr(self, f'__{key}_cagraph', CaGraph(data=behavior_dataset[:, 1:], node_labels=self._node_labels,
                                                           node_metadata=node_metadata, threshold=self._threshold))
+        else:
+            raise ValueError("Invalid value for construction_method. Must choose from: 'stacked'.")
 
     # Private utility methods
     @property
