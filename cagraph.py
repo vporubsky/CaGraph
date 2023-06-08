@@ -54,27 +54,7 @@ class CaGraph:
         :param threshold: float
         """
         # Check that the input data is in the correct format and load dataset
-        if isinstance(data, np.ndarray):
-            self._data = data
-            self._time = self._data[0, :]
-            self._neuron_dynamics = self._data[1:len(self._data), :]
-        elif isinstance(data, str):
-            if data.endswith('csv'):
-                self._data = np.genfromtxt(data, delimiter=",")
-                self._time = self._data[0, :]
-                self._neuron_dynamics = self._data[1:len(self._data), :]
-            elif data.endswith('nwb'):
-                with NWBHDF5IO(data, 'r') as io:
-                    nwbfile_read = io.read()
-                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
-                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                    self._neuron_dynamics = ca_from_nwb.data[:]
-                    self._time = ca_from_nwb.timestamps[:]
-                    self._data = np.vstack((self._time, self._neuron_dynamics))
-            else:
-                raise TypeError('File path must have a .csv or .nwb file to load.')
-        else:
-            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        self.__input_validator(data=data)
 
         # Add dataset identifier
         if dataset_id is not None:
@@ -238,6 +218,34 @@ class CaGraph:
         self._betweenness_centrality = self.graph_theory.get_betweenness_centrality(return_type='dict')
         # Todo: check eigenvector centrality convergence error
         # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
+
+    def __input_validator(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        if isinstance(data, np.ndarray):
+            self._data = data
+            self._time = self._data[0, :]
+            self._neuron_dynamics = self._data[1:len(self._data), :]
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self._data = np.genfromtxt(data, delimiter=",")
+                self._time = self._data[0, :]
+                self._neuron_dynamics = self._data[1:len(self._data), :]
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
+                    nwbfile_read = io.read()
+                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                    self._neuron_dynamics = ca_from_nwb.data[:]
+                    self._time = ca_from_nwb.timestamps[:]
+                    self._data = np.vstack((self._time, self._neuron_dynamics))
+            else:
+                raise TypeError('File path must have a .csv or .nwb file to load.')
+        else:
+            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
     def __generate_threshold(self) -> float:
         """
@@ -546,7 +554,28 @@ class CaGraph:
         def pearsons_correlation_matrix(self):
             return self._pearsons_correlation_matrix
 
-        # Graph theory analysis
+        # Graph theory analysis - global network structure
+        def get_density(self, graph=None):
+            """
+            Returns the ratio of edges present in the graph out of the total possible edges.
+
+            :param graph: networkx.Graph object
+            :return: float
+            """
+            if graph is None:
+                graph = self._graph
+            return nx.density(graph)
+
+        # Todo: add functionality get_path_length
+        def get_path_length(self):
+            """
+            Returns the characteristic path length.
+
+            :return:
+            """
+            return
+
+        # Graph theory analysis - local network structure
         def get_hubs(self, graph=None, return_type='list'):
             """
             Computes hub nodes using the normalized betweenness centrality scores. This method sets an
@@ -625,15 +654,6 @@ class CaGraph:
             largest_component = max(nx.connected_components(graph), key=len)
             return graph.subgraph(largest_component)
 
-        # Todo: add functionality get_path_length
-        def get_path_length(self):
-            """
-            Returns the characteristic path length.
-
-            :return:
-            """
-            return
-
         def get_clustering_coefficient(self, graph=None, return_type='list'):
             """
             Returns a list of clustering coefficient values for each node.
@@ -685,17 +705,6 @@ class CaGraph:
                 return correlated_pair_ratio_dict
             if return_type == 'list':
                 return list(correlated_pair_ratio_dict.values())
-
-        def get_density(self, graph=None):
-            """
-            Returns the ratio of edges present in the graph out of the total possible edges.
-
-            :param graph: networkx.Graph object
-            :return: float
-            """
-            if graph is None:
-                graph = self._graph
-            return nx.density(graph)
 
         def get_eigenvector_centrality(self, graph=None, return_type='list'):
             """
@@ -983,21 +992,7 @@ class CaGraphTimeSamples:
         :param threshold: float
         """
         # Check that the input data is in the correct format and load dataset
-        if isinstance(data, np.ndarray):
-            self._data = data
-        elif isinstance(data, str):
-            if data.endswith('csv'):
-                self._data = np.genfromtxt(data, delimiter=",")
-            elif data.endswith('nwb'):
-                with NWBHDF5IO(data, 'r') as io:
-                    nwbfile_read = io.read()
-                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
-                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                    self._data = np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:]))
-            else:
-                raise TypeError('File path must have a .csv or .nwb file to load.')
-        else:
-            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        self.__input_validator(data=data)
 
         # Add dataset identifier
         if dataset_id is not None:
@@ -1054,6 +1049,29 @@ class CaGraphTimeSamples:
     @property
     def condition_identifiers(self):
         return self._condition_identifiers
+
+    def __input_validator(self, data):
+        """
+        Performs input validation for CaGraphTimeSamples class.
+
+        :param data:
+        :return:
+        """
+        if isinstance(data, np.ndarray):
+            self._data = data
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self._data = np.genfromtxt(data, delimiter=",")
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
+                    nwbfile_read = io.read()
+                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                    self._data = np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:]))
+            else:
+                raise TypeError('File path must have a .csv or .nwb file to load.')
+        else:
+            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
     def __generate_threshold(self) -> float:
         """
@@ -1154,6 +1172,7 @@ class CaGraphBatch:
         :param group_id: str
         :param threshold: float
         """
+        # Todo: add support for additional input types and add input validator
         if not os.path.exists(os.path.dirname(data_path)):
             raise ValueError('Path provided for data_path parameter does not exist.')
         data_list = os.listdir(data_path)
@@ -1337,7 +1356,7 @@ class CaGraphBatchTimeSamples:
         else:
             self._threshold = None
             # Todo:  consider renaming this
-            self._group_threshold = None
+            self._batch_threshold = None
         if group_id is not None:
             self._group_id = group_id
 
@@ -1348,7 +1367,7 @@ class CaGraphBatchTimeSamples:
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
                 try:
                     if hasattr(self,
-                               '_group_threshold'):  # If the _group_threshold attribute exists, the threshold should be set for each dataset
+                               '_batch_threshold'):  # If the _batch_threshold attribute exists, the threshold should be set for each dataset
                         self._threshold = self.__generate_threshold(data=data)
                     # Add a series of private attributes which are CaGraph objects
                     for i, sample in enumerate(time_samples):
@@ -1491,7 +1510,7 @@ class CaGraphMatched:
     Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
     """
 
-    def __init__(self, data_list, dataset_labels, match_map, threshold=None):
+    def __init__(self, data_list, dataset_labels, match_map, matched_only=True, threshold=None):
         """
         :param data_list: list
         :param node_labels: list
@@ -1499,6 +1518,7 @@ class CaGraphMatched:
         :param dataset_id: str
         :param threshold: float
         """
+        # Todo: add input validator
         # Check that the input data is in the correct format and load dataset
         for i, data in enumerate(data_list):
             if isinstance(data, np.ndarray):
@@ -1521,8 +1541,6 @@ class CaGraphMatched:
 
         # Load the cell matching indices map
         self._map = np.loadtxt(match_map, delimiter=',').astype(int)
-        print(np.shape(self._map))
-        print(np.shape(self._data_0))
 
         # Compute time interval and number of neurons
         self._dt = self._data_1[0, 1] - self._data_1[0, 0]
@@ -1533,19 +1551,33 @@ class CaGraphMatched:
             self._threshold = self.__generate_threshold()
 
         # Parse datasets using map
-        dataset_0 = self._data_1[0,:].copy()
-        dataset_1 = self._data_1[0,:].copy()
-
-        for i in range(len(self._map)):
-            if self._map[i, 0] == 0 or self._map[i, 1] == 0:
-                continue
-            else:
-                dataset_0 = np.vstack((dataset_0, self._data_0[self._map[i, 0], :]))
-                print(self._map[i, 0])
-                dataset_1 = np.vstack((dataset_1, self._data_1[self._map[i, 1], :]))
+        dataset_0 = self._data_0[0,:]
+        dataset_1 = self._data_1[0,:]
+        if matched_only:
+            for i in range(len(self._map)):
+                if self._map[i, 0] == 0 or self._map[i, 1] == 0:
+                    continue
+                else:
+                    dataset_0 = np.vstack((dataset_0, self._data_0[self._map[i, 0], :]))
+                    dataset_1 = np.vstack((dataset_1, self._data_1[self._map[i, 1], :]))
+        # Todo: need to note which cells  are matched in the matched_only == False option
+        else:
+            dataset_0_unmatched = self._data_0[0,:]
+            dataset_1_unmatched = self._data_0[0,:]
+            for i in range(len(self._map)):
+                if self._map[i, 0] == 0:
+                    dataset_1_unmatched = np.vstack((dataset_1_unmatched, self._data_1[self._map[i, 1], :]))
+                elif self._map[i, 1] == 0:
+                    dataset_0_unmatched = np.vstack((dataset_0_unmatched, self._data_0[self._map[i, 0], :]))
+                else:
+                    dataset_0 = np.vstack((dataset_0, self._data_0[self._map[i, 0], :]))
+                    dataset_1 = np.vstack((dataset_1, self._data_1[self._map[i, 1], :]))
+            dataset_0 = np.vstack((dataset_0, dataset_0_unmatched))
+            dataset_1 = np.vstack((dataset_1, dataset_1_unmatched))
         setattr(self, f'_data_0', dataset_0)
         setattr(self, f'_data_1', dataset_1)
         data_list = [dataset_0, dataset_1]
+        # Todo: update num_neurons so it is consistent with both datasets when all neurons are included
         self._num_neurons = np.shape(dataset_0)[0]
         # Add a series of private attributes which are CaGraph objects
         for i, dataset in enumerate(self._dataset_identifiers):
@@ -1681,7 +1713,7 @@ class CaGraphBehavior:
         :param dataset_id: str
         :param threshold: float
         """
-        # Todo: convert this to input checker
+        # Todo: convert this to input validator
         # Check that the input data is in the correct format and load dataset
         if isinstance(data, np.ndarray):
             self._data = data
@@ -1861,4 +1893,4 @@ class CaGraphBehavior:
 # Todo: extend input validator functionality (include all relevant inputs)
 # Todo: Allow user to set multiple thresholds (< 0.1, > 0.5)
 # Todo: CaGraphBehavior -> expand functionality
-# Todo: CaGraphBatch derivatives: input should be able to be datasets = [np.ndarray or path...], behavior_data = [np.ndarray or path], labels ['id', 'id']
+# Todo: CaGraphBatch derivatives: input should be able to be datasets = [np.ndarray or path...],  path], labels ['id', 'id']

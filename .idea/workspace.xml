@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphBehavior class for processing graphs for distinct behavioral periods.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -553,14 +555,11 @@
       <workItem from="1685726409771" duration="188000" />
       <workItem from="1685726603771" duration="36000" />
       <workItem from="1685726645639" duration="33000" />
-      <workItem from="1685726685208" duration="868000" />
-    </task>
-    <task id="LOCAL-00039" summary="Updated visualization.py.">
-      <created>1682106607410</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1682106607410</updated>
+      <workItem from="1685726685208" duration="2062000" />
+      <workItem from="1685729775725" duration="831000" />
+      <workItem from="1685733524730" duration="2604000" />
+      <workItem from="1685744013598" duration="674000" />
+      <workItem from="1685906751458" duration="22701000" />
     </task>
     <task id="LOCAL-00040" summary="Updated visualization.py and visualization_tutorial.ipynb">
       <created>1682112195552</created>
@@ -898,7 +897,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685559624545</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view.">
+      <created>1685728426406</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1685728426406</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -919,7 +925,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;Plotting&quot; which groups all of the plotting methods from the class.." />
     <MESSAGE value="Restructured CaGraph to include a Subclass called &quot;GraphTheory&quot; which groups all of the graph theory analysis methods from the class. Changed the return datatype of the graph theory methods to dictionaries of node-value pairs where appropriate." />
     <MESSAGE value="Added get_report() method to CaGraph class." />
     <MESSAGE value="Added CaGraphTimesampled class to cagraph.py" />
@@ -944,7 +949,8 @@
     <MESSAGE value="Updated functionality in cagraph and preprocess modules. In cagraph, added save and load methods. In preprocess, fixed bug in generate_average_threshold() and _event_bins()." />
     <MESSAGE value="Updated plotting functionality to include **kwargs for access to matplotlib plotting inputs." />
     <MESSAGE value="Added CaGraphBehavior class for processing graphs for distinct behavioral periods." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphBehavior class for processing graphs for distinct behavioral periods." />
+    <MESSAGE value="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
