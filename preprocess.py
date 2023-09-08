@@ -185,7 +185,7 @@ def generate_average_threshold(data, event_data=None, shuffle_iterations=100):
     return np.mean(thresholds)
 
 
-def generate_threshold(data, event_data=None, report_threshold=True, report_test=False, return_test=False):
+def generate_threshold(data, event_data=None, report_threshold=False, report_test=False, return_test=False):
     """
     Compares provided dataset and a shuffled dataset to propose a threshold to use to construct graph objects.
 
@@ -363,7 +363,7 @@ def plot_shuffled_neuron(data, event_data=None, data_color='blue', shuffle_color
     if show_plot:
         plt.show()
 
-
+# Todo: allow to plot multiple, not just two datasets
 def plot_correlation_hist(data, colors, labels, title=None, ylabel=None, xlabel=None, alpha=0.3, show_plot=True,
                           save_plot=False, save_path=None, dpi=300, save_format='png', **kwargs):
     """
@@ -383,7 +383,6 @@ def plot_correlation_hist(data, colors, labels, title=None, ylabel=None, xlabel=
     :param save_format:
     :return:
     """
-    data = _input_validator(data=data)
     x = _get_pearsons_correlation_matrix(data=data[0])
     np.fill_diagonal(x, 0)
 

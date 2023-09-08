@@ -295,7 +295,6 @@ class CaGraph:
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """

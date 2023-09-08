@@ -54,6 +54,7 @@ def _interactive_network_input_validator(input_object):
         raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
 
 
+# Todo: fix the save functionality
 # Todo: create return with more information
 # Todo: add more base attributes
 def interactive_network(cagraph_obj,
@@ -226,7 +227,7 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', xlabel='',
              ylabel='CDF', xlim=None, ylim=None, label=None, title=None, show_stat=False,
              show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png', **kwargs):
     """
-    Plots the cumulative distribution function of the provided datasets and prints the associated P-value for assessing
+    Plots the cumulative distribution function of the provided datasets and shows the associated P-value for assessing
     the Kolmogorov-Smirnov distance between the distributions.
 
 
