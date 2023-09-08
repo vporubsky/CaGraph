@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Added input validation to cagraph.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updating tutorial notebooks to accomodate changes to cagraph package.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
     </list>
@@ -579,14 +574,7 @@
       <workItem from="1694195041046" duration="100000" />
       <workItem from="1694195144124" duration="123000" />
       <workItem from="1694195270003" duration="86000" />
-      <workItem from="1694195358900" duration="219000" />
-    </task>
-    <task id="LOCAL-00041" summary="Testing continuous integration framework.">
-      <created>1682616296937</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1682616296937</updated>
+      <workItem from="1694195358900" duration="2520000" />
     </task>
     <task id="LOCAL-00042" summary="Added test suite files for CaGraph, visualization, and preprocessing.">
       <created>1682623141330</created>
@@ -924,7 +912,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686194143351</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="Updating tutorial notebooks to accomodate changes to cagraph package.">
+      <created>1694195624853</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1694195624854</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -945,7 +940,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added get_report() method to CaGraph class." />
     <MESSAGE value="Added CaGraphTimesampled class to cagraph.py" />
     <MESSAGE value="Added CaGraphBatched class with report functionality." />
     <MESSAGE value="Updated class attributes to be immutable when necessary." />
@@ -970,7 +964,8 @@
     <MESSAGE value="Added CaGraphBehavior class for processing graphs for distinct behavioral periods." />
     <MESSAGE value="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view." />
     <MESSAGE value="Added input validation to cagraph." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added input validation to cagraph." />
+    <MESSAGE value="Updating tutorial notebooks to accomodate changes to cagraph package." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating tutorial notebooks to accomodate changes to cagraph package." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

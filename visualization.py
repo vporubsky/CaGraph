@@ -54,7 +54,8 @@ def _interactive_network_input_validator(input_object):
         raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
 
 
-# Todo: fix the save functionality
+# Todo: fix the save functionality --> can't save and then show, causes error
+# Todo: add title functionality?
 # Todo: create return with more information
 # Todo: add more base attributes
 def interactive_network(cagraph_obj,
@@ -196,7 +197,7 @@ def interactive_network(cagraph_obj,
             save(plot, filename=save_path)
         else:
             save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
-    if show_in_notebook:
+    elif show_in_notebook:
         output_notebook()
         show(plot)
     elif show_plot:
