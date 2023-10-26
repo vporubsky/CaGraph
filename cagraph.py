@@ -1,5 +1,6 @@
 # CaGraph imports
-import preprocess as prep
+import preprocess
+import visualization
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -7,7 +8,6 @@ import seaborn as sns
 from pynwb import NWBHDF5IO
 import pandas as pd
 import os
-from scipy import stats
 import pickle
 
 
@@ -47,11 +47,21 @@ class CaGraph:
 
     def __init__(self, data, node_labels=None, node_metadata=None, dataset_id=None, threshold=None):
         """
-        :param data: str
-        :param node_labels: list
-        :param node_metadata: dict
-        :param dataset_id: str
-        :param threshold: float
+        Initialize a CaGraph object.
+
+        :param data: str or numpy.ndarray
+            A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
+            memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron
+            timeseries of calcium fluorescence data sampled at the timepoints specified in the first row.
+        :param node_labels: list, optional
+            A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
+        :param node_metadata: dict, optional
+            Contains metadata which is associated with neurons in the network. Each key in the dictionary will be added as an
+            attribute to the CaGraph object, and the associated value will be stored.
+        :param dataset_id: str, optional
+            A unique identifier that can be added to the CaGraph object.
+        :param threshold: float, optional
+            Sets a threshold to be used for thresholded graph.
         """
         # Check that the input data is in the correct format and load dataset
         self.__input_validator(data=data)
@@ -87,22 +97,26 @@ class CaGraph:
         self.__init_graph = self._graph
 
         # Initialize subclass objects
-        self.graph_theory = self.GraphTheory(neuron_dynamics=self._neuron_dynamics, time=self._time,
-                                             num_neurons=self._num_neurons,
-                                             pearsons_correlation_matrix=self._pearsons_correlation_matrix,
-                                             graph=self._graph, labels=self._node_labels)
+        self.analysis = self.Analysis(neuron_dynamics=self._neuron_dynamics, time=self._time,
+                                      num_neurons=self._num_neurons,
+                                      pearsons_correlation_matrix=self._pearsons_correlation_matrix,
+                                      graph=self._graph, labels=self._node_labels)
 
         self.plotting = self.Plotting(neuron_dynamics=self._neuron_dynamics, time=self._time,
                                       num_neurons=self._num_neurons,
                                       pearsons_correlation_matrix=self._pearsons_correlation_matrix, graph=self._graph)
 
+        # Todo: expand visualization capabilities
+        self.visualization = self.Visualization(cagraph_obj=self)
+
         # Initialize base graph theory analyses
-        self._degree = self.graph_theory.get_degree(return_type='dict')
-        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
-        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
-        self._communities = self.graph_theory.get_communities(return_type='dict')
-        self._hubs = self.graph_theory.get_hubs(return_type='dict')
-        self._betweenness_centrality = self.graph_theory.get_betweenness_centrality(return_type='dict')
+        # Todo: add try except block for adding each analysis? so more can be included that may generate some errors?
+        self._degree = self.analysis.get_degree(return_type='dict')
+        self._clustering_coefficient = self.analysis.get_clustering_coefficient(return_type='dict')
+        self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio(return_type='dict')
+        self._communities = self.analysis.get_communities(return_type='dict')
+        self._hubs = self.analysis.get_hubs(return_type='dict')
+        self._betweenness_centrality = self.analysis.get_betweenness_centrality(return_type='dict')
         # Todo: check eigenvector centrality convergence error
         # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
@@ -110,7 +124,7 @@ class CaGraph:
         self.__attribute_dictionary = {'hubs': self.hubs, 'degree': self.degree,
                                        'clustering coefficient': self.clustering_coefficient,
                                        'communities': self.communities,
-                                       # Todo: decide if best to remove
+                                       # Todo: decide if best to remove eigenvector centrality
                                        # 'eigenvector centrality': self.eigenvector_centrality,
                                        'correlated pair ratio': self.correlated_pair_ratio,
                                        'betweenness centrality': self.betweenness_centrality}
@@ -210,20 +224,23 @@ class CaGraph:
         self._threshold = value
         self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
         self._graph = self.get_graph()
-        self._degree = self.graph_theory.get_degree(return_type='dict')
-        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient(return_type='dict')
-        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio(return_type='dict')
-        self._communities = self.graph_theory.get_communities(return_type='dict')
-        self._hubs = self.graph_theory.get_hubs(return_type='dict')
-        self._betweenness_centrality = self.graph_theory.get_betweenness_centrality(return_type='dict')
+        self._degree = self.analysis.get_degree(return_type='dict')
+        self._clustering_coefficient = self.analysis.get_clustering_coefficient(return_type='dict')
+        self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio(return_type='dict')
+        self._communities = self.analysis.get_communities(return_type='dict')
+        self._hubs = self.analysis.get_hubs(return_type='dict')
+        self._betweenness_centrality = self.analysis.get_betweenness_centrality(return_type='dict')
         # Todo: check eigenvector centrality convergence error
         # self._eigenvector_centrality = self.graph_theory.get_eigenvector_centrality(return_type='dict')
 
     def __input_validator(self, data):
         """
+        Validate and load the input data for analysis.
 
-        :param data:
-        :return:
+        :param data: str or numpy.ndarray
+            A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
+            memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron
+            timeseries of calcium fluorescence data sampled at the timepoints specified in the first row.
         """
         if isinstance(data, np.ndarray):
             self._data = data
@@ -252,40 +269,65 @@ class CaGraph:
         Generates a threshold for the provided dataset as described in the preprocess module.
 
         :return: float
+            The computed threshold.
         """
-        return prep.generate_average_threshold(data=self._neuron_dynamics, shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self._neuron_dynamics, shuffle_iterations=10)
 
     def __parse_by_node(self, node_data, node_list) -> list:
         """
-        Method to parse report analyses using only a subset of nodes.
+        Parse and return data from a list using only a subset of nodes.
+
+        This method takes a list of node data and a list of node indices to extract data for specific nodes.
+        It returns a new list containing the data for the specified nodes. The method ensures that the indices
+        in 'node_list' are within the valid range of the 'node_data' list.
 
         :param node_data: list
+            A list of data to be filtered based on node indices.
         :param node_list: list
+            A list of node indices to specify which data to extract.
+
         :return: list
+            A new list containing data for the specified nodes.
         """
         return [node_data[i] for i in node_list if i < len(node_data)]
 
     # Public utility methods
     def reset(self):
         """
-        Resets the CaGraph object graph attribute to the original state at the time the object was created.
+        Reset the CaGraph object to its initial state.
+
+        This method restores the CaGraph object to its original state as it was when created, including the
+        initial graph, correlation matrix, and threshold. It also re-initializes the base graph theory analyses.
+
+        Usage:
+        ```
+        cagraph = CaGraph(data, node_labels, node_metadata, dataset_id, threshold)
+        # Make changes to the object
+        cagraph.reset()  # Restore the object to its initial state
+        ```
+
         """
         self._pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
         self._threshold = self.__init_threshold
         self._graph = self.__init_graph
 
         # Re-initialize base graph theory analyses
-        self._degree = self.graph_theory.get_degree()
-        self._clustering_coefficient = self.graph_theory.get_clustering_coefficient()
-        self._correlated_pair_ratio = self.graph_theory.get_correlated_pair_ratio()
-        self._communities = self.graph_theory.get_communities()
-        self._hubs = self.graph_theory.get_hubs()
+        self._degree = self.analysis.get_degree()
+        self._clustering_coefficient = self.analysis.get_clustering_coefficient()
+        self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio()
+        self._communities = self.analysis.get_communities()
+        self._hubs = self.analysis.get_hubs()
 
     def save(self, file_path=None):
         """
+        Save the CaGraph object to a file.
 
-        :param file_path:
-        :return:
+        This method allows you to save the current state of the CaGraph object to a file. You can specify the 'file_path'
+        parameter to choose the location and name of the saved file. If 'file_path' is not provided, the object is saved with
+        a default file name based on the dataset ID or as 'obj.cagraph' if no dataset ID is set.
+
+        :param file_path: str, optional
+            The path to the file where the CaGraph object will be saved. If not provided, a default file name will be used.
         """
         if file_path is None:
             if self.dataset_id is not None:
@@ -298,37 +340,61 @@ class CaGraph:
     @staticmethod
     def load(file_path):
         """
+        Load a CaGraph object from a saved file.
 
-        :param file_path:
-        :return:
+        This static method allows you to load a previously saved CaGraph object from a file. You should provide the 'file_path'
+        parameter, which is the path to the file containing the serialized CaGraph object.
+
+        :param file_path: str
+            The path to the file from which the CaGraph object will be loaded.
+
+        :return: CaGraph
+            The loaded CaGraph object.
         """
         with open(file_path, 'rb') as file:
             cagraph_obj = pickle.load(file)
         return cagraph_obj
 
-    # Todo: improve interval selection
-    def sensitivity_analysis(self, data, threshold=None, show_plot=True, save_plot=False, save_path=None,
+    def sensitivity_analysis(self, data, interval=None, threshold=None, show_plot=True, save_plot=False, save_path=None,
                              dpi=300, save_format='png'):
         """
-        Generates a series of graphs around the recommended or user-specified threshold and shows
-        the number of edits required to transform the original graph to the series of graphs.
+            Perform sensitivity analysis on the CaGraph object by generating a series of graphs with varying thresholds and
+            measuring their similarity to the original graph using graph edit distance.
 
-        If many edits are required, the graphs are dissimilar.
+            This method calculates a series of thresholds based on the provided 'interval' or a default set of threshold values.
+            For each threshold, it generates a new graph and computes the graph edit distance between the new graph and the
+            original graph. The results are visualized as a plot of thresholds versus graph edit distances.
 
-        :param save_format:
-        :param dpi:
-        :param save_path:
-        :param save_plot:
-        :param data:
-        :param threshold:
-        :param show_plot:
-        :return:
-        """
+            :param data: str or numpy.ndarray
+                The data for the sensitivity analysis. This can be a string pointing to a data file or a numpy.ndarray
+                containing the data.
+            :param interval: list, optional
+                A list of threshold values to be analyzed. If not provided, a default interval is used.
+            :param threshold: float, optional
+                The initial threshold for the analysis. If not provided, it is calculated from the 'data'.
+            :param show_plot: bool, optional
+                Determines whether to display the sensitivity analysis plot. Default is True.
+            :param save_plot: bool, optional
+                Determines whether to save the sensitivity analysis plot. Default is False.
+            :param save_path: str, optional
+                The path to save the plot if 'save_plot' is set to True. If not provided, the plot is saved in the current working
+                directory with a default filename.
+            :param dpi: int, optional
+                The DPI (dots per inch) for the saved plot. Default is 300.
+            :param save_format: str, optional
+                The format for the saved plot file (e.g., 'png', 'jpg'). Default is 'png'.
+
+            :return: list
+                A list of similarity values (graph edit distances) between the original graph and the series of generated graphs.
+            """
         if threshold is None:
-            threshold = prep.generate_threshold(data=data)
+            threshold = preprocess.generate_threshold(data=data)
 
         starting_graph = self.get_graph(threshold=threshold)
-        interval = [-0.3, -0.2, -0.1, -0.05, -0.025, -0.01, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+        if interval is not None:
+            pass
+        else:
+            interval = [-0.3, -0.2, -0.1, -0.05, -0.025, -0.01, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
         thresholds = []
         similarity = []
         for value in interval:
@@ -342,6 +408,8 @@ class CaGraph:
         if save_plot:
             if save_path is None:
                 save_path = os.getcwd() + f'fig'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             plt.savefig(fname=save_path, dpi=dpi, format=save_format)
         if show_plot:
             plt.show()
@@ -350,13 +418,17 @@ class CaGraph:
     # Statistics and linear algebra methods
     def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
         """
-        Returns the Pearson's correlation for all neuron pairs.
+        Calculate and return the Pearson's correlation matrix for all neuron pairs.
 
-        A loaded numpy.ndarray dataset can be passed to the method for analysis, otherwise
-        the dataset passed to the CaGraph object constructor will be used.
+        This method computes the Pearson's correlation matrix based on the data matrix provided or the dataset
+        passed to the CaGraph object constructor.
 
-        :param data_matrix: numpy.ndarray
-        :return:
+        :param data_matrix: numpy.ndarray, optional
+            The data matrix for which to calculate the Pearson's correlation matrix. If not provided, the dataset
+            passed to the CaGraph object constructor is used.
+
+        :return: numpy.ndarray
+            The Pearson's correlation matrix as a numpy array.
         """
         if data_matrix is None:
             data_matrix = self._neuron_dynamics
@@ -364,11 +436,18 @@ class CaGraph:
 
     def get_adjacency_matrix(self, threshold=None) -> np.ndarray:
         """
-        Returns the adjacency matrix of a graph where edges exist when greater than the provided threshold.
+        Calculate and return the adjacency matrix of the graph based on the provided threshold.
 
-        Uses the Pearson's correlation matrix.
+        The adjacency matrix represents connections between nodes (neurons) in the graph. A value of 1 indicates
+        an edge between nodes when the Pearson's correlation is greater than the specified threshold, while a value
+        of 0 indicates no edge.
+
+        :param threshold: float, optional
+            The threshold for determining edge existence. If not provided, the threshold specified during object
+            initialization is used.
 
         :return: numpy.ndarray
+            The adjacency matrix as a numpy array.
         """
         if threshold is None:
             adj_mat = (self._pearsons_correlation_matrix > self._threshold).astype(int)
@@ -379,10 +458,16 @@ class CaGraph:
 
     def get_laplacian_matrix(self, graph=None) -> np.ndarray:
         """
-        Returns the Laplacian matrix of the specified graph.
+        Calculate and return the Laplacian matrix of the specified graph.
 
-        :param graph: networkx.Graph object
-        :return:
+        The Laplacian matrix is a mathematical representation of a graph that encodes important structural information
+        about the graph. If no 'graph' parameter is provided, the Laplacian matrix of the CaGraph object's graph is calculated.
+
+        :param graph: networkx.Graph, optional
+            The graph for which to compute the Laplacian matrix. If not provided, the CaGraph object's graph is used.
+
+        :return: numpy.ndarray
+            The Laplacian matrix as a numpy array.
         """
         if graph is None:
             graph = self.get_graph()
@@ -390,9 +475,13 @@ class CaGraph:
 
     def get_weight_matrix(self) -> np.ndarray:
         """
-        Returns a weighted connectivity matrix with zero along the diagonal. No threshold is applied.
+        Calculate and return a weighted connectivity matrix with zeros along the diagonal.
+
+        This method returns a connectivity matrix representing weighted connections between nodes (neurons) in the graph.
+        The diagonal elements are set to zero to represent self-connections, and no threshold is applied to the matrix.
 
         :return: numpy.ndarray
+            The weighted connectivity matrix as a numpy array.
         """
         weight_matrix = self._pearsons_correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
@@ -401,11 +490,20 @@ class CaGraph:
     # Graph construction methods
     def get_graph(self, threshold=None, weighted=False) -> nx.Graph:
         """
-        Automatically generate graph object from numpy adjacency matrix.
+        Automatically generate a graph object based on the specified adjacency or weighted matrix.
 
-        :param threshold:
-        :param weighted: bool
-        :return: networkx.Graph object
+        This method generates a networkx.Graph object from either the adjacency matrix (which could be reduced using a threshold) or the
+        weighted connectivity matrix, depending on the 'weighted' parameter.
+
+        :param threshold: float, optional
+            The threshold for determining edge existence when generating the graph from the adjacency matrix. Ignored if
+            'weighted' is True.
+        :param weighted: bool, optional
+            If True, a weighted graph is generated from the weighted connectivity matrix. If False, a binary (thresholded)
+            graph is generated based on the adjacency matrix.
+
+        :return: networkx.Graph
+            The generated graph object.
         """
         if not weighted:
             return nx.from_numpy_array(self.get_adjacency_matrix(threshold=threshold))
@@ -413,11 +511,16 @@ class CaGraph:
 
     def get_random_graph(self, graph=None) -> nx.Graph:
         """
-        Generates a random graph. The nx.algorithms.smallworld.random_reference is adapted from the
-        Maslov and Sneppen (2002) algorithm. It randomizes the existing graph.
+        Generate a random graph based on the existing graph structure using the Maslov and Sneppen (2002) algorithm.
 
-        :type graph: networkx.Graph object
-        :return: networkx.Graph object
+        This method generates a new random graph based on the provided 'graph' or the CaGraph object's graph. The randomization
+        process is adapted from the Maslov and Sneppen algorithm using the 'nx.algorithms.smallworld.random_reference' function.
+
+        :param graph: networkx.Graph, optional
+            The graph to use as a basis for generating the random graph. If not provided, the CaGraph object's graph is used.
+
+        :return: networkx.Graph
+            The generated random graph.
         """
         if graph is None:
             graph = self.get_graph()
@@ -426,73 +529,109 @@ class CaGraph:
 
     def get_erdos_renyi_graph(self, graph=None) -> nx.Graph:
         """
-        Generates an Erdos-Renyi random graph using a graph edge density metric computed from the graph to be randomized.
+        Generate an Erdos-Renyi random graph based on the graph's edge density.
 
-        :param graph:
-        :return: networkx.Graph object
+        This method generates an Erdos-Renyi random graph with 'n' nodes and edge probability 'p'. The values 'n' and 'p' are
+        computed from the provided 'graph' or the CaGraph object's graph. If 'graph' is not provided, the number of nodes and
+        edge density are calculated from the CaGraph object's graph structure.
+
+        :param graph: networkx.Graph, optional
+            The graph to use as a basis for calculating 'n' and 'p'. If not provided, the CaGraph object's graph is used.
+
+        :return: networkx.Graph
+            The generated Erdos-Renyi random graph.
         """
         if graph is None:
             num_nodes = self._num_neurons
-            edge_probability = self.graph_theory.get_density()
+            edge_probability = self.analysis.get_density()
         else:
             num_nodes = len(graph.nodes)
-            edge_probability = self.graph_theory.get_density(graph=graph)
+            edge_probability = self.analysis.get_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=edge_probability)
 
-    # Todo: add additional arguments to expand functionality
     # Todo: add show and save functionality
-    def draw_graph(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5):
+    def draw_graph(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5, **kwargs):
         """
-        Draws a simple graph.
+            Visualize and draw a networkx.Graph object.
 
-        :param graph: networkx.Graph object
-        :param position: dict
-        :param node_size: int
-        :param node_color: str
-        :param alpha: float
-        :return:
-        """
+            This method generates a visual representation of the specified 'graph' using the provided layout 'position' and
+            visual properties such as 'node_size', 'node_color', and 'alpha'. It utilizes the networkx 'nx.draw' function for
+            drawing the graph.
+
+            :param graph: networkx.Graph, optional
+                The graph object to be visualized. If not provided, the CaGraph object's graph is used.
+            :param position: dict, optional
+                The layout position for nodes in the graph. If not provided, a spring layout is used by default.
+            :param node_size: int, optional
+                The size of nodes in the graph visualization. Default is 25.
+            :param node_color: str, optional
+                The color of nodes in the graph visualization. Default is 'b' (blue).
+            :param alpha: float, optional
+                The opacity (alpha) of nodes in the graph visualization. Default is 0.5.
+            :param kwargs: additional keyword arguments for the 'nx.draw' function.
+            """
         if graph is None:
             graph = self._graph
         if position is None:
             position = nx.spring_layout(graph)
-        nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha)
+        nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha, **kwargs)
 
-    # Todo: add option to generate a directory with analysis files
+    # Todo: add option to only select a subset of the graph analyses
     def get_report(self, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None,
                    parsing_value=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        :param save_filetype:
-        :param save_filename:
-        :param save_path:
-        :param save_report:
-        :param parsing_nodes:
-        :param parse_by_attribute: str
-        :param parsing_operation: str
-        :param parsing_value: float
-        :return: dict
-        """
+            Generate a report for the CaGraph object based on specified criteria and save it as a file if desired.
+
+            This method constructs a report by selecting and analyzing data from the CaGraph object's node attributes.
+            You can specify criteria for selecting nodes, parsing attributes, and filtering data. The resulting report
+            is returned as a pandas DataFrame. If 'save_report' is set to True, the report can also be saved as a file.
+
+            :param save_filetype: str, optional
+                The file format to use for saving the report ('csv', 'HDF5', 'xlsx'). Default is 'csv'.
+            :param save_filename: str, optional
+                The name of the saved report file. Default is 'report'.
+            :param save_path: str, optional
+                The directory path for saving the report. Default is the current working directory.
+            :param save_report: bool, optional
+                Determines whether to save the report as a file. Default is False.
+            :param parsing_nodes: list, optional
+                A list of node labels to include in the report. Default is None, including all nodes.
+            :param parse_by_attribute: str, optional
+                The attribute name to parse and include in the report. Default is None, which includes all attributes.
+            :param parsing_operation: str, optional
+                The operation to apply when parsing the attribute data ('>', '<', '<=', '>=', '==', '!='). Default is None.
+            :param parsing_value: float, optional
+                The value used in the parsing operation. Default is None.
+
+            :return: pd.DataFrame
+                The report as a pandas DataFrame.
+            """
         # Set up parsing
         if parse_by_attribute is not None:
+            if parsing_operation or parsing_value is None:
+                raise ValueError(
+                    "Arguments 'parsing_operation' and 'parsing_value' must be specified if 'parse_by_attribute' is also specified.")
+
             # identify nodes that meet the parsing criteria
-            if parsing_operation == '>':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value > parsing_value]
-            elif parsing_operation == '<':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value < parsing_value]
-            elif parsing_operation == '<=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value <= parsing_value]
-            elif parsing_operation == '>=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value >= parsing_value]
-            elif parsing_operation == '==':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value == parsing_value]
-            elif parsing_operation == '!=':
-                parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
-                                 value != parsing_value]
+            else:
+                if parsing_operation == '>':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value > parsing_value]
+                elif parsing_operation == '<':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value < parsing_value]
+                elif parsing_operation == '<=':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value <= parsing_value]
+                elif parsing_operation == '>=':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value >= parsing_value]
+                elif parsing_operation == '==':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value == parsing_value]
+                elif parsing_operation == '!=':
+                    parsing_nodes = [key for key, value in self.__attribute_dictionary[parse_by_attribute].items() if
+                                     value != parsing_value]
 
         # Individual node analyses
         if parsing_nodes is None:
@@ -511,6 +650,8 @@ class CaGraph:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -519,7 +660,7 @@ class CaGraph:
                 report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return report_df
 
-    class GraphTheory:
+    class Analysis:
         def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons, labels):
             self._time = time
             self._neuron_dynamics = neuron_dynamics
@@ -556,34 +697,59 @@ class CaGraph:
         # Graph theory analysis - global network structure
         def get_density(self, graph=None):
             """
-            Returns the ratio of edges present in the graph out of the total possible edges.
+            Calculate and return the density of the network.
 
-            :param graph: networkx.Graph object
+            The density of a network is defined as the ratio of the number of edges present in the graph to the total number
+            of possible edges in the graph. A higher density indicates a denser network with more connections.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate density. If not provided, the CaGraph object's graph is used.
+
             :return: float
+                The density of the network.
             """
             if graph is None:
                 graph = self._graph
             return nx.density(graph)
 
-        # Todo: add functionality get_path_length
-        def get_path_length(self):
+        def get_shortest_path_length(self, graph=None, source=None, target=None):
             """
-            Returns the characteristic path length.
+            Calculate and return the shortest path length between two nodes in the network.
 
-            :return:
+            This method computes the shortest path length between a source and target node in the network graph. The shortest path
+            length represents the minimum number of edges that must be traversed to reach the target node from the source node.
+
+            :param graph: networkx.Graph, optional
+                The graph in which to calculate the shortest path. If not provided, the CaGraph object's graph is used.
+            :param source: node
+                The source node from which to calculate the shortest path.
+            :param target: node
+                The target node to which the shortest path is calculated.
+
+            :return: int
+                The shortest path length between the source and target nodes.
             """
-            return
+            if graph is None:
+                graph = self._graph
+            return nx.shortest_path_length(graph, source=source, target=target)
 
         # Graph theory analysis - local network structure
         def get_hubs(self, graph=None, return_type='list'):
             """
-            Computes hub nodes using the normalized betweenness centrality scores. This method sets an
-            outlier threshold using the inter-quartile range of the betweenness centrality score distribution
-            and returns nodes with with scores above the outlier threshold.
+            Calculate and return hub nodes in the network based on normalized betweenness centrality scores.
 
-            :param graph:
-            :param return_type:
-            :return:
+            This method identifies hub nodes by calculating the normalized betweenness centrality scores for all nodes in the
+            network graph. Hub nodes are nodes with betweenness centrality scores exceeding an outlier threshold, which is
+            determined using the inter-quartile range (IQR) of the betweenness centrality score distribution.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate hub nodes. If not provided, the CaGraph object's graph is used.
+            :param return_type: str, optional
+                The format in which to return the hub nodes. 'list' returns a list of hub nodes, 'dict' returns a dictionary with
+                hub nodes marked as 1 and non-hub nodes as 0.
+
+            :return: list or dict
+                The hub nodes in the network, either as a list or a dictionary, based on the specified 'return_type'.
             """
             if graph is None:
                 graph = self._graph
@@ -611,15 +777,24 @@ class CaGraph:
 
         def get_betweenness_centrality(self, graph=None, return_type='list'):
             """
-            Returns the betweenness centrality scores for all nodes.
+            Calculate and return the betweenness centrality scores for all nodes in the network.
 
-            :param graph:
-            :param return_type:
-            :return:
+            Betweenness centrality is a measure of the importance of a node in a network based on the number of shortest paths
+            that pass through that node. Higher betweenness centrality indicates nodes that act as crucial bridges or connectors
+            within the network.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate betweenness centrality scores. If not provided, the CaGraph object's graph is used.
+            :param return_type: str, optional
+                The format in which to return the betweenness centrality scores. 'list' returns a list of centrality scores,
+                'dict' returns a dictionary with nodes as keys and their centrality scores as values.
+
+            :return: list or dict
+                The betweenness centrality scores for nodes in the network, either as a list or a dictionary, based on the
+                specified 'return_type'.
             """
             if graph is None:
                 graph = self._graph
-
             # Calculate betweenness centrality
             if return_type == 'dict':
                 return nx.betweenness_centrality(graph, normalized=True, endpoints=False)
@@ -628,10 +803,17 @@ class CaGraph:
 
         def get_connected_components(self, graph=None) -> list:
             """
-            Returns connected components with more than one node.
+            Retrieve connected components in the network, excluding isolated nodes.
 
-            :param graph: networkx.Graph object
-            :return: list
+            This method identifies and returns connected components in the network graph. Connected components are groups of nodes
+            that are connected to each other, and the method filters out isolated nodes (components with only one node) from the
+            result.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to find connected components. If not provided, the CaGraph object's graph is used.
+
+            :return: List[List[int]]
+                A list of connected components, where each component is represented as a list of node labels (as integers).
             """
             if graph is None:
                 connected_components_with_orphan = list(nx.connected_components(self._graph))
@@ -643,10 +825,16 @@ class CaGraph:
 
         def get_largest_connected_component(self, graph=None) -> nx.Graph:
             """
-            Returns a subgraph containing the largest connected component.
+            Retrieve and return the largest connected component of the network.
 
-            :param graph: networkx.Graph object
-            :return: networkx.Graph object
+            This method identifies and extracts the largest connected component from the network graph. The largest connected
+            component is a subgraph containing the most extensive group of nodes that are connected to each other.
+
+            :param graph: networkx.Graph, optional
+                The graph from which to extract the largest connected component. If not provided, the CaGraph object's graph is used.
+
+            :return: networkx.Graph
+                A networkx.Graph object representing the largest connected component of the network.
             """
             if graph is None:
                 graph = self._graph
@@ -655,10 +843,19 @@ class CaGraph:
 
         def get_clustering_coefficient(self, graph=None, return_type='list'):
             """
-            Returns a list of clustering coefficient values for each node.
+            Calculate and return the clustering coefficient for each node in the network.
 
-            :param graph: networkx.Graph object
-            :param return_type: str
+            The clustering coefficient of a node is a measure of the degree to which its neighbors are also connected to each other.
+            Higher clustering coefficients indicate nodes that are part of densely interconnected local subgraphs.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate clustering coefficients. If not provided, the CaGraph object's graph is used.
+            :param return_type: str, optional
+                The format in which to return clustering coefficients. 'list' returns a list of coefficients,
+                'dict' returns a dictionary with nodes as keys and their clustering coefficients as values.
+
+            :return: list or dict
+                The clustering coefficients for nodes in the network, either as a list or a dictionary, based on the specified 'return_type'.
             """
             if graph is None:
                 graph = self._graph
@@ -673,10 +870,19 @@ class CaGraph:
 
         def get_degree(self, graph=None, return_type='list'):
             """
-            Returns iterator object of (node, degree) pairs.
+            Calculate and return the degree of each node in the network.
 
-            :param graph: networkx.Graph object
-            :param return_type: str
+            The degree of a node in a network is the number of edges incident to that node, which represents how many
+            connections or neighbors a node has in the network.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate node degrees. If not provided, the CaGraph object's graph is used.
+            :param return_type: str, optional
+                The format in which to return node degrees. 'list' returns a list of degrees,
+                'dict' returns a dictionary with nodes as keys and their degrees as values.
+
+            :return: list or dict
+                The node degrees for nodes in the network, either as a list or a dictionary, based on the specified 'return_type'.
             """
             if graph is None:
                 graph = self._graph
@@ -688,12 +894,23 @@ class CaGraph:
 
         def get_correlated_pair_ratio(self, graph=None, return_type='list'):
             """
-            Computes the number of connections each neuron has, divided by the nuber of cells in the field of view.
-            This method is described in Jimenez et al. 2020: https://www.nature.com/articles/s41467-020-17270-w#Sec8
+               Calculate and return the correlated pair ratio for each node in the network.
 
-            :param graph: networkx.Graph object
-            :param return_type: str
-            """
+               The correlated pair ratio is a measure of the number of connections each neuron has in the network, divided by the
+               total number of neurons in the network. It provides insight into the relative connectivity of individual neurons
+               within the larger network.
+
+               This method is described in Jimenez et al. 2020 (https://www.nature.com/articles/s41467-020-17270-w#Sec8).
+
+               :param graph: networkx.Graph, optional
+                   The graph for which to calculate correlated pair ratios. If not provided, the CaGraph object's graph is used.
+               :param return_type: str, optional
+                   The format in which to return correlated pair ratios. 'list' returns a list of ratios,
+                   'dict' returns a dictionary with nodes as keys and their ratios as values.
+
+               :return: list or dict
+                   The correlated pair ratios for nodes in the network, either as a list or a dictionary, based on the specified 'return_type'.
+               """
             if graph is None:
                 graph = self._graph
             degree_view = self.get_degree(graph)
@@ -707,12 +924,22 @@ class CaGraph:
 
         def get_eigenvector_centrality(self, graph=None, return_type='list'):
             """
-            Compute the eigenvector centrality of all graph nodes, the
-            measure of influence each node has on the graph.
+             Calculate and return the eigenvector centrality for each node in the network.
 
-            :param graph: networkx.Graph object
-            :param return_type: str
-            """
+             Eigenvector centrality is a measure of the influence that each node has on the entire network, taking into account
+             its connections to other influential nodes. Nodes with higher eigenvector centrality are well-connected to other
+             nodes with high centrality, indicating their importance in the network.
+
+             :param graph: networkx.Graph, optional
+                 The graph for which to calculate eigenvector centrality. If not provided, the CaGraph object's graph is used.
+             :param return_type: str, optional
+                 The format in which to return eigenvector centrality values. 'list' returns a list of centrality values,
+                 'dict' returns a dictionary with nodes as keys and their centrality values as values.
+
+             :return: list or dict
+                 The eigenvector centrality values for nodes in the network, either as a list or a dictionary, based on the
+                 specified 'return_type'.
+             """
             if graph is None:
                 graph = self._graph
             eigenvector_centrality = nx.eigenvector_centrality(graph, max_iter=500)
@@ -723,11 +950,20 @@ class CaGraph:
 
         def get_communities(self, graph=None, return_type='list'):
             """
-            Returns a list of communities, composed of a group of nodes.
+            Detect and return communities within the network.
 
-            :param return_type: list
-            :param graph: networkx.Graph object
-            :return: node_groups: list
+            Communities are groups of nodes that exhibit higher connectivity and interactions among themselves than with nodes outside
+            the community. This method employs the greedy modularity optimization algorithm to find these communities.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to detect communities. If not provided, the CaGraph object's graph is used.
+            :param return_type: str, optional
+                The format in which to return community assignments. 'list' returns a list of community IDs for each node,
+                'dict' returns a dictionary with nodes as keys and their corresponding community IDs as values.
+
+            :return: list or dict
+                The community assignments for nodes in the network, either as a list of community IDs or a dictionary, based on
+                the specified 'return_type'.
             """
             if graph is None:
                 graph = self._graph
@@ -745,9 +981,19 @@ class CaGraph:
         # Todo: getting stuck on small world analysis when computing sigma -- infinite loop may be due to computing the average clustering coefficient or the average shortest path length -- test
         def get_smallworld_largest_subnetwork(self, graph=None) -> float:
             """
+            Calculate and return the small-worldness index for the largest connected subnetwork within the network.
 
-            :param graph: networkx.Graph object
+            The small-worldness index measures the degree to which a network exhibits small-world properties, such as high
+            clustering and short path lengths. It is calculated using the sigma metric from networkx's small-world
+            functionality.
+
+            :param graph: networkx.Graph, optional
+                The graph for which to calculate the small-worldness index. If not provided, the largest connected subnetwork
+                of the CaGraph object's graph is used.
+
             :return: float
+                The small-worldness index for the network. If the largest subnetwork has less than four nodes, a RuntimeError
+                is raised as sigma cannot be computed.
             """
             if graph is None:
                 graph = self.get_largest_connected_component()
@@ -759,12 +1005,21 @@ class CaGraph:
                 raise RuntimeError(
                     'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
-        # Todo: high priority add function
         # Todo: make more functional
         def compare_graphs(self, graph1, graph2):
             """
+            Compare two graphs and return their graph edit distance.
 
-            :return:
+            The graph edit distance is a measure of the dissimilarity between two graphs. It quantifies the minimum number of
+            operations (such as adding, deleting, or modifying nodes and edges) required to transform one graph into the other.
+
+            :param graph1: networkx.Graph
+                The first graph to be compared.
+            :param graph2: networkx.Graph
+                The second graph to be compared.
+
+            :return: int
+                The graph edit distance between the two graphs, indicating their dissimilarity.
             """
             return nx.graph_edit_distance(graph1, graph2)
 
@@ -801,19 +1056,33 @@ class CaGraph:
                                      show_plot=True,
                                      save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
-            Plots a heatmap of the correlation matrix.
+                Plot a heatmap of the correlation matrix.
 
-            :param save_format:
-            :param correlation_matrix:
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            :return:
-            """
+                This method generates a heatmap to visualize the correlation matrix, which represents pairwise correlations
+                between neurons. The heatmap is color-coded to highlight the strength of correlations.
+
+                :param correlation_matrix: numpy.ndarray, optional
+                    The correlation matrix to be visualized. If not provided, the Pearson's correlation matrix of the CaGraph
+                    object is used.
+                :param title: str, optional
+                    Title for the heatmap plot.
+                :param y_label: str, optional
+                    Label for the y-axis.
+                :param x_label: str, optional
+                    Label for the x-axis.
+                :param show_plot: bool, optional
+                    Whether to display the heatmap plot. Default is True.
+                :param save_plot: bool, optional
+                    Whether to save the plot as an image file.
+                :param save_path: str, optional
+                    Path to save the plot image. If not provided, the current working directory is used.
+                :param dpi: int, optional
+                    Dots per inch for the saved image.
+                :param save_format: str, optional
+                    Format of the saved image, e.g., 'png', 'jpg'.
+
+                :return: None
+                """
             if correlation_matrix is None:
                 correlation_matrix = self._pearsons_correlation_matrix()
             sns.heatmap(correlation_matrix, vmin=0, vmax=1)
@@ -828,15 +1097,23 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
+                elif not os.path.exists(os.path.dirname(save_path)):
+                    os.makedirs(os.path.dirname(save_path))
                 plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def get_single_neuron_timecourse(self, neuron_trace_number) -> np.ndarray:
             """
-            Return time vector stacked on the recorded calcium fluorescence for the neuron of interest.
+                Return the time vector stacked on the recorded calcium fluorescence for the specified neuron.
 
-            :param neuron_trace_number: int
-            :return: numpy.ndarray
-            """
+                This method extracts the time vector and calcium fluorescence data for a specific neuron, stacks them together,
+                and returns the combined time course.
+
+                :param neuron_trace_number: int
+                    The index of the neuron's trace to be retrieved.
+
+                :return: numpy.ndarray
+                    An array containing the time vector stacked on the calcium fluorescence data for the specified neuron.
+                """
             neuron_timecourse_selection = neuron_trace_number
             return np.vstack((self._time, self._neuron_dynamics[neuron_timecourse_selection, :]))
 
@@ -844,17 +1121,31 @@ class CaGraph:
                                           show_plot=True,
                                           save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
+            Plots the time course of a single neuron's calcium fluorescence data.
 
-            :param save_format:
+            This method generates a line plot of the calcium fluorescence data for a single neuron over time. You can customize
+            the plot with optional parameters.
+
+            :param save_format: str
+                The format in which to save the plot (e.g., 'png', 'jpg', 'svg').
             :param neuron_trace_number: int
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            :return:
+                The index of the neuron's trace to be plotted.
+            :param title: str, optional
+                The title of the plot.
+            :param y_label: str, optional
+                The label for the y-axis.
+            :param x_label: str, optional
+                The label for the x-axis.
+            :param show_plot: bool, optional
+                Whether to display the plot (default is True).
+            :param save_plot: bool, optional
+                Whether to save the plot to a file (default is False).
+            :param save_path: str, optional
+                The directory where the plot should be saved (default is the current working directory).
+            :param dpi: int, optional
+                The resolution of the saved plot in dots per inch (default is 300).
+
+            :return: None
             """
             neuron_timecourse_selection = neuron_trace_number
             count = 1
@@ -883,27 +1174,42 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
+                elif not os.path.exists(os.path.dirname(save_path)):
+                    os.makedirs(os.path.dirname(save_path))
                 plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def plot_multi_neuron_timecourse(self, neuron_trace_labels, palette=None, title=None, y_label=None,
                                          x_label=None,
                                          show_plot=True, save_plot=False, save_path=None, dpi=300, save_format='png'):
             """
-            Plots multiple individual calcium fluorescence traces, stacked vertically.
+                Plots multiple individual calcium fluorescence traces stacked vertically.
 
+                This method generates a multi-panel plot, where each panel represents the calcium fluorescence data of an individual
+                neuron. The traces are stacked vertically for visual comparison.
 
-            :param save_format:
-            :param neuron_trace_labels: list
-            :param palette: list
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            :return:
-            """
+                :param save_format: str
+                    The format in which to save the plot (e.g., 'png', 'jpg', 'svg').
+                :param neuron_trace_labels: list
+                    A list of neuron indices to be plotted. Each index corresponds to an individual neuron's trace.
+                :param palette: list, optional
+                    A list of colors to use for plotting the traces. If not provided, a default color palette is used.
+                :param title: str, optional
+                    The title of the plot.
+                :param y_label: str, optional
+                    The label for the y-axis.
+                :param x_label: str, optional
+                    The label for the x-axis.
+                :param show_plot: bool, optional
+                    Whether to display the plot (default is True).
+                :param save_plot: bool, optional
+                    Whether to save the plot to a file (default is False).
+                :param save_path: str, optional
+                    The directory where the plot should be saved (default is the current working directory).
+                :param dpi: int, optional
+                    The resolution of the saved plot in dots per inch (default is 300).
+
+                :return: None
+                """
             count = 0
             if palette is None:
                 palette = sns.color_palette('husl', len(neuron_trace_labels))
@@ -929,20 +1235,37 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
+                elif not os.path.exists(os.path.dirname(save_path)):
+                    os.makedirs(os.path.dirname(save_path))
                 plt.savefig(fname=save_path, dpi=dpi, format=save_format)
 
         def plot_all_neurons_timecourse(self, title=None, y_label=None, x_label=None, show_plot=True, save_plot=False,
                                         save_path=None, dpi=300, save_format='png'):
             """
-            :param save_format:
-            :param title:
-            :param y_label:
-            :param x_label:
-            :param show_plot:
-            :param save_plot:
-            :param save_path:
-            :param dpi:
-            """
+                Plots the calcium fluorescence timecourses of all neurons in the dataset.
+
+                This method generates a plot where each neuron's calcium fluorescence timecourse is displayed. Neuron traces are
+                plotted sequentially, and they can be overlaid or shown separately, depending on the dataset size.
+
+                :param save_format: str
+                    The format in which to save the plot (e.g., 'png', 'jpg', 'svg').
+                :param title: str, optional
+                    The title of the plot.
+                :param y_label: str, optional
+                    The label for the y-axis.
+                :param x_label: str, optional
+                    The label for the x-axis.
+                :param show_plot: bool, optional
+                    Whether to display the plot (default is True).
+                :param save_plot: bool, optional
+                    Whether to save the plot to a file (default is False).
+                :param save_path: str, optional
+                    The directory where the plot should be saved (default is the current working directory).
+                :param dpi: int, optional
+                    The resolution of the saved plot in dots per inch (default is 300).
+
+                :return: None
+                """
             plt.figure(num=2, figsize=(10, 2))
             count = 1
             x_tick_array = []
@@ -969,29 +1292,102 @@ class CaGraph:
             if save_plot:
                 if save_path is None:
                     save_path = os.getcwd() + f'fig'
+                elif not os.path.exists(os.path.dirname(save_path)):
+                    os.makedirs(os.path.dirname(save_path))
                 plt.savefig(fname=save_path, dpi=dpi, format=save_format)
+
+    class Visualization:
+        def __init__(self, cagraph_obj):
+            """
+            Initializes a Visualization object.
+
+            :param cagraph_obj: CaGraph
+                The CaGraph object to be visualized.
+            """
+            self.cagraph_obj = cagraph_obj
+            pass
+
+        def _interactive_network_input_validator(self, input_object):
+            """
+            Validate the input object.
+
+            :param input_object: CaGraph
+                The input object to be validated.
+            :return: CaGraph
+            """
+            if isinstance(input_object, CaGraph):
+                return input_object
+            else:
+                raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
+
+        def show_interactive_network(self, **kwargs):
+            """
+            Display an interactive visualization of the CaGraph object.
+
+            :param kwargs:
+                Additional keyword arguments to customize the visualization.
+            """
+            self._interactive_network_input_validator(input_object=self.cagraph_obj)
+            visualization.interactive_network(cagraph_obj=self.cagraph_obj, **kwargs)
 
 
 # %% Time samples
 class CaGraphTimeSamples:
     """
-    Class for running time-sample analyses on a single dataset.
-    """
+                A class for running time-sample analyses on a single dataset.
 
-    def __init__(self, data, time_samples=None, condition_labels=None, node_labels=None, node_metadata=None,
-                 dataset_id=None,
-                 threshold=None):
+                This class allows you to perform time-sample analyses on a single dataset, creating CaGraph objects for different time
+                samples under various conditions.
+
+                :param data: numpy.ndarray
+                    The dataset containing neural activity data. Rows represent neurons, columns represent time points.
+                :param time_samples: list of tuples
+                    A list of time sample intervals for different conditions. Each tuple should contain two integers, representing
+                    the start and end time points of a time sample.
+                :param condition_labels: list of str
+                    Labels for different conditions, corresponding to the time samples.
+                :param node_labels: list of int
+                    Labels for individual nodes (neurons). If not provided, default labels are generated.
+                :param node_metadata: dict
+                    Metadata associated with nodes.
+                :param dataset_id: str
+                    A unique identifier for the dataset.
+                :param threshold: float
+                    A threshold for graph edge creation based on correlation. If not provided, it will be generated.
+
+                Attributes:
+                data (numpy.ndarray): The dataset containing neural activity data.
+                dt (float): The time interval between data points.
+                num_neurons (int): The number of neurons in the dataset.
+                data_id (str): A unique identifier for the dataset.
+                node_labels (list): Labels for individual nodes (neurons).
+                threshold (float): The threshold for graph edge creation based on correlation.
+                condition_identifiers (list): Labels for different conditions, corresponding to the time samples.
+            """
+
+    def __init__(self, data, time_samples, condition_labels, node_labels=None, node_metadata=None,
+                 dataset_id=None, threshold=None):
         """
-        :param data: str
-        :param time_samples:
-        :param condition_labels:
-        :param node_labels: list
-        :param node_metadata: dict
-        :param dataset_id: str
-        :param threshold: float
-        """
+                Initializes a CaGraphTimeSamples object.
+
+                :param data: numpy.ndarray
+                    The dataset containing neural activity data.
+                :param time_samples: list of tuples
+                    A list of time sample intervals for different conditions.
+                :param condition_labels: list of str
+                    Labels for different conditions.
+                :param node_labels: list of int
+                    Labels for individual nodes (neurons).
+                :param node_metadata: dict
+                    Metadata associated with nodes.
+                :param dataset_id: str
+                    A unique identifier for the dataset.
+                :param threshold: float
+                    A threshold for graph edge creation based on correlation.
+                """
+
         # Check that the input data is in the correct format and load dataset
-        self.__input_validator(data=data)
+        self.__input_validator(data=data, time_samples=time_samples, condition_labels=condition_labels)
 
         # Add dataset identifier
         if dataset_id is not None:
@@ -1049,12 +1445,25 @@ class CaGraphTimeSamples:
     def condition_identifiers(self):
         return self._condition_identifiers
 
-    def __input_validator(self, data):
+    def __input_validator(self, data, time_samples, condition_labels):
         """
-        Performs input validation for CaGraphTimeSamples class.
+        Validates and loads input data for the CaGraphTimeSamples class.
 
-        :param data:
-        :return:
+        This method performs validation on the input data to ensure it is in the correct format. It supports loading data
+        either from a numpy.ndarray or from specific file formats such as .csv or .nwb. The data is then stored in the
+        `_data` attribute.
+
+        :param data: numpy.ndarray or str
+            The input data, which can be a numpy.ndarray containing neural activity data, a file path to a .csv or .nwb file
+            for data loading, or a numpy.ndarray containing time samples.
+        :param time_samples: list of tuples
+            A list of time sample intervals for different conditions.
+        :param condition_labels: list of str
+            Labels for different conditions.
+
+        Raises:
+            TypeError: If data is not a supported data format or file type.
+            ValueError: If the number of time_samples does not match the number of condition_labels.
         """
         if isinstance(data, np.ndarray):
             self._data = data
@@ -1072,34 +1481,44 @@ class CaGraphTimeSamples:
         else:
             raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
+        if len(time_samples) != len(condition_labels):
+            raise ValueError(
+                'The number of time_samples provided does not match the number of condition_labels provided.')
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
         This threshold generation will use the full dataset.
 
+        Returns the calculated threshold as a float.
+
         :return: float
         """
-        return prep.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
 
     # Public utility methods
     def save(self, file_path=None):
         """
+        Save the CaGraphTimeSamples object to a binary file using pickle.
 
-        :param file_path:
-        :return:
+        :param file_path: str, optional
+            The path to the file where the object will be saved. If not provided, the default filename 'obj.cagraph' will be used.
+        :return: None
         """
         if file_path is None:
             file_path = 'obj.cagraph'
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """
+        Load a CaGraphTimeSamples object from a binary file using pickle.
 
-        :param file_path:
-        :return:
+        :param file_path: str
+            The path to the file containing the saved CaGraphTimeSamples object.
+        :return: CaGraphTimeSamples
+            The loaded CaGraphTimeSamples object.
         """
         with open(file_path, 'rb') as file:
             cagraphtimesamples_obj = pickle.load(file)
@@ -1107,24 +1526,36 @@ class CaGraphTimeSamples:
 
     def get_cagraph(self, condition_label):
         """
+        Get the CaGraph object associated with the specified condition label.
 
-        :param condition_label:
-        :return:
+        :param condition_label: str
+            The label identifying the condition for which the CaGraph object is requested.
+        :return: CaGraph
+            The CaGraph object corresponding to the provided condition label.
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        Generates an organized report of all data in the batched sample. It will report on the
-        base analyses included in the CaGraph object get_report() method, and output a single
-        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+            Generate a consolidated report that combines individual condition reports into a single report.
 
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
-        """
+            This method combines the reports for all conditions included in the CaGraphTimeSamples object
+            and produces a comprehensive report in a tabular structure, where each column corresponds to
+            an analysis from one of the individual condition reports.
+
+            :param save_report: bool
+                Whether to save the generated report to a file.
+            :param save_path: str, optional
+                The directory path where the report file should be saved. If not provided, the current working
+                directory will be used.
+            :param save_filename: str, optional
+                The base filename for the saved report file. If not provided, it defaults to 'report'.
+            :param save_filetype: str, optional
+                The format in which to save the report. Options include 'csv', 'HDF5', and 'xlsx'.
+                If not provided, the default is 'csv'.
+            :return: pandas.DataFrame
+                A DataFrame containing the consolidated report.
+            """
         store_reports = {}
         for key in self._condition_identifiers:
             cagraph_obj = self.get_cagraph(key)
@@ -1144,6 +1575,8 @@ class CaGraphTimeSamples:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -1156,50 +1589,95 @@ class CaGraphTimeSamples:
 # %% Batched analyses
 class CaGraphBatch:
     """
-    Class for running batched analyses.
+        Class for running batched analyses on multiple datasets.
 
-    Only directories can be passed to CaGraphBatch. Node metadata cannot be added to CaGraph objects in the batched
-    analysis. Future versions will include the node_metadata attribute.
-    """
+        CaGraphBatch allows you to analyze multiple datasets simultaneously. You can provide a list of dataset paths or
+        specify a directory containing dataset files. Additionally, you can set a group identifier and specify the
+        threshold for analysis.
 
-    def __init__(self, data_path, group_id=None, threshold=None, threshold_averaged=False):
+        :param data: str or list
+            If 'data' is a string, it should be the path to a directory containing dataset files (e.g., CSV or NWB).
+            If 'data' is a list, it should contain paths to individual dataset files.
+        :param dataset_labels: list, optional
+            Labels for individual datasets. Use this when providing a list of datasets. The number of labels must match
+            the number of datasets.
+        :param group_id: str, optional
+            An identifier for the group of datasets.
+        :param threshold: float, optional
+            The threshold for data analysis. If not provided, the threshold will be determined automatically for each dataset.
+        :param threshold_averaged: bool, optional
+            If True, an average threshold will be computed across all datasets to ensure consistent analysis thresholds.
         """
-        Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
-        The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
-        2. if not set manually, all
 
-        :param group_id: str
-        :param threshold: float
+    def __init__(self, data, dataset_labels=None, group_id=None, threshold=None, threshold_averaged=False):
         """
-        # Todo: add support for additional input types and add input validator
-        if not os.path.exists(os.path.dirname(data_path)):
-            raise ValueError('Path provided for data_path parameter does not exist.')
-        data_list = os.listdir(data_path)
+            Initialize a CaGraphBatch object for batched analyses on multiple datasets.
+
+            Parameters:
+            :param data: str or list
+                If 'data' is a string, it should be the path to a directory containing dataset files (e.g., CSV or NWB).
+                If 'data' is a list, it should contain paths to individual dataset files.
+            :param dataset_labels: list, optional
+                Labels for individual datasets. Use this when providing a list of datasets. The number of labels must match
+                the number of datasets.
+            :param group_id: str, optional
+                An identifier for the group of datasets.
+            :param threshold: float, optional
+                The threshold for data analysis. If not provided, the threshold will be determined automatically for each dataset.
+            :param threshold_averaged: bool, optional
+                If True, an average threshold will be computed across all datasets to ensure consistent analysis thresholds.
+
+            The 'data' parameter must be specified to load the dataset. Depending on the data format and input, it can be a
+            directory or a list of dataset file paths. Dataset labels, group identifiers, and thresholds can also be specified.
+            """
+        # Check that the input data is in the correct format and load dataset
+        self.__input_validator(data=data)
+
+        # Todo: Optimize following logic
+        if type(data) == list:
+            if dataset_labels is not None:
+                if len(dataset_labels) != len(data):
+                    raise ValueError("The number of dataset_labels must match the number or datasets in 'data'.")
+            else:
+                raise ValueError("The dataset_labels input must be specified if a list of data is provided.")
+            data_list = data
+            data_path = ''
+        elif type(data) == str:
+            files = os.listdir(data)
+            data_list = []
+            for file in files:
+                if file.endswith('.csv') or file.endswith('.nwb'):
+                    data_list.append(file)
+            dataset_labels = []
+            for idx, dataset in enumerate(data_list):
+                dataset_labels.append(dataset[:-4])
+            data_path = data
 
         # Set threshold
         if threshold is not None:
             self._threshold = threshold
+        # Todo: check if error when using threshold_averaged
         elif threshold_averaged:
-            threshold_keys = []
-            for dataset in data_list:
-                if dataset.endswith(".csv"):
-                    threshold_keys.append(dataset[:-4])
-            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
+            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=data_list)
         else:
             self._threshold = None
+            self._batch_threshold = None
         if group_id is not None:
             self._group_id = group_id
 
         # Construct CaGraph objects for each dataset
         self._dataset_identifiers = []
-        for dataset in data_list:
-            if dataset.endswith(".csv"):
+        for idx, dataset in enumerate(data_list):
+            if isinstance(dataset, str):
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
-                try:
-                    setattr(self, f'__{dataset[:-4]}_cagraph', CaGraph(data=data, threshold=self._threshold))
-                    self._dataset_identifiers.append(dataset[:-4])
-                except Exception as e:
-                    print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
+            elif isinstance(dataset, np.ndarray):
+                data = dataset
+            try:
+                setattr(self, f'__{dataset_labels[idx]}_cagraph', CaGraph(data=data, threshold=self._threshold))
+                # Add a series of private attributes which are CaGraph objects
+                self._dataset_identifiers.append(dataset_labels[idx])
+            except Exception as e:
+                print(f"Exception occurred for dataset {dataset_labels[idx]}: " + repr(e))
 
     # Private utility methods
     @property
@@ -1214,39 +1692,90 @@ class CaGraphBatch:
     def dataset_identifiers(self):
         return self._dataset_identifiers
 
+    def __input_validator(self, data):
+        """
+        Validate the input data to ensure it meets the requirements for creating CaGraphBatch objects.
+
+        Parameters:
+        :param data: str or list
+            The data to be validated. It can be either a list of dataset paths or a directory path containing dataset files.
+
+        Raises:
+        - TypeError: If the input data does not meet the required format.
+        - ValueError: If the provided directory path does not exist.
+
+        This method checks the input data to ensure it is in the correct format. For a list of datasets, it verifies that each
+        dataset meets the qualifications for CaGraph objects. If 'data' is a directory path, it checks if the directory exists.
+        """
+        if type(data) == list:
+            # For each dataset in the list check that each meets the input qualifications for CaGraph objects
+            for dataset in data:
+                if isinstance(dataset, np.ndarray):
+                    pass
+                elif isinstance(dataset, str):
+                    if not dataset.endswith('csv') and not dataset.endswith('nwb'):
+                        raise TypeError('File path to each dataset must have a .csv or .nwb file to load.')
+                else:
+                    raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        elif type(data) == str and not os.path.exists(os.path.dirname(data)):
+            raise ValueError('Path provided for data parameter does not exist.')
+
+    # Todo: Urgent -- make sure this is compatible with datasets passed as NumPy arrays
     def __generate_averaged_threshold(self, data_path, dataset_keys):
         """
-        Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
+        Compute an averaged threshold by calculating the mean of the recommended thresholds for each individual dataset.
 
-        :param data_path:
-        :param dataset_keys:
-        :return:
+        Parameters:
+        :param data_path: str
+            The path to the directory containing the dataset files.
+
+        :param dataset_keys: list of str
+            A list of dataset keys (filenames) for which thresholds will be calculated.
+
+        Returns:
+        - float
+            The averaged threshold computed as the mean of individual dataset thresholds.
+
+        This method computes an averaged threshold by iterating over the provided dataset keys, loading each dataset from the
+        specified data path, and calculating the recommended threshold for each dataset using the 'generate_average_threshold'
+        function from the 'preprocess' module. It then returns the mean of these individual thresholds as the averaged threshold.
         """
         store_thresholds = []
         for dataset in dataset_keys:
             data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(prep.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
+            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
         return np.mean(store_thresholds)
 
     # Public utility methods
     def save(self, file_path=None):
         """
+        Save the CaGraphBatch instance to a binary file using pickle.
 
-        :param file_path:
-        :return:
+        Parameters:
+        :param file_path (str, optional):
+            The path to the file where the CaGraphBatch instance will be saved. If not provided, the default filename 'obj.cagraph' is used.
+
+        This method allows you to save the current CaGraphBatch instance to a binary file using the 'pickle' module, preserving the object's state for future use.
         """
         if file_path is None:
             file_path = 'obj.cagraph'
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """
+        Load a CaGraphBatch instance from a saved binary file.
 
-        :param file_path:
-        :return:
+        Parameters:
+        :param file_path (str):
+            The path to the binary file containing the saved CaGraphBatch instance.
+
+        Returns:
+        - CaGraphBatch:
+            A new instance of the CaGraphBatch class loaded from the specified file.
+
+        This method allows you to load a previously saved CaGraphBatch instance from a binary file created using the 'save' method.
         """
         with open(file_path, 'rb') as file:
             cagraphbatch_obj = pickle.load(file)
@@ -1254,24 +1783,45 @@ class CaGraphBatch:
 
     def get_cagraph(self, condition_label) -> CaGraph:
         """
-        Return a CaGraph object for the specified dataset condition_label
+        Retrieve a CaGraph object for the specified dataset condition_label.
 
-        :param condition_label: str
-        :return: CaGraph
+        Parameters:
+        :param condition_label (str):
+            The label or identifier of the dataset condition for which you want to retrieve the CaGraph object.
+
+        Returns:
+        - CaGraph:
+            The CaGraph object associated with the specified condition_label.
+
+        This method allows you to access the CaGraph object associated with a specific dataset condition_label within the CaGraphBatch instance.
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        Generates an organized report of all data in the batched sample. It will report on the
-        base analyses included in the CaGraph object get_report() method, and output a single
-        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+            Generate a consolidated report for all datasets in the batched sample, combining the results of base analyses
+            included in the CaGraph object's get_report() method. This report is presented as a pandas DataFrame and can be
+            optionally saved to a file.
 
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
+            Parameters:
+            :param save_report (bool, optional):
+                If True, the report will be saved to a file. Defaults to False.
+
+            :param save_path (str, optional):
+                The directory path where the report file will be saved. If not specified, the current working directory is used.
+
+            :param save_filename (str, optional):
+                The name of the report file (excluding file extension). Defaults to 'report'.
+
+            :param save_filetype (str, optional):
+                The file format in which to save the report. Available formats: 'csv', 'HDF5', 'xlsx'. Defaults to 'csv'.
+
+            Returns:
+            - pd.DataFrame:
+                A pandas DataFrame containing the consolidated report for all datasets.
+
+            This method creates a summary report that combines the results of base analyses from individual datasets in the batch.
+            The columns in the report correspond to specific analyses, and the rows correspond to different datasets.
         """
         store_reports = {}
         for key in self.dataset_identifiers:
@@ -1292,6 +1842,8 @@ class CaGraphBatch:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -1300,18 +1852,24 @@ class CaGraphBatch:
                 full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return full_report_df
 
+    # Todo: Allow individual datasets to be parsed
     def save_individual_dataset_reports(self, save_path=None, save_filetype=None):
         """
-        Saves individual reports for each of the specified datasets.
-        Individual filenames will be generated using the filename name of the dataset from which the analysis is derived.
+        Save individual reports for each of the specified datasets.
 
-        This will result in the same analysis that can be done by creating a CaGraph object using a single dataset.
+        This method iterates through all datasets in the batched sample, generates a report for each dataset, and saves
+        them individually. Each dataset's report is saved in a file with a filename derived from the dataset's name.
 
-        :param save_path: str
-        :param save_filetype: str ('csv', 'HDF5', 'xlsx')
-        :return:
+        Parameters:
+        :param save_path (str, optional):
+            The directory path where the individual reports will be saved. If not specified, the current working directory is used.
+
+        :param save_filetype (str, optional):
+            The file format in which to save the individual reports. Available formats: 'csv', 'HDF5', 'xlsx'.
         """
         # Iterate through all datasets and save report for each
+        if not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         for key in self.dataset_identifiers:
             cagraph_obj = self.get_cagraph(key)
             cagraph_obj.get_report(save_report=True, save_path=save_path, save_filename=key + '_report',
@@ -1324,57 +1882,99 @@ class CaGraphBatchTimeSamples:
     Class for running batched analyses on datasets that have distinct time periods to
     separate into samples.
 
-    Only directories can be passed to CaGraphBatchTimeSamples. Node metadata cannot be added to CaGraph objects in the batched
+    Node metadata cannot be added to CaGraph objects in the batched
     analysis. Future versions will include the node_metadata attribute.
     """
 
-    def __init__(self, data_path, group_id=None, time_samples=None, condition_labels=None, threshold=None,
+    def __init__(self, data, time_samples, condition_labels, dataset_labels=None, group_id=None, threshold=None,
                  threshold_averaged=False):
         """
-        Path to data must be specified with data_path. A group identifier can optionally be specified with group_id.
-        The threshold can be set in three ways - 1. manually set by the user at the time of object creation,
-        2. if not set manually, all
+                Initialize a CaGraphBatchTimeSamples object.
 
-        :param group_id: str
-        :param threshold: float
+                Parameters:
+                :param data (str or list of str or list of np.ndarray): The path to data or a list of paths to data. A list of file
+                  paths can be provided if the data is split into multiple files. Each file represents a dataset. If loading from
+                  CSV or NWB files, the data should be a comma-separated values (CSV) file or a Neurodata Without Borders (NWB)
+                  file. If using NumPy arrays, data can be a list of arrays or a single array. Data will be loaded from these sources.
+                  Alternatively, a list of directories can be provided, and all CSV and NWB files within those directories will be
+                  treated as datasets. In this case, dataset_labels should be provided to specify the names for the datasets.
+                  File paths should be in string format.
+
+                :param time_samples (list of tuples): A list of time sample periods to separate the data into distinct samples.
+                  Each tuple represents a time period and should have the format (start, end), where 'start' is the starting time
+                  and 'end' is the ending time for a sample.
+
+                :param condition_labels (list of str): A list of condition labels corresponding to the time samples. Each label describes
+                  the condition or event during the respective time period. The number of condition labels should match the number
+                  of time samples.
+
+                :param dataset_labels (list of str, optional): A list of labels to identify each dataset when using directories. The number
+                  of dataset labels should match the number of datasets.
+
+                :param group_id (str, optional): An optional identifier for a group or batch of datasets.
+
+                :param threshold (float, optional): The threshold for identifying edges in the connectivity graph. You can manually set
+                 this threshold value. If not specified, a threshold will be computed for each dataset separately.
+
+                :param threshold_averaged (bool, optional): If set to True, an averaged threshold will be computed based on the
+                  threshold values for each dataset. This averaged threshold is applied consistently to all datasets.
+
+                Note: Dataset labels are used to identify individual datasets when analyzing and reporting.
+
+
         """
-        if not os.path.exists(os.path.dirname(data_path)):
-            raise ValueError('Path provided for data_path parameter does not exist.')
-        # Todo: extend to include numpy.ndarray inputs
-        data_list = os.listdir(data_path)
+        # Check that the input data is in the correct format and load dataset
+        self.__input_validator(data=data, time_samples=time_samples, condition_labels=condition_labels)
+
+        # Todo: check logic for optimizations
+        if type(data) == list:
+            if dataset_labels is not None:
+                if len(dataset_labels) != len(data):
+                    raise ValueError("The number of dataset_labels must match the number or datasets in 'data'.")
+            else:
+                raise ValueError("The dataset_labels input must be specified if a list of data is provided.")
+            data_list = data
+            data_path = ''
+        elif type(data) == str:
+            files = os.listdir(data)
+            data_list = []
+            for file in files:
+                if file.endswith('.csv') or file.endswith('.nwb'):
+                    data_list.append(file)
+            dataset_labels = []
+            for idx, dataset in enumerate(data_list):
+                dataset_labels.append(dataset[:-4])
+            data_path = data
 
         # Set threshold
         if threshold is not None:
             self._threshold = threshold
         elif threshold_averaged:
-            threshold_keys = []
-            for dataset in data_list:
-                if dataset.endswith(".csv"):
-                    threshold_keys.append(dataset[:-4])
-            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=threshold_keys)
+            self._threshold = self.__generate_averaged_threshold(data_list=data_list, data_path=data_path)
         else:
             self._threshold = None
-            # Todo:  consider renaming this
             self._batch_threshold = None
         if group_id is not None:
             self._group_id = group_id
 
         # Construct CaGraph objects for each dataset
         self._dataset_identifiers = []
-        for dataset in data_list:
-            if dataset.endswith(".csv"):
+        for idx, dataset in enumerate(data_list):
+            if isinstance(dataset, str):
                 data = np.genfromtxt(data_path + dataset, delimiter=",")
-                try:
-                    if hasattr(self,
-                               '_batch_threshold'):  # If the _batch_threshold attribute exists, the threshold should be set for each dataset
-                        self._threshold = self.__generate_threshold(data=data)
+            elif isinstance(dataset, np.ndarray):
+                data = dataset
+            try:
+                if hasattr(self,
+                           '_batch_threshold'):  # If the _batch_threshold attribute exists, the threshold should be set for each dataset
+                    self._threshold = self.__generate_threshold(data=data)
                     # Add a series of private attributes which are CaGraph objects
-                    for i, sample in enumerate(time_samples):
-                        setattr(self, f'__{dataset[:-4]}_{condition_labels[i]}_cagraph',
-                                CaGraph(data=data[:, sample[0]:sample[1]], threshold=self._threshold))
-                        self._dataset_identifiers.append(dataset[:-4] + '_' + condition_labels[i])
-                except Exception as e:
-                    print(f"Exception occurred for dataset {dataset[:-4]}: " + repr(e))
+                for i, sample in enumerate(time_samples):
+                    setattr(self, f'__{dataset_labels[idx]}_{condition_labels[i]}_cagraph',
+                            CaGraph(data=data[:, sample[0]:sample[1]], threshold=self._threshold))
+                    self._dataset_identifiers.append(dataset_labels[idx] + '_' + condition_labels[i])
+            except Exception as e:
+                print(f"Exception occurred for dataset {dataset_labels[idx]}: " + repr(e))
 
     # Private utility methods
     @property
@@ -1389,47 +1989,117 @@ class CaGraphBatchTimeSamples:
     def dataset_identifiers(self):
         return self._dataset_identifiers
 
+    def __input_validator(self, data, time_samples, condition_labels):
+        """
+        Performs input validation for CaGraphBatchTimeSamples class.
+
+        Parameters:
+        :param data: The input data, which can be a list of file paths (str), a list of NumPy arrays, or a directory path (str).
+        :param time_samples: A list of time sample periods (tuples) to separate the data into distinct samples.
+        :param condition_labels: A list of condition labels (str) corresponding to the time_samples.
+
+        Raises:
+        - TypeError: If the data does not meet the required format. It should be a list of file paths, a list of NumPy arrays,
+          or a directory path, with file paths ending in '.csv' or '.nwb'.
+        - ValueError: If the path provided for data does not exist or if the number of time_samples does not match the
+          number of condition_labels.
+        """
+        if type(data) == list:
+            # For each dataset in the list check that each meets the input qualifications for CaGraph objects
+            for dataset in data:
+                if isinstance(dataset, np.ndarray):
+                    pass
+                elif isinstance(dataset, str):
+                    if not dataset.endswith('csv') and not dataset.endswith('nwb'):
+                        raise TypeError('File path to each dataset must have a .csv or .nwb file to load.')
+                else:
+                    raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        elif type(data) == str and not os.path.exists(os.path.dirname(data)):
+            raise ValueError('Path provided for data parameter does not exist.')
+
+        if len(time_samples) != len(condition_labels):
+            raise ValueError(
+                'The number of time_samples provided does not match the number of condition_labels provided.')
+
     def __generate_threshold(self, data) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
 
-        :return: float
-        """
-        return prep.generate_average_threshold(data=data, shuffle_iterations=10)
+        Parameters:
+        :param data: A NumPy array containing calcium fluorescence data.
 
-    def __generate_averaged_threshold(self, data_path, dataset_keys):
-        """
-        Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
+        Returns:
+        float: The computed threshold value.
 
-        :param data_path:
-        :param dataset_keys:
-        :return:
+        The threshold is generated based on the provided calcium fluorescence data using the `preprocess.generate_average_threshold`
+        function with a specified number of shuffle iterations.
+
         """
+        return preprocess.generate_average_threshold(data=data, shuffle_iterations=10)
+
+    def __generate_averaged_threshold(self, data_list, data_path=None):
+        """
+            Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
+
+            Parameters:
+            :param data_list: A list of dataset file paths or NumPy arrays containing calcium fluorescence data.
+            :param data_path: An optional path prefix for loading data from file paths.
+
+            Returns:
+            - float: The computed averaged threshold value.
+
+            This method computes the mean threshold value by calculating recommended thresholds for each individual dataset
+            in the 'data_list'. The thresholds are generated using the `preprocess.generate_average_threshold` function
+            with a specified number of shuffle iterations.
+
+            """
         store_thresholds = []
-        for dataset in dataset_keys:
-            data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(prep.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
+        for dataset in data_list:
+            if data_path is not None and dataset.endswith('csv'):
+                data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
+            elif data_path is not None and dataset.endswith('nwb'):
+                data = np.genfromtxt(f'{data_path}{dataset}.nwb', delimiter=",")
+            elif isinstance(dataset, np.ndarray):
+                data = dataset
+            elif isinstance(dataset, str):
+                data = np.genfromtxt(dataset, delimiter=",")
+            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
         return np.mean(store_thresholds)
 
     # Public utility methods
     def save(self, file_path=None):
         """
+        Save the CaGraphBatchTimeSamples object to a binary file using Pickle.
 
-        :param file_path:
-        :return:
+        Parameters:
+        :param file_path (str, optional): The file path where the object should be saved. If not provided, a default file path
+          with the extension '.cagraph' is used.
+
+        Returns:
+        None
+
+        This method allows you to save the CaGraphBatchTimeSamples object to a binary file using Pickle. You can specify a
+        'file_path' to save the object to a custom location or provide a different name, or it will use a default name if
+        not provided.
         """
         if file_path is None:
             file_path = 'obj.cagraph'
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """
+            Load a CaGraphBatchTimeSamples object from a binary file created with Pickle.
 
-        :param file_path:
-        :return:
+            Parameters:
+            :param file_path (str): The path to the Pickle file containing the saved CaGraphBatchTimeSamples object.
+
+            Returns:
+            CaGraphBatchTimeSamples: The loaded CaGraphBatchTimeSamples object.
+
+            This class method allows you to load a CaGraphBatchTimeSamples object from a binary file that was previously saved
+            using the 'save' method. You should provide the 'file_path' to the Pickle file where the object is stored.
         """
         with open(file_path, 'rb') as file:
             cagraphbatchtimesamples_obj = pickle.load(file)
@@ -1437,24 +2107,33 @@ class CaGraphBatchTimeSamples:
 
     def get_cagraph(self, condition_label) -> CaGraph:
         """
-        Return a CaGraph object for the specified dataset condition_label
+            Retrieve a CaGraph object for the specified condition label.
 
-        :param condition_label: str
-        :return: CaGraph
+            Parameters:
+            :param condition_label (str): The condition label associated with the desired CaGraph object.
+
+            Returns:
+            CaGraph: The CaGraph object for the specified condition label.
+
+            This method allows you to obtain a CaGraph object from the CaGraphBatchTimeSamples instance based on the provided
+            'condition_label'. The condition label should match one of the conditions associated with the datasets.
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        Generates an organized report of all data in the batched sample. It will report on the
-        base analyses included in the CaGraph object get_report() method, and output a single
-        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+        Generate an organized report of all data in the batched sample.
 
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
+        This method creates a comprehensive report of the data in the batched sample, including base analyses provided
+        by the CaGraph object's `get_report()` method. The report is organized as a pandas DataFrame or a file (CSV, HDF5,
+        or Excel) for convenient analysis and visualization.
+
+        Parameters:
+        :param save_report (bool, optional): Whether to save the report to a file. Default is False.
+        :param save_path (str, optional): The directory where the report file should be saved. Default is None.
+        :param save_filename (str, optional): The name of the report file. Default is None, which generates a default name.
+        :param save_filetype (str, optional): The format of the report file (CSV, HDF5, or Excel). Default is None, which saves
+          the report as a CSV file.
         """
         store_reports = {}
         for key in self.dataset_identifiers:
@@ -1475,6 +2154,8 @@ class CaGraphBatchTimeSamples:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -1485,14 +2166,17 @@ class CaGraphBatchTimeSamples:
 
     def save_individual_dataset_reports(self, save_path=None, save_filetype=None):
         """
-        Saves individual reports for each of the specified datasets.
-        Individual filenames will be generated using the filename name of the dataset from which the analysis is derived.
+        Save individual reports for each specified dataset.
 
-        This will result in the same analysis that can be done by creating a CaGraph object using a single dataset.
+        This method creates and saves individual reports for each dataset in the batch. The filenames for the reports are
+        generated based on the dataset names from which the analyses are derived. These individual reports provide
+        detailed analyses for each dataset, and the same analyses that can be obtained by creating a CaGraph object
+        using a single dataset.
 
-        :param save_path: str
-        :param save_filetype: str ('csv', 'HDF5', 'xlsx')
-        :return:
+        Parameters:
+        :param save_path (str, optional): The directory where the individual reports should be saved. Default is None.
+        :param save_filetype (str, optional): The format of the report files (CSV, HDF5, or Excel). Default is None, which
+          saves the reports as CSV files.
         """
         # Iterate through all datasets and save report for each
         for key in self.dataset_identifiers:
@@ -1506,35 +2190,60 @@ class CaGraphBatchTimeSamples:
 # Todo: add option to include only matched cells or all cells - in the all-cell option, report on matched cells
 class CaGraphMatched:
     """
-    Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
-    """
+        Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
 
-    def __init__(self, data_list, dataset_labels, match_map, matched_only=True, threshold=None):
+        This class allows you to perform analyses on datasets that have been cell-tracked over time to identify matching cells
+        between the datasets.
+
+        Args:
+        :param data (list): A list containing the input datasets for analysis. Each element in the list should be a NumPy array
+          representing a dataset. These datasets should have been cell-tracked, so they have the same number of neurons
+          in corresponding positions.
+        :param dataset_labels (list): A list of labels for the datasets, one label for each dataset in the 'data' list.
+        :param match_map (str): The path to a CSV file containing a mapping of cell indices between the datasets. The mapping
+          should be represented as a CSV file where each row corresponds to a pair of matched cells, and each row contains
+          two integers: the index of the cell in the first dataset and the index of the matching cell in the second dataset.
+        :param matched_only (bool, optional): If True, only matched cells will be included in the analysis. If False, both matched
+          and unmatched cells will be included. Default is True.
+        :param threshold (float, optional): The threshold for edge detection in the analysis. Default is None, and a threshold
+          will be automatically generated.
+
+        Note:
+        - The 'data' list should contain datasets in the same order as specified in 'dataset_labels'.
+        - The 'match_map' file should represent matching indices between corresponding datasets.
+
+        Example:
+        ```python
+        data = [dataset_0, dataset_1]
+        labels = ["dataset_0", "dataset_1"]
+        map_file = "cell_matching_map.csv"
+        cagraph_matched = CaGraphMatched(data=data, dataset_labels=labels, match_map=map_file)
+        ```
+
+        This example creates a CaGraphMatched object with two datasets, labeled "dataset_0" and "dataset_1," and a cell
+        matching map provided in the "cell_matching_map.csv" file.
         """
-        :param data_list: list
-        :param node_labels: list
-        :param node_metadata: dict
-        :param dataset_id: str
-        :param threshold: float
+
+    def __init__(self, data, dataset_labels, match_map, matched_only=True, threshold=None):
         """
-        # Todo: add input validator
+        Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
+
+        Args:
+        :param data (list): A list containing the input datasets for analysis. Each element in the list should be a NumPy array
+          representing a dataset. These datasets should have been cell-tracked, so they have the same number of neurons
+          in corresponding positions.
+        :param dataset_labels (list): A list of labels for the datasets, one label for each dataset in the 'data' list.
+        :param match_map (str): The path to a CSV file containing a mapping of cell indices between the datasets. The mapping
+          should be represented as a CSV file where each row corresponds to a pair of matched cells, and each row contains
+          two integers: the index of the cell in the first dataset and the index of the matching cell in the second dataset.
+        :param matched_only (bool, optional): If True, only matched cells will be included in the analysis. If False, both matched
+          and unmatched cells will be included. Default is True.
+        :param threshold (float, optional): The threshold for edge detection in the analysis. Default is None, and a threshold
+          will be automatically generated.
+
+        """
         # Check that the input data is in the correct format and load dataset
-        for i, data in enumerate(data_list):
-            if isinstance(data, np.ndarray):
-                setattr(self, f'_data_{i}', data)
-            elif isinstance(data, str):
-                if data.endswith('csv'):
-                    setattr(self, f'_data_{i}', np.genfromtxt(data, delimiter=","))
-                elif data.endswith('nwb'):
-                    with NWBHDF5IO(data, 'r') as io:
-                        nwbfile_read = io.read()
-                        nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
-                        ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                        setattr(self, f'_data_{i}',  np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:])))
-                else:
-                    raise TypeError('File path must have a .csv or .nwb file to load.')
-            else:
-                raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        self.__input_validator(data=data, dataset_labels=dataset_labels)
 
         self._dataset_identifiers = dataset_labels
 
@@ -1550,8 +2259,8 @@ class CaGraphMatched:
             self._threshold = self.__generate_threshold()
 
         # Parse datasets using map
-        dataset_0 = self._data_0[0,:]
-        dataset_1 = self._data_1[0,:]
+        dataset_0 = self._data_0[0, :]
+        dataset_1 = self._data_1[0, :]
         if matched_only:
             for i in range(len(self._map)):
                 if self._map[i, 0] == 0 or self._map[i, 1] == 0:
@@ -1561,8 +2270,8 @@ class CaGraphMatched:
                     dataset_1 = np.vstack((dataset_1, self._data_1[self._map[i, 1], :]))
         # Todo: need to note which cells  are matched in the matched_only == False option
         else:
-            dataset_0_unmatched = self._data_0[0,:]
-            dataset_1_unmatched = self._data_0[0,:]
+            dataset_0_unmatched = self._data_0[0, :]
+            dataset_1_unmatched = self._data_0[0, :]
             for i in range(len(self._map)):
                 if self._map[i, 0] == 0:
                     dataset_1_unmatched = np.vstack((dataset_1_unmatched, self._data_1[self._map[i, 1], :]))
@@ -1607,6 +2316,40 @@ class CaGraphMatched:
     def dataset_identifiers(self):
         return self._dataset_identifiers
 
+    def __input_validator(self, data, dataset_labels):
+        """
+            Performs input validation for CaGraphMatched class.
+
+            :param data: list
+                A list of dataset inputs, which can be either numpy.ndarray or file paths (str) to .csv or .nwb files.
+            :param dataset_labels: list
+                A list of labels for the datasets. The number of dataset labels must match the number of datasets in 'data'.
+
+            :raises ValueError: If the number of dataset_labels does not match the number of datasets in 'data_list'.
+            :raises TypeError: If data is not provided in the correct format, i.e., either as a str containing a .csv or .nwb file,
+                or as numpy.ndarray.
+
+            :return: None
+            """
+        if len(data) != len(dataset_labels):
+            raise ValueError("The number of dataset_labels must match the number of datasets in 'data_list'")
+        for i, dataset in enumerate(data):
+            if isinstance(dataset, np.ndarray):
+                setattr(self, f'_data_{i}', dataset)
+            elif isinstance(dataset, str):
+                if dataset.endswith('csv'):
+                    setattr(self, f'_data_{i}', np.genfromtxt(dataset, delimiter=","))
+                elif dataset.endswith('nwb'):
+                    with NWBHDF5IO(dataset, 'r') as io:
+                        nwbfile_read = io.read()
+                        nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                        ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                        setattr(self, f'_data_{i}', np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:])))
+                else:
+                    raise TypeError('File path must have a .csv or .nwb file to load.')
+            else:
+                raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
@@ -1614,27 +2357,31 @@ class CaGraphMatched:
 
         :return: float
         """
-        return prep.generate_average_threshold(data=self._data_0[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self._data_0[1:, :], shuffle_iterations=10)
 
     # Public utility methods
     def save(self, file_path=None):
         """
+        Save the CaGraphMatched object to a file.
 
-        :param file_path:
-        :return:
+        :param file_path: str, optional
+            The path to the file where the object will be saved. If not provided, the default filename "obj.cagraph" is used.
         """
         if file_path is None:
             file_path = 'obj.cagraph'
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """
+        Load a CaGraphMatched object from a file.
 
-        :param file_path:
-        :return:
+        :param file_path: str
+            The path to the file from which to load the CaGraphMatched object.
+
+        :return: CaGraphMatched
+            The loaded CaGraphMatched object.
         """
         with open(file_path, 'rb') as file:
             cagraphtimesamples_obj = pickle.load(file)
@@ -1642,23 +2389,43 @@ class CaGraphMatched:
 
     def get_cagraph(self, condition_label):
         """
+        Get the CaGraph object for the specified dataset condition.
 
-        :param condition_label:
-        :return:
+        :param condition_label: str
+            The label of the dataset condition for which to retrieve the CaGraph.
+
+        :return: CaGraph
+            The CaGraph object for the specified condition.
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        Generates an organized report of all data in the batched sample. It will report on the
-        base analyses included in the CaGraph object get_report() method, and output a single
-        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+        Generates an organized report of all data in the batched sample and creates a comprehensive tabular summary.
 
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
+        The function iterates through all datasets in the batched sample, retrieves reports from the respective
+        CaGraph objects, and constructs a single pandas DataFrame that includes the reports for all datasets in a tabular structure.
+
+        :param save_report: bool, optional
+            If True, the generated report will be saved to a file.
+        :param save_path: str, optional
+            The directory path where the report file will be saved. If None, the current working directory is used.
+        :param save_filename: str, optional
+            The name of the saved report file (excluding file extension). If None, the default name 'report' is used.
+        :param save_filetype: str, optional
+            The file format for saving the report. Supported formats include 'csv', 'HDF5', and 'xlsx'. If None or not specified,
+            the default format is 'csv'.
+
+        :return: pandas.DataFrame
+            A pandas DataFrame containing the combined reports for all datasets in a tabular format.
+
+        :raises ValueError: If the save_filetype is provided but not supported (i.e., not 'csv', 'HDF5', or 'xlsx').
+
+        Example:
+        ```
+        cagraph_batch = CaGraphBatch(data_list, dataset_labels)
+        full_report = cagraph_batch.get_full_report(save_report=True, save_path='reports/', save_filename='full_report')
+        ```
         """
         store_reports = {}
         for key in self._dataset_identifiers:
@@ -1679,6 +2446,8 @@ class CaGraphMatched:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -1686,9 +2455,6 @@ class CaGraphMatched:
             elif save_filetype == 'xlsx':
                 full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return full_report_df
-
-
-
 
 
 # %% Behavior analysis
@@ -1704,31 +2470,37 @@ class CaGraphBehavior:
                  node_metadata=None,
                  dataset_id=None, threshold=None):
         """
-        :param data: str
-        :param behavior_data: list [0,0,0,1,1,1,1,0,0,...,0,0,1,1,1,1,1]
-        :param behavior_dict: {'freezing': 1, 'moving':0}
-        :param node_labels: list
-        :param node_metadata: dict
-        :param dataset_id: str
-        :param threshold: float
+                Initialize a CaGraphBehavior object.
+
+                :param data: str
+                    The path to the dataset file.
+                :param behavior_data: list
+                    A list of behavior data that associates each time point with a behavior.
+                :param behavior_dict: dict
+                    A dictionary that maps behavior labels to behavior values.
+                :param construction_method: str, optional
+                    The method to construct CaGraph objects for different behaviors. Default is 'stacked'.
+                :param node_labels: list, optional
+                    A list of node labels for the CaGraph objects.
+                :param node_metadata: dict, optional
+                    A dictionary containing metadata for each node.
+                :param dataset_id: str, optional
+                    Identifier for the dataset.
+                :param threshold: float, optional
+                    The threshold to use for creating CaGraph objects. If not provided, it will be generated.
+
+                :raises ValueError: If an invalid construction_method is provided.
+
+                Example:
+                ```
+                behavior_data = [0, 0, 0, 1, 1, 1, 1, 0, 0, ..., 0, 0, 1, 1, 1, 1, 1]
+                behavior_dict = {'freezing': 1, 'moving': 0}
+                data_file = 'dataset.csv'
+                cagraph_behavior = CaGraphBehavior(data_file, behavior_data, behavior_dict)
+                ```
         """
-        # Todo: convert this to input validator
         # Check that the input data is in the correct format and load dataset
-        if isinstance(data, np.ndarray):
-            self._data = data
-        elif isinstance(data, str):
-            if data.endswith('csv'):
-                self._data = np.genfromtxt(data, delimiter=",")
-            elif data.endswith('nwb'):
-                with NWBHDF5IO(data, 'r') as io:
-                    nwbfile_read = io.read()
-                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
-                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
-                    self._data = np.vstack((ca_from_nwb.timestamps[:], ca_from_nwb.data[:]))
-            else:
-                raise TypeError('File path must have a .csv or .nwb file to load.')
-        else:
-            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+        self.__input_validator(data=data)
 
         # Add dataset identifier
         if dataset_id is not None:
@@ -1798,6 +2570,38 @@ class CaGraphBehavior:
     def behavior_identifiers(self):
         return self._behavior_identifiers
 
+    def __input_validator(self, data):
+        """
+        Validate and load the input data for analysis.
+
+        :param data: str or numpy.ndarray
+            A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
+            memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron
+            timeseries of calcium fluorescence data sampled at the timepoints specified in the first row.
+        :raises TypeError: If data is not a valid string path or a numpy.ndarray.
+        """
+        if isinstance(data, np.ndarray):
+            self._data = data
+            self._time = self._data[0, :]
+            self._neuron_dynamics = self._data[1:len(self._data), :]
+        elif isinstance(data, str):
+            if data.endswith('csv'):
+                self._data = np.genfromtxt(data, delimiter=",")
+                self._time = self._data[0, :]
+                self._neuron_dynamics = self._data[1:len(self._data), :]
+            elif data.endswith('nwb'):
+                with NWBHDF5IO(data, 'r') as io:
+                    nwbfile_read = io.read()
+                    nwb_acquisition_key = list(nwbfile_read.acquisition.keys())[0]
+                    ca_from_nwb = nwbfile_read.acquisition[nwb_acquisition_key]
+                    self._neuron_dynamics = ca_from_nwb.data[:]
+                    self._time = ca_from_nwb.timestamps[:]
+                    self._data = np.vstack((self._time, self._neuron_dynamics))
+            else:
+                raise TypeError('File path must have a .csv or .nwb file to load.')
+        else:
+            raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
+
     def __generate_threshold(self) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
@@ -1805,27 +2609,31 @@ class CaGraphBehavior:
 
         :return: float
         """
-        return prep.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
 
     # Public utility methods
     def save(self, file_path=None):
         """
+        Saves the CaGraphBehavior object to a binary file using pickle.
 
-        :param file_path:
-        :return:
+        :param file_path: str, optional
+            The file path where the object will be saved. If not provided, the default filename "obj.cagraph" will be used.
         """
         if file_path is None:
             file_path = 'obj.cagraph'
         with open(file_path, 'wb') as file:
             pickle.dump(self, file)
 
-    # Todo: add input checker
     @staticmethod
     def load(file_path):
         """
+        Loads a CaGraphBehavior object from a binary file using pickle.
 
-        :param file_path:
-        :return:
+        :param file_path: str
+            The file path of the saved CaGraphBehavior object.
+
+        :return: CaGraphBehavior
+            The loaded CaGraphBehavior object.
         """
         with open(file_path, 'rb') as file:
             cagraphbehavior_obj = pickle.load(file)
@@ -1833,23 +2641,37 @@ class CaGraphBehavior:
 
     def get_cagraph(self, condition_label):
         """
+        Retrieve a CaGraph object associated with a specific condition.
 
-        :param condition_label:
-        :return:
+        :param condition_label: str
+            The label of the condition for which to retrieve the CaGraph object.
+
+        :return: CaGraph
+            The CaGraph object associated with the specified condition.
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
     def get_full_report(self, save_report=False, save_path=None, save_filename=None, save_filetype=None):
         """
-        Generates an organized report of all data in the batched sample. It will report on the
-        base analyses included in the CaGraph object get_report() method, and output a single
-        pandas DataFrame or file which includes these analyses for all datasets in a tabular structure.
+            Generate an organized report of the CaGraph analyses for different behaviors.
 
-        :param save_report:
-        :param save_path:
-        :param save_filename:
-        :param save_filetype:
-        :return:
+            This method computes reports for each behavior condition and combines them into a single report, where each
+            behavior condition's analyses are prefixed with the condition label in the column names.
+
+            :param save_report: bool, optional
+                If True, the report is saved to a file. Default is False.
+
+            :param save_path: str, optional
+                The path to save the report file. If None, the current working directory is used. Default is None.
+
+            :param save_filename: str, optional
+                The name of the report file. Default is 'report'.
+
+            :param save_filetype: str, optional
+                The file format to save the report. Supported types are 'csv', 'HDF5', and 'xlsx'. Default is 'csv'.
+
+            :return: pandas.DataFrame
+                A DataFrame containing the organized report of all data for different behaviors.
         """
         store_reports = {}
         for key in self._behavior_identifiers:
@@ -1870,6 +2692,8 @@ class CaGraphBehavior:
                 save_filename = 'report'
             if save_path is None:
                 save_path = os.getcwd() + '/'
+            elif not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
             if save_filetype is None or save_filetype == 'csv':
                 full_report_df.to_csv(save_path + save_filename + '.csv', index=True)
             elif save_filetype == 'HDF5':
@@ -1879,17 +2703,13 @@ class CaGraphBehavior:
         return full_report_df
 
 # %% Remaining updates
-# Todo: CaGraphBatch -> allow user to specify labels and also pass loaded numpy arrays
 # Todo: CaGraphBatch -> add option to add cell metadata
 # Todo: CaGraphBatch -> ensure that datasets which are thrown out at initial CaGraph object generation are not included in future versions
 # Todo: CaGraphBatch -> make a constructor function that can pass loaded data, numpy arrays
-# Todo: All classes -> add check that all save_paths exist, otherwise create them
 # Todo: All classes -> check docstrings again
 # Todo: Add whole-graph analysis like report_dict['density']  = self.graph_theory.get_graph_density()
 # Todo: CaGraphBatch -> high priority write second report method that averages results and stores the averages
-# Todo: CaGraphTimeSamples -> add checks that length of time samples and condition labels are equal -- user guardrails
 # Todo: CaGraphTimeSamples -> Create a systematic return report/ dictionary
-# Todo: extend input validator functionality (include all relevant inputs)
 # Todo: Allow user to set multiple thresholds (< 0.1, > 0.5)
 # Todo: CaGraphBehavior -> expand functionality
 # Todo: CaGraphBatch derivatives: input should be able to be datasets = [np.ndarray or path...],  path], labels ['id', 'id']

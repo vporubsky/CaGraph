@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updating tutorial notebooks to accomodate changes to cagraph package.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/analysis_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/preprocessing_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/visualization_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/visualization_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +65,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="python.debugger.dataview.autoresize" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -67,11 +74,11 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tutorials" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/datasets/propranolol_BLA_data" />
       <recent name="$PROJECT_DIR$/datasets/new_BLA_data" />
       <recent name="$PROJECT_DIR$/final_exam/pickle_individual_dataset_thresholds" />
-      <recent name="$PROJECT_DIR$/final_exam" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager" selected="Python.final_exam">
@@ -574,14 +581,26 @@
       <workItem from="1694195041046" duration="100000" />
       <workItem from="1694195144124" duration="123000" />
       <workItem from="1694195270003" duration="86000" />
-      <workItem from="1694195358900" duration="2520000" />
-    </task>
-    <task id="LOCAL-00042" summary="Added test suite files for CaGraph, visualization, and preprocessing.">
-      <created>1682623141330</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1682623141330</updated>
+      <workItem from="1694195358900" duration="3459000" />
+      <workItem from="1697731200797" duration="967000" />
+      <workItem from="1697733781951" duration="3915000" />
+      <workItem from="1697833820667" duration="809000" />
+      <workItem from="1697834782819" duration="3303000" />
+      <workItem from="1698086449490" duration="243000" />
+      <workItem from="1698086696040" duration="2530000" />
+      <workItem from="1698169843919" duration="176000" />
+      <workItem from="1698170048691" duration="1104000" />
+      <workItem from="1698171676147" duration="20577000" />
+      <workItem from="1698315814088" duration="214000" />
+      <workItem from="1698316033336" duration="170000" />
+      <workItem from="1698316207574" duration="188000" />
+      <workItem from="1698316399723" duration="957000" />
+      <workItem from="1698317364493" duration="2756000" />
+      <workItem from="1698321080621" duration="78000" />
+      <workItem from="1698321162630" duration="529000" />
+      <workItem from="1698321938488" duration="444000" />
+      <workItem from="1698322387190" duration="71000" />
+      <workItem from="1698322461191" duration="6313000" />
     </task>
     <task id="LOCAL-00043" summary="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers.">
       <created>1682745893846</created>
@@ -919,7 +938,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694195624854</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="Updating tutorial notebooks to accomodate changes to cagraph package.">
+      <created>1694200154569</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1694200154569</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

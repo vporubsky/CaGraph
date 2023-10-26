@@ -130,15 +130,18 @@ scratch.py
 
 
 # Final exam
-/final_exam
+/tutorial_analyses
 /final_exam.py
-/final_exam_utils.py
+/dev_utils.py
 /datasets/DG_FC
 /datasets/14-0_DG
 /datasets/BLA_EZM
 /datasets/BLA_OFT
 /scratch-threshold.py
-/final_exam.ipynb
+/tutorials/final_exam.ipynb
 /final_exam_usage_examples.py
 /new_BLA_data
 /datasets/propranolol_BLA_data/propranolol_BLA_analysis.py
+/tutorials/Najafi-2018_example.ipynb
+/tmp_20231023.py
+/datasets/nwb_1_28

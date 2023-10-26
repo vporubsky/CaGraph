@@ -8,7 +8,6 @@ Description: a visualization module to generate interactive graph visuals and pl
 the cagraph module.
 """
 # General imports
-import cagraph
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -42,20 +41,7 @@ _DEFAULT_VALUES = {
 }
 
 # %% Interactive graph visualization
-
-def _interactive_network_input_validator(input_object):
-    """
-    :param input_object:
-    :return:
-    """
-    if isinstance(input_object, cagraph.CaGraph):
-        return input_object
-    else:
-        raise TypeError('cagraph_obj must be type cagraph.CaGraph.')
-
-
 # Todo: fix the save functionality --> can't save and then show, causes error
-# Todo: add title functionality?
 # Todo: create return with more information
 # Todo: add more base attributes
 def interactive_network(cagraph_obj,
@@ -91,7 +77,7 @@ def interactive_network(cagraph_obj,
     default_analyses = ['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering']
 
     # Initialize cagraph and graph
-    cg = _interactive_network_input_validator(cagraph_obj)
+    cg = cagraph_obj
     graph = cg.graph
     label_keys = cg.node_labels
 
@@ -101,27 +87,27 @@ def interactive_network(cagraph_obj,
 
         if attribute == 'degree':
             # Compute the degree of each node and add attribute
-            attribute_dict['degree'] = cg.graph_theory.get_degree(return_type='dict')
+            attribute_dict['degree'] = cg.analysis.get_degree(return_type='dict')
 
         elif attribute == 'betweenness centrality':
             # Add HITS attribute
-            attribute_dict['betweenness centrality'] = cg.graph_theory.get_betweenness_centrality(return_type='dict')
+            attribute_dict['betweenness centrality'] = cg.analysis.get_betweenness_centrality(return_type='dict')
 
         elif attribute == 'hubs':
             # Add hubs attribute
-            attribute_dict['hubs'] = cg.graph_theory.get_hubs(return_type='dict')
+            attribute_dict['hubs'] = cg.analysis.get_hubs(return_type='dict')
 
         elif attribute == 'CPR':
             # Add correlated pairs attribute
-            attribute_dict['CPR'] = cg.graph_theory.get_correlated_pair_ratio(return_type='dict')
+            attribute_dict['CPR'] = cg.analysis.get_correlated_pair_ratio(return_type='dict')
 
         elif attribute == 'communities':
             # Add communities
-            attribute_dict['communities'] = cg.graph_theory.get_communities(return_type='dict')
+            attribute_dict['communities'] = cg.analysis.get_communities(return_type='dict')
 
         elif attribute == 'clustering':
             # Add clustering coefficient
-            attribute_dict['clustering'] = cg.graph_theory.get_clustering_coefficient(return_type='dict')
+            attribute_dict['clustering'] = cg.analysis.get_clustering_coefficient(return_type='dict')
 
         else:
             raise AttributeError('Invalid attribute key entered.')
@@ -193,10 +179,11 @@ def interactive_network(cagraph_obj,
 
     plot.renderers.append(network_graph)
     if save_plot:
-        if save_path is not None:
-            save(plot, filename=save_path)
-        else:
-            save(plot, filename=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html"))
+        if save_path is None:
+            save_path=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html")
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
+        save(plot, filename=save_path)
     elif show_in_notebook:
         output_notebook()
         show(plot)
@@ -290,6 +277,8 @@ def plot_cdf(data_list, colors=['black', 'black'], marker='.', xlabel='',
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
@@ -344,6 +333,8 @@ def plot_histogram(data_list, colors, label=None, num_bins=None, title=None, yla
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
@@ -419,7 +410,7 @@ def plot_matched_data(data_list: list, labels: list,
     # Create a rectangle patch
     if plot_rectangle:
         if ylim is None:
-            # Todo: find max value, do not simply set to 1
+            # Todo: find max value, do not universally set to 1
             ylim = (0, 1)
         if rectangle_index == 1:
             # Add rectangle to rightmost boxplot
@@ -462,6 +453,8 @@ def plot_matched_data(data_list: list, labels: list,
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
@@ -475,6 +468,8 @@ def plot_heatmap(data_matrix, title=None, show_plot=True, save_plot=False, save_
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()

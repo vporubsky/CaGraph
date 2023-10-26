@@ -1,6 +1,9 @@
 import unittest
 import cagraph as cg
 
+# Todo: need to add test dataset, and specify that some tests are specific to that dataset
+# Todo: make sure test data is hidden to user when package uploaded to PyPi
+
 class CaGraphTestSuite(unittest.TestCase):
     """
     Author: Veronica Porubsky [Github: https://github.com/vporubsky][ORCID: https://orcid.org/0000-0001-7216-3368]
@@ -78,7 +81,49 @@ class CaGraphTestSuite(unittest.TestCase):
         cg_obj.reset()
         self.assertEqual(cg_obj.threshold,init_threshold)
 
+    def test_changeThresholdTypeError(self):
+        """
+        Test that the threshold cannot be updated to a non-float value.
+        """
+        with self.assertRaises(TypeError):
+            self.cg_graph.threshold = '0.5'
 
+    def test_changeThresholdValueError(self):
+        """
+        Test that the threshold cannot be updated to a value outside the range [0,1].
+        """
+        with self.assertRaises(ValueError):
+            self.cg_graph.threshold = 1.5
+
+    def test_changeThresholdValueError2(self):
+        """
+        Test that the threshold cannot be updated to a value outside the range [0,1].
+        """
+        with self.assertRaises(ValueError):
+            self.cg_graph.threshold = -0.5
+
+
+    def test_inputTypeError(self):
+        """
+        Test that the input data must be of type string.
+        """
+        with self.assertRaises(TypeError):
+            cg.CaGraph(data=1)
+
+    def test_inputFileNotFoundError(self):
+        """
+        Test that the input data must be a valid file path.
+        """
+        with self.assertRaises(FileNotFoundError):
+            cg.CaGraph(data='bla.csv')
+
+    def test_inputFileTypeError(self):
+        """
+        Test that the input data must be a valid file type.
+        """
+        with self.assertRaises(TypeError):
+            cg.CaGraph(data=self.INCORRECT_DATA_PATH)
+            
     # Todo: test that input data must be in right format - error when file not found or wrong filetype passed
 
 

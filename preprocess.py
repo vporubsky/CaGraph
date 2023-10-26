@@ -310,6 +310,8 @@ def plot_threshold(data, event_data=None, data_id=None,
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
@@ -355,15 +357,15 @@ def plot_shuffled_neuron(data, event_data=None, data_color='blue', shuffle_color
     plt.xlabel('Time')
     plt.legend(loc='upper left')
     if save_plot:
-        if save_path is not None:
-            save_path = save_path
-        else:
+        if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
     if show_plot:
         plt.show()
 
-# Todo: allow to plot multiple, not just two datasets
+# Todo: expand to plot multiple, not just two datasets
 def plot_correlation_hist(data, colors, labels, title=None, ylabel=None, xlabel=None, alpha=0.3, show_plot=True,
                           save_plot=False, save_path=None, dpi=300, save_format='png', **kwargs):
     """
@@ -417,4 +419,6 @@ def plot_correlation_hist(data, colors, labels, title=None, ylabel=None, xlabel=
     if save_plot:
         if save_path is None:
             save_path = os.getcwd() + f'fig'
+        elif not os.path.exists(os.path.dirname(save_path)):
+            os.makedirs(os.path.dirname(save_path))
         plt.savefig(fname=save_path, bbox_inches='tight', dpi=dpi, format=save_format)
