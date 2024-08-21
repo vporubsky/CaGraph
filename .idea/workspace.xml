@@ -4,17 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updating tutorial notebooks to accomodate changes to cagraph package.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py.">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/analysis_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/preprocessing_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/visualization_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,33 +37,42 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/tests/test_CaGraph.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/dev_utils.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tmp_20231023.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/visualization.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/preprocess.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/cagraph.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/final_exam.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2MRtWDq4t9S7efzBz8ZFJnqEUIQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="TODO_SCOPE" value="All Places" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="python.debugger.dataview.autoresize" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.final_exam.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_set_num_communities.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tmp_20240213.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/veronica_porubsky/GitHub/CaGraph&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -74,16 +80,17 @@
       <recent name="$PROJECT_DIR$/docs/source" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/tutorials" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/tutorials" />
       <recent name="$PROJECT_DIR$/datasets/propranolol_BLA_data" />
       <recent name="$PROJECT_DIR$/datasets/new_BLA_data" />
       <recent name="$PROJECT_DIR$/final_exam/pickle_individual_dataset_thresholds" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.final_exam">
+  <component name="RunManager" selected="Python.test_set_num_communities">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="CaGraph" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -106,6 +113,7 @@
     </configuration>
     <configuration name="final_exam" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CaGraph" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -126,8 +134,56 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_set_num_communities" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CaGraph" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_set_num_communities.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tmp_20240213" type="PythonConfigurationType" factoryName="Python">
+      <module name="CaGraph" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.9 (CaGraph)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="tutorial" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CaGraph" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -148,12 +204,26 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.tmp_20240213" />
+      <item itemvalue="Python.test_set_num_communities" />
+      <item itemvalue="Python.final_exam" />
+      <item itemvalue="Python.tutorial" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_set_num_communities" />
         <item itemvalue="Python.final_exam" />
         <item itemvalue="Python.tutorial" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-d68999036c7f-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.14475.56" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -600,28 +670,34 @@
       <workItem from="1698321162630" duration="529000" />
       <workItem from="1698321938488" duration="444000" />
       <workItem from="1698322387190" duration="71000" />
-      <workItem from="1698322461191" duration="6313000" />
-    </task>
-    <task id="LOCAL-00043" summary="Updated cagraph.py and visualization.py to include timeseries sampling and cell identifiers.">
-      <created>1682745893846</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1682745893846</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Updated docstrings with all parameter and return values.">
-      <created>1682888682169</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1682888682169</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Updated docstrings, added plotting functionality (title, axes labels, etc.), added CaGraph.reset() function and tests.">
-      <created>1682975352964</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1682975352964</updated>
+      <workItem from="1698322461191" duration="6892000" />
+      <workItem from="1698336804012" duration="5331000" />
+      <workItem from="1698442223178" duration="783000" />
+      <workItem from="1699280566916" duration="2620000" />
+      <workItem from="1699289326434" duration="87000" />
+      <workItem from="1699289416745" duration="469000" />
+      <workItem from="1699289921907" duration="91000" />
+      <workItem from="1699290015412" duration="159000" />
+      <workItem from="1699290199125" duration="146000" />
+      <workItem from="1699290348400" duration="51000" />
+      <workItem from="1699290402497" duration="91000" />
+      <workItem from="1699290496490" duration="140000" />
+      <workItem from="1699290653635" duration="29000" />
+      <workItem from="1699290685841" duration="2629000" />
+      <workItem from="1701286349240" duration="935000" />
+      <workItem from="1702572743733" duration="379000" />
+      <workItem from="1704555940048" duration="11000" />
+      <workItem from="1707764332888" duration="4348000" />
+      <workItem from="1707838933305" duration="260000" />
+      <workItem from="1707839200960" duration="575000" />
+      <workItem from="1707839780660" duration="268000" />
+      <workItem from="1707840052030" duration="64000" />
+      <workItem from="1707840118752" duration="224000" />
+      <workItem from="1707840345915" duration="4657000" />
+      <workItem from="1707981479746" duration="446000" />
+      <workItem from="1708475125406" duration="488000" />
+      <workItem from="1709320369018" duration="1000" />
+      <workItem from="1709573835696" duration="68000" />
     </task>
     <task id="LOCAL-00046" summary="Example datasets added due to failed continuous integration workflow.">
       <created>1682975729555</created>
@@ -945,7 +1021,28 @@
       <option name="project" value="LOCAL" />
       <updated>1694200154569</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Updated cagraph.py to include input validation for all classes, and to allow inputs for batched classes to be provided as lists of NumPy arrays.">
+      <created>1698331989752</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1698331989752</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Updated cagraph.py to fix report parsing bug and add option to specify analysis selections.">
+      <created>1699388136744</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1699388136744</updated>
+    </task>
+    <task id="LOCAL-00094" summary="Updated cagraph.py.">
+      <created>1699388971748</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1699388971748</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -966,9 +1063,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added CaGraphTimesampled class to cagraph.py" />
-    <MESSAGE value="Added CaGraphBatched class with report functionality." />
-    <MESSAGE value="Updated class attributes to be immutable when necessary." />
     <MESSAGE value="Updated docstrings and resolved warnings on cagraph.py." />
     <MESSAGE value="Updated requirements.txt" />
     <MESSAGE value="Minor updates to tutorial notebooks." />
@@ -991,20 +1085,23 @@
     <MESSAGE value="Added CaGraphMatch class for processing graphs of data that has been recorded for a single animal over a series of days, where cells have been reliably identified in each day. Changing focal plane due to movement can cause a change in the cells present in the field of view." />
     <MESSAGE value="Added input validation to cagraph." />
     <MESSAGE value="Updating tutorial notebooks to accomodate changes to cagraph package." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating tutorial notebooks to accomodate changes to cagraph package." />
+    <MESSAGE value="Updated cagraph.py to include input validation for all classes, and to allow inputs for batched classes to be provided as lists of NumPy arrays." />
+    <MESSAGE value="Updated cagraph.py to fix report parsing bug and add option to specify analysis selections." />
+    <MESSAGE value="Updated cagraph.py." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
-          <url>notebook:///Users/veronica_porubsky/GitHub/CaGraph/visualization_tutorial.ipynb</url>
-          <line>19</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocess.py</url>
           <line>12</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test_set_num_communities.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

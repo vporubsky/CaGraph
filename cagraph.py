@@ -312,11 +312,11 @@ class CaGraph:
         self._graph = self.__init_graph
 
         # Re-initialize base graph theory analyses
-        self._degree = self.analysis.get_degree()
-        self._clustering_coefficient = self.analysis.get_clustering_coefficient()
-        self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio()
-        self._communities = self.analysis.get_communities()
-        self._hubs = self.analysis.get_hubs()
+        self._degree = self.analysis.get_degree(return_type='dict')
+        self._clustering_coefficient = self.analysis.get_clustering_coefficient(return_type='dict')
+        self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio(return_type='dict')
+        self._communities = self.analysis.get_communities(return_type='dict')
+        self._hubs = self.analysis.get_hubs(return_type='dict')
 
     def save(self, file_path=None):
         """
@@ -955,12 +955,12 @@ class CaGraph:
             if return_type == 'list':
                 return list(eigenvector_centrality.values())
 
-        def get_communities(self, graph=None, return_type='list'):
+        def get_communities(self, graph=None, return_type='dict', **kwargs):
             """
             Detect and return communities within the network.
 
             Communities are groups of nodes that exhibit higher connectivity and interactions among themselves than with nodes outside
-            the community. This method employs the greedy modularity optimization algorithm to find these communities.
+            the community. This method employs the modularity optimization algorithm to find these communities.
 
             :param graph: networkx.Graph, optional
                 The graph for which to detect communities. If not provided, the CaGraph object's graph is used.
@@ -974,7 +974,7 @@ class CaGraph:
             """
             if graph is None:
                 graph = self._graph
-            communities = list(nx.algorithms.community.greedy_modularity_communities(graph))
+            communities = list(nx.algorithms.community.greedy_modularity_communities(graph, **kwargs))
             sorted(communities)
             community_id = {}
             for i in range(len(communities)):
@@ -982,8 +982,9 @@ class CaGraph:
                     community_id[j] = i
             if return_type == 'dict':
                 return community_id
-            if return_type == 'list':
-                return list(community_id.values())
+            # Todo: fix this so that returning list returns each node in the correct index
+            # if return_type == 'list':
+            #     return list(community_id.values())
 
         # Todo: getting stuck on small world analysis when computing sigma -- infinite loop may be due to computing the average clustering coefficient or the average shortest path length -- test
         def get_smallworld_largest_subnetwork(self, graph=None) -> float:

@@ -56,7 +56,7 @@ def _get_pearsons_correlation_matrix(data):
 
 
 # %% ---------------- Clean data --------------------------------------
-def deconvolve_dataset(data):
+def deconvolve_dataset(data, sn=0.2):
     """
     Uses OASIS algorithm implementation by J. Friedrich (https://github.com/j-friedrich/OASIS) to deconvolve the
     calcium imaging trace and infer neural activity.
@@ -71,7 +71,7 @@ def deconvolve_dataset(data):
     event_data = data[0, :]
     for neuron in range(1, data.shape[0]):
         # Perform OASIS deconvolution
-        decon_trace, event_trace = deconvolve(data[neuron, :], penalty=0)[0:2]
+        decon_trace, event_trace = deconvolve(data[neuron, :], penalty=0, sn=sn)[0:2]
 
         # Binarize event trace
         event_trace[event_trace < 1] = 0
@@ -316,7 +316,7 @@ def plot_threshold(data, event_data=None, data_id=None,
     if show_plot:
         plt.show()
 
-
+# todo: reevaluate plotting kwargs --> duplicate may cause collisions
 def plot_shuffled_neuron(data, event_data=None, data_color='blue', shuffle_color='grey', neuron_index=None,
                          show_plot=True, save_plot=False, save_path=None,
                          save_format='png', dpi=300, **kwargs):
@@ -337,21 +337,29 @@ def plot_shuffled_neuron(data, event_data=None, data_color='blue', shuffle_color
     :return:
     """
     data = _input_validator(data=data)
-    if event_data is not None:
-        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
-    else:
-        shuffled_data = generate_event_shuffle(data=data)
     if neuron_index is None:
         neuron_index = random.randint(1, np.shape(data)[0] - 1)
     else:
         neuron_index += 1  # Adjusted to accommodate time row
+    if event_data is not None:
+        shuffled_data = generate_event_shuffle(data=data, event_data=event_data)
+        shuffled_neuron = shuffled_data[neuron_index, :]
+    else:
+        # Perform OASIS deconvolution
+        decon_trace, event_trace = deconvolve(data[neuron_index, :], sn=0.25, penalty=0)[0:2]
+        # Binarize event trace
+        event_trace[event_trace < 1] = 0
+        event_trace[event_trace >= 1] = 1
+
+        shuffled_neuron = generate_event_shuffle(data=np.vstack((data[0,:],decon_trace)), event_data=np.vstack((data[0,:], event_trace)))
+
     plt.figure(figsize=(10, 5))
     plt.subplot(211)
     plt.plot(data[0, :], data[neuron_index, :], c=data_color, label='ground truth', **kwargs)
     plt.ylabel('ΔF/F')
     plt.legend(loc='upper left')
     plt.subplot(212)
-    plt.plot(shuffled_data[0, :], shuffled_data[neuron_index, :], c=shuffle_color, label='shuffled', **kwargs)
+    plt.plot(data[0, :], shuffled_neuron[1,:], c=shuffle_color, label='shuffled', **kwargs)
     plt.ylabel('')
     plt.ylabel('ΔF/F')
     plt.xlabel('Time')
