@@ -6,12 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py.">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +67,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/veronica_porubsky/GitHub/CaGraph&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -87,7 +84,7 @@
       <recent name="$PROJECT_DIR$/final_exam/pickle_individual_dataset_thresholds" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_set_num_communities">
+  <component name="RunManager" selected="Python.for_sean_set_num_communities">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="CaGraph" />
       <option name="ENV_FILES" value="" />
@@ -134,7 +131,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_set_num_communities" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="for_sean_set_num_communities" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CaGraph" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -148,7 +145,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_set_num_communities.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/for_sean_set_num_communities.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -206,13 +203,13 @@
     </configuration>
     <list>
       <item itemvalue="Python.tmp_20240213" />
-      <item itemvalue="Python.test_set_num_communities" />
       <item itemvalue="Python.final_exam" />
       <item itemvalue="Python.tutorial" />
+      <item itemvalue="Python.for_sean_set_num_communities" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_set_num_communities" />
+        <item itemvalue="Python.for_sean_set_num_communities" />
         <item itemvalue="Python.final_exam" />
         <item itemvalue="Python.tutorial" />
       </list>
@@ -1099,7 +1096,7 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/test_set_num_communities.py</url>
+          <url>file://$PROJECT_DIR$/for_sean_set_num_communities.py</url>
           <line>1</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>

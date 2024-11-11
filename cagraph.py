@@ -221,6 +221,8 @@ class CaGraph:
 
     @threshold.setter
     def threshold(self, value):
+        if not (0 <= value <= 1):
+            raise ValueError("Threshold must be between 0 and 1.")
         self._threshold = value
         self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
         self._graph = self.get_graph()
@@ -608,6 +610,12 @@ class CaGraph:
             :return: pd.DataFrame
                 The report as a pandas DataFrame.
             """
+        # Todo: check that filetype is valid
+        valid_filetypes = {'csv', 'HDF5', 'xlsx'}  # Add all valid file types here
+
+        if save_report and save_filetype not in valid_filetypes:
+            raise ValueError(f"Invalid save file type: {save_filetype}")
+
         # Set up parsing
         if parse_by_attribute is not None:
             if parsing_operation is None or parsing_value is None:
@@ -642,12 +650,16 @@ class CaGraph:
         for key in self.__attribute_dictionary.keys():
             report_dict[key] = self.__parse_by_node(node_data=self.__attribute_dictionary[key], node_list=parsing_nodes)
 
+
         # Construct report dataframe
         report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
         report_df.index = parsing_nodes
 
         if analysis_selections is not None:
-            # Todo: Check that analysis_selections are valid
+            # Todo: check that this works and add to get_full_report/ other get_report methods -- checking that analysis selections are valid
+            invalid_selections = set(analysis_selections) - self.__attribute_dictionary.keys()
+            if invalid_selections:
+                raise ValueError(f"Invalid analysis selections: {', '.join(invalid_selections)}")
             selections_str = '|'.join(analysis_selections)
             report_df = report_df.filter(regex=selections_str)
 
