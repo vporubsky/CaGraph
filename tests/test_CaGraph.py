@@ -2,6 +2,7 @@ import unittest
 import cagraph as cg
 import pandas as pd
 import os
+import oasis
 
 # Todo: need to add test dataset, and specify that some tests are specific to that dataset
 # Todo: make sure test data is hidden to user when package uploaded to PyPi
@@ -131,28 +132,28 @@ class CaGraphTestSuite(unittest.TestCase):
 
     # Todo: get_report tests
     def test_get_report_default(self):
-        """Test get_full_report with default parameters."""
+        """Test get_report with default parameters."""
         report = self.cg_graph.get_report()
         self.assertIsInstance(report, pd.DataFrame)
         self.assertFalse(report.empty)
 
-    def test_get_full_report_with_analysis_selections(self):
-        """Test get_full_report with analysis selections."""
-        analysis_selections = ['selection1', 'selection2']
+    def test_get_report_with_analysis_selections(self):
+        """Test get_report with analysis selections."""
+        analysis_selections = ['hubs', 'degree']
         report = self.cg_graph.get_report(analysis_selections=analysis_selections)
         self.assertIsInstance(report, pd.DataFrame)
         self.assertTrue(all(col in report.columns for col in analysis_selections))
 
-    def test_get_full_report_save_csv(self):
-        """Test get_full_report with save_report=True and save_filetype='csv'."""
+    def test_get_report_save_csv(self):
+        """Test get_report with save_report=True and save_filetype='csv'."""
         save_path = './'
         save_filename = 'test_report'
         self.cg_graph.get_report(save_report=True, save_path=save_path, save_filename=save_filename, save_filetype='csv')
         self.assertTrue(os.path.exists(os.path.join(save_path, save_filename + '.csv')))
         os.remove(os.path.join(save_path, save_filename + '.csv'))
 
-    def test_get_full_report_save_hdf5(self):
-        """Test get_full_report with save_report=True and save_filetype='HDF5'."""
+    def test_get_report_save_hdf5(self):
+        """Test get_report with save_report=True and save_filetype='HDF5'."""
         save_path = './'
         save_filename = 'test_report'
         self.cg_graph.get_report(save_report=True, save_path=save_path, save_filename=save_filename, save_filetype='HDF5')
@@ -160,7 +161,7 @@ class CaGraphTestSuite(unittest.TestCase):
         os.remove(os.path.join(save_path, save_filename + '.h5'))
 
     def test_get_report_save_xlsx(self):
-        """Test get_full_report with save_report=True and save_filetype='xlsx'."""
+        """Test get_report with save_report=True and save_filetype='xlsx'."""
         save_path = './'
         save_filename = 'test_report'
         self.cg_graph.get_report(save_report=True, save_path=save_path, save_filename=save_filename, save_filetype='xlsx')
@@ -168,23 +169,17 @@ class CaGraphTestSuite(unittest.TestCase):
         os.remove(os.path.join(save_path, save_filename + '.xlsx'))
 
     def test_get_report_invalid_analysis_selections(self):
-        """Test get_full_report with invalid analysis selections."""
+        """Test get_report with invalid analysis selections."""
         with self.assertRaises(ValueError):
             self.cg_graph.get_report(analysis_selections=['invalid_selection'])
 
-    def test_get_report_empty_analysis_selections(self):
-        """Test get_full_report with empty analysis selections."""
-        report = self.cg_graph.get_report(analysis_selections=[])
-        self.assertIsInstance(report, pd.DataFrame)
-        self.assertFalse(report.empty)
-
     def test_get_report_invalid_save_path(self):
-        """Test get_full_report with an invalid save path."""
+        """Test get_report with an invalid save path."""
         with self.assertRaises(OSError):
             self.cg_graph.get_report(save_report=True, save_path='/invalid_path/', save_filename='test_report', save_filetype='csv')
 
     def test_get_report_invalid_save_filetype(self):
-        """Test get_full_report with an invalid save file type."""
+        """Test get_report with an invalid save file type."""
         with self.assertRaises(ValueError):
             self.cg_graph.get_report(save_report=True, save_path='./', save_filename='test_report', save_filetype='invalid_type')
 

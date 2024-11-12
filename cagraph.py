@@ -11,6 +11,7 @@ import os
 import pickle
 
 
+
 # %% CaGraph class
 class CaGraph:
     """
@@ -657,6 +658,8 @@ class CaGraph:
 
         if analysis_selections is not None:
             # Todo: check that this works and add to get_full_report/ other get_report methods -- checking that analysis selections are valid
+            if len(analysis_selections) == 0:
+                raise ValueError("Analysis selections cannot be empty.")
             invalid_selections = set(analysis_selections) - self.__attribute_dictionary.keys()
             if invalid_selections:
                 raise ValueError(f"Invalid analysis selections: {', '.join(invalid_selections)}")
@@ -676,7 +679,7 @@ class CaGraph:
             elif save_filetype == 'HDF5':
                 report_df.to_hdf(save_path + save_filename + '.h5', key=save_filename, mode='w')
             elif save_filetype == 'xlsx':
-                report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
+                report_df.to_excel(save_path + save_filename + '.xlsx', index=True, engine='openpyxl')
         return report_df
 
     class Analysis:

@@ -22,6 +22,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
+    'sphinx_rtd_theme'
 ]
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 intersphinx_mapping = {

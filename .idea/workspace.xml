@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and test_CaGraph.py. Updating test suite.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -203,9 +205,9 @@
     </configuration>
     <list>
       <item itemvalue="Python.tmp_20240213" />
+      <item itemvalue="Python.for_sean_set_num_communities" />
       <item itemvalue="Python.final_exam" />
       <item itemvalue="Python.tutorial" />
-      <item itemvalue="Python.for_sean_set_num_communities" />
     </list>
     <recent_temporary>
       <list>
@@ -1039,7 +1041,7 @@
       <option name="project" value="LOCAL" />
       <updated>1699388971748</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1060,7 +1062,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated docstrings and resolved warnings on cagraph.py." />
     <MESSAGE value="Updated requirements.txt" />
     <MESSAGE value="Minor updates to tutorial notebooks." />
     <MESSAGE value="Resolving readthedocs error." />
@@ -1085,7 +1086,8 @@
     <MESSAGE value="Updated cagraph.py to include input validation for all classes, and to allow inputs for batched classes to be provided as lists of NumPy arrays." />
     <MESSAGE value="Updated cagraph.py to fix report parsing bug and add option to specify analysis selections." />
     <MESSAGE value="Updated cagraph.py." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py." />
+    <MESSAGE value="Updated cagraph.py and test_CaGraph.py. Updating test suite." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and test_CaGraph.py. Updating test suite." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

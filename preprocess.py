@@ -215,7 +215,7 @@ def generate_threshold(data, event_data=None, report_threshold=False, report_tes
     np.fill_diagonal(shuffle_correlation, 0)
 
     # set threshold as the 99th percentile of the shuffle distribution
-    threshold = np.percentile(shuffle_correlation, 99, interpolation='midpoint')
+    threshold = np.percentile(shuffle_correlation, 99, method='midpoint')
 
     shuffled_correlation = np.tril(shuffle_correlation).flatten()
     data_correlation = np.tril(data_correlation).flatten()
@@ -279,7 +279,7 @@ def plot_threshold(data, event_data=None, data_id=None,
     np.fill_diagonal(shuffle_correlation, 0)
 
     # set threshold as the 99th percentile of the shuffle distribution
-    threshold = np.percentile(shuffle_correlation, 99, interpolation='midpoint')
+    threshold = np.percentile(shuffle_correlation, 99, method='midpoint')
 
     # calculate the number of bins
     bin_width = 0.01
