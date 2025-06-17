@@ -127,7 +127,9 @@ scratch_files/
 /datasets/dg_dataset.csv
 /datasets/dg_events.csv
 scratch.py
-
+dev_additional_correlation_metrics.py
+dev_correlation_metrics.py
+dev_preprocessing_updates.py
 
 # Final exam
 /tutorial_analyses

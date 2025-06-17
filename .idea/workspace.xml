@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and test_CaGraph.py. Updating test suite.">
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/conf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_CaGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_CaGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +30,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;vporubsky&quot;
+  }
+}</component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -36,6 +44,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/vporubsky/CaGraph.git&quot;,
+    &quot;accountId&quot;: &quot;af7a626d-98f4-4aba-89a4-e9e36485fecc&quot;
+  }
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/tests/test_CaGraph.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/dev_utils.py" root0="FORCE_HIGHLIGHTING" />
@@ -49,31 +63,39 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2MRtWDq4t9S7efzBz8ZFJnqEUIQ" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests in dev_test_suite.py.executor&quot;: &quot;Run&quot;,
     &quot;Python.final_exam.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_set_num_communities.executor&quot;: &quot;Run&quot;,
     &quot;Python.tmp_20240213.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/veronica_porubsky/GitHub/CaGraph&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;last_opened_file_path&quot;: &quot;/Users/veronica_porubsky/GitHub/CaGraph/tutorials&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tutorials" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/datasets" />
       <recent name="$PROJECT_DIR$/docs/source" />
@@ -165,7 +187,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.9 (CaGraph)" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -205,8 +226,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.tmp_20240213" />
-      <item itemvalue="Python.for_sean_set_num_communities" />
       <item itemvalue="Python.final_exam" />
+      <item itemvalue="Python.for_sean_set_num_communities" />
       <item itemvalue="Python.tutorial" />
     </list>
     <recent_temporary>
@@ -220,7 +241,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.14475.56" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
+        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
       </set>
     </attachedChunks>
   </component>
@@ -697,6 +719,26 @@
       <workItem from="1708475125406" duration="488000" />
       <workItem from="1709320369018" duration="1000" />
       <workItem from="1709573835696" duration="68000" />
+      <workItem from="1749761879518" duration="531000" />
+      <workItem from="1749762417230" duration="8170000" />
+      <workItem from="1749846425024" duration="2643000" />
+      <workItem from="1749859538569" duration="7700000" />
+      <workItem from="1750097413233" duration="1380000" />
+      <workItem from="1750098828857" duration="189000" />
+      <workItem from="1750099021984" duration="1381000" />
+      <workItem from="1750100654401" duration="6343000" />
+      <workItem from="1750107191336" duration="165000" />
+      <workItem from="1750107360263" duration="107000" />
+      <workItem from="1750107472207" duration="4153000" />
+      <workItem from="1750124016212" duration="2513000" />
+      <workItem from="1750126722489" duration="380000" />
+      <workItem from="1750127105935" duration="2107000" />
+      <workItem from="1750129304434" duration="943000" />
+      <workItem from="1750133762170" duration="32000" />
+      <workItem from="1750133797843" duration="6000" />
+      <workItem from="1750139800797" duration="5172000" />
+      <workItem from="1750171395769" duration="361000" />
+      <workItem from="1750171767813" duration="2289000" />
     </task>
     <task id="LOCAL-00046" summary="Example datasets added due to failed continuous integration workflow.">
       <created>1682975729555</created>
@@ -1041,7 +1083,7 @@
       <option name="project" value="LOCAL" />
       <updated>1699388971748</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1062,7 +1104,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated requirements.txt" />
     <MESSAGE value="Minor updates to tutorial notebooks." />
     <MESSAGE value="Resolving readthedocs error." />
     <MESSAGE value="Minor updates." />
@@ -1087,25 +1128,11 @@
     <MESSAGE value="Updated cagraph.py to fix report parsing bug and add option to specify analysis selections." />
     <MESSAGE value="Updated cagraph.py." />
     <MESSAGE value="Updated cagraph.py and test_CaGraph.py. Updating test suite." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and test_CaGraph.py. Updating test suite." />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocess.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/for_sean_set_num_communities.py</url>
-          <line>1</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CaGraph$.coverage" NAME=" Coverage Results" MODIFIED="1750171516447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CaGraph$final_exam.coverage" NAME="final_exam Coverage Results" MODIFIED="1685073462537" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -1,7 +1,11 @@
 # CaGraph imports
+from scipy.spatial.distance import correlation
+
 import preprocess
 import visualization
 import numpy as np
+import scipy.stats as stats
+from sklearn.linear_model import Ridge
 import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,7 +13,6 @@ from pynwb import NWBHDF5IO
 import pandas as pd
 import os
 import pickle
-
 
 
 # %% CaGraph class
@@ -46,23 +49,50 @@ class CaGraph:
         Sets a threshold to be used for thresholded graph.
     """
 
-    def __init__(self, data, node_labels=None, node_metadata=None, dataset_id=None, threshold=None):
+    def __init__(self, data, correlation_matrix=None, correlation_method='pearson', node_labels=None,
+                 node_metadata=None, dataset_id=None, threshold=None, **correlation_kwargs):
         """
-        Initialize a CaGraph object.
+        Initialize a CaGraph object from calcium imaging data or an existing correlation matrix.
 
-        :param data: str or numpy.ndarray
-            A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
-            memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron
-            timeseries of calcium fluorescence data sampled at the timepoints specified in the first row.
-        :param node_labels: list, optional
-            A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
-        :param node_metadata: dict, optional
-            Contains metadata which is associated with neurons in the network. Each key in the dictionary will be added as an
-            attribute to the CaGraph object, and the associated value will be stored.
-        :param dataset_id: str, optional
-            A unique identifier that can be added to the CaGraph object.
-        :param threshold: float, optional
-            Sets a threshold to be used for thresholded graph.
+        Parameters:
+        ----------
+        data : str or np.ndarray
+            Path to a .csv or .nwb file, or a numpy array. The first row must contain timepoints;
+            subsequent rows represent calcium fluorescence traces from individual neurons.
+
+        correlation_matrix : np.ndarray, optional
+            Precomputed correlation or similarity matrix to use instead of computing from raw data.
+
+        correlation_method : str, optional (default='pearson')
+            Method used to compute the correlation matrix if none is provided. Options include:
+                - 'pearson': Linear correlation
+                - 'spearman': Rank-based correlation (monotonic relationships)
+                - 'crosscorr': Max cross-correlation across time lags
+                - 'partial': Direct correlation between neuron pairs controlling for all others
+                - 'mutual_info': Nonlinear statistical dependence (if implemented)
+                - 'granger': Directional influence (if implemented)
+
+        node_labels : list, optional
+            List of identifiers for each neuron in the dataset (excluding the time row).
+
+        node_metadata : dict, optional
+            Dictionary mapping metadata keys to lists of per-neuron values. Will be attached to the CaGraph object.
+
+        dataset_id : str, optional
+            Unique string identifier for the dataset (useful for labeling or saving).
+
+        threshold : float, optional
+            Correlation threshold (0–1) to apply when generating a thresholded graph.
+
+        correlation_kwargs : keyword arguments
+            Additional keyword arguments specific to the selected `correlation_method`. For example:
+                - crosscorr_max_lag (int): maximum lag for 'crosscorr' (default: 10)
+                - partial_alpha (float): regularization strength for 'partial' (default: 1.0)
+
+        Returns:
+        -------
+        CaGraph object
+            Initialized and optionally thresholded graph based on calcium imaging data.
         """
         # Check that the input data is in the correct format and load dataset
         self.__input_validator(data=data)
@@ -84,28 +114,37 @@ class CaGraph:
         else:
             self._node_labels = node_labels
 
+        # Initialize coordinates attribute
+        self.coordinates = None
+
         # Initialize correlation matrix, threshold, and graph
-        self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
+        if correlation_matrix is not None:
+            self._correlation_matrix = correlation_matrix
+        else:
+            self._correlation_matrix = self.get_correlation_matrix(data_matrix=self._neuron_dynamics,
+                                                                   method=correlation_method,
+                                                                   **correlation_kwargs)
+
         if threshold is not None:
             self._threshold = threshold
         else:
-            self._threshold = self.__generate_threshold()
-        self._graph = self.get_graph()
+            self._threshold = self.__generate_threshold(correlation_method=correlation_method, **correlation_kwargs)
+        self._graph = self.get_graph(threshold=self._threshold)
 
         # Store initial settings to reset attributes after modification
         self.__init_threshold = self._threshold
-        self.__init_pearsons_correlation_matrix = self._pearsons_correlation_matrix
+        self.__init_correlation_matrix = self._correlation_matrix
         self.__init_graph = self._graph
 
         # Initialize subclass objects
         self.analysis = self.Analysis(neuron_dynamics=self._neuron_dynamics, time=self._time,
                                       num_neurons=self._num_neurons,
-                                      pearsons_correlation_matrix=self._pearsons_correlation_matrix,
+                                      correlation_matrix=self._correlation_matrix,
                                       graph=self._graph, labels=self._node_labels)
 
         self.plotting = self.Plotting(neuron_dynamics=self._neuron_dynamics, time=self._time,
                                       num_neurons=self._num_neurons,
-                                      pearsons_correlation_matrix=self._pearsons_correlation_matrix, graph=self._graph)
+                                      correlation_matrix=self._correlation_matrix, graph=self._graph)
 
         # Todo: expand visualization capabilities
         self.visualization = self.Visualization(cagraph_obj=self)
@@ -180,8 +219,8 @@ class CaGraph:
         return self._node_labels
 
     @property
-    def pearsons_correlation_matrix(self):
-        return self._pearsons_correlation_matrix
+    def correlation_matrix(self):
+        return self._correlation_matrix
 
     @property
     def graph(self):
@@ -225,8 +264,7 @@ class CaGraph:
         if not (0 <= value <= 1):
             raise ValueError("Threshold must be between 0 and 1.")
         self._threshold = value
-        self._pearsons_correlation_matrix = self.get_pearsons_correlation_matrix()
-        self._graph = self.get_graph()
+        self._graph = self.get_graph(threshold=self._threshold)
         self._degree = self.analysis.get_degree(return_type='dict')
         self._clustering_coefficient = self.analysis.get_clustering_coefficient(return_type='dict')
         self._correlated_pair_ratio = self.analysis.get_correlated_pair_ratio(return_type='dict')
@@ -267,14 +305,14 @@ class CaGraph:
         else:
             raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
-    def __generate_threshold(self) -> float:
+    def __generate_threshold(self, correlation_method='pearson', **correlation_kwargs) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
 
         :return: float
             The computed threshold.
         """
-        return preprocess.generate_average_threshold(data=self._neuron_dynamics, shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self._neuron_dynamics, shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs)
 
     def __parse_by_node(self, node_data, node_list) -> list:
         """
@@ -310,7 +348,7 @@ class CaGraph:
         ```
 
         """
-        self._pearsons_correlation_matrix = self.__init_pearsons_correlation_matrix
+        self._correlation_matrix = self.__init_correlation_matrix
         self._threshold = self.__init_threshold
         self._graph = self.__init_graph
 
@@ -358,8 +396,32 @@ class CaGraph:
             cagraph_obj = pickle.load(file)
         return cagraph_obj
 
-    def sensitivity_analysis(self, data, interval=None, threshold=None, show_plot=True, save_plot=False, save_path=None,
-                             dpi=300, save_format='png'):
+    def load_coordinates(self, path):
+        """
+        Load neuron spatial coordinates from a CSV or Excel file.
+        Returns a dict: {node_id: (x, y)}
+        """
+        if path.endswith(".csv"):
+            data = np.genfromtxt(path, delimiter=',', encoding='utf-8-sig')
+            if data.shape[0] != 2:
+                raise ValueError("CSV must contain exactly 2 rows: x and y coordinates.")
+            x_coords, y_coords = data
+        elif path.endswith(".xlsx"):
+            df = pd.read_excel(path, header=None)
+            if df.shape[0] != 2:
+                raise ValueError("Excel must contain exactly 2 rows: x and y coordinates.")
+            x_coords = df.iloc[0].to_numpy()
+            y_coords = df.iloc[1].to_numpy()
+        else:
+            raise ValueError("Unsupported file type. Use .csv or .xlsx")
+
+        if len(x_coords) != len(y_coords):
+            raise ValueError("Mismatch between x and y coordinate lengths.")
+
+        self.coordinates = {i: (x, y) for i, (x, y) in enumerate(zip(x_coords, y_coords))}
+
+    def sensitivity_analysis(self, data, correlation_method='pearson', interval=None, threshold=None, show_plot=True, save_plot=False, save_path=None,
+                             dpi=300, save_format='png', **correlation_kwargs):
         """
             Perform sensitivity analysis on the CaGraph object by generating a series of graphs with varying thresholds and
             measuring their similarity to the original graph using graph edit distance.
@@ -391,7 +453,7 @@ class CaGraph:
                 A list of similarity values (graph edit distances) between the original graph and the series of generated graphs.
             """
         if threshold is None:
-            threshold = preprocess.generate_threshold(data=data)
+            threshold = preprocess.generate_threshold(data=data,correlation_method=correlation_method, **correlation_kwargs)
 
         starting_graph = self.get_graph(threshold=threshold)
         if interval is not None:
@@ -419,30 +481,64 @@ class CaGraph:
         return similarity
 
     # Statistics and linear algebra methods
-    def get_pearsons_correlation_matrix(self, data_matrix=None) -> np.ndarray:
+    def get_correlation_matrix(self, method="pearson", data_matrix=None, crosscorr_max_lag=10,
+                               partial_alpha=1.0) -> np.ndarray:
         """
-        Calculate and return the Pearson's correlation matrix for all neuron pairs.
+        Calculate a correlation or similarity matrix between neurons using the specified method.
 
-        This method computes the Pearson's correlation matrix based on the data matrix provided or the dataset
-        passed to the CaGraph object constructor.
+        Supported Methods:
+        - 'pearson': Measures linear correlation between neuron activity traces.
+        - 'spearman': Measures rank-based (monotonic) correlation, robust to outliers.
+        - 'crosscorr': Computes maximum cross-correlation across time lags (requires 'crosscorr_max_lag').
+        - 'partial': Estimates direct correlation between neurons by controlling for all others using Ridge regression (requires 'partial_alpha').
 
-        :param data_matrix: numpy.ndarray, optional
-            The data matrix for which to calculate the Pearson's correlation matrix. If not provided, the dataset
-            passed to the CaGraph object constructor is used.
+        Parameters:
+        - method (str): One of the supported methods listed above.
+        - data_matrix (np.ndarray): Optional override for internal data (shape: neurons × timepoints).
+        - crosscorr_max_lag (int, optional): Maximum lag to consider in cross-correlation (default: 10).
+        - partial_alpha (float, optional): Regularization strength for partial correlation via Ridge regression (default: 1.0).
 
-        :return: numpy.ndarray
-            The Pearson's correlation matrix as a numpy array.
+        Returns:
+        - np.ndarray: Correlation or similarity matrix of shape (neurons × neurons).
         """
-        if data_matrix is None:
-            data_matrix = self._neuron_dynamics
-        return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
+        data_matrix = data_matrix if data_matrix is not None else self._neuron_dynamics
+        n = data_matrix.shape[0]
+        corr_matrix = np.ones((n, n))
+        if method == "pearson":
+            return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
+        elif method == "spearman":
+            return np.nan_to_num(stats.spearmanr(data_matrix.T).correlation)
+        elif method == "crosscorr":
+            for i in range(n):
+                for j in range(i + 1, n):
+                    x, y = data_matrix[i], data_matrix[j]
+                    corr = max([np.corrcoef(np.roll(x, lag), y)[0, 1] for lag in
+                                range(-crosscorr_max_lag, crosscorr_max_lag + 1)])
+                    corr_matrix[i, j] = corr
+                    corr_matrix[j, i] = corr
+            return corr_matrix
+        elif method == "partial":
+            for i in range(n):
+                for j in range(i + 1, n):
+                    idx = [k for k in range(n) if k != i and k != j]
+                    Z = data_matrix[idx].T
+                    model_i = Ridge(alpha=partial_alpha).fit(Z, data_matrix[i])
+                    model_j = Ridge(alpha=partial_alpha).fit(Z, data_matrix[j])
+                    res_i = data_matrix[i] - model_i.predict(Z)
+                    res_j = data_matrix[j] - model_j.predict(Z)
+                    corr = np.corrcoef(res_i, res_j)[0, 1]
+                    corr_matrix[i, j] = corr
+                    corr_matrix[j, i] = corr
+            return corr_matrix
+        else:
+            raise ValueError(f"Unsupported method: {method}")
 
     def get_adjacency_matrix(self, threshold=None) -> np.ndarray:
         """
         Calculate and return the adjacency matrix of the graph based on the provided threshold.
 
         The adjacency matrix represents connections between nodes (neurons) in the graph. A value of 1 indicates
-        an edge between nodes when the Pearson's correlation is greater than the specified threshold, while a value
+        an edge between nodes when the correlation is greater than the specified threshold, while a value
         of 0 indicates no edge.
 
         :param threshold: float, optional
@@ -453,9 +549,9 @@ class CaGraph:
             The adjacency matrix as a numpy array.
         """
         if threshold is None:
-            adj_mat = (self._pearsons_correlation_matrix > self._threshold).astype(int)
+            adj_mat = (self._correlation_matrix > self._threshold).astype(int)
         else:
-            adj_mat = (self._pearsons_correlation_matrix > threshold).astype(int)
+            adj_mat = (self._correlation_matrix > threshold).astype(int)
         np.fill_diagonal(adj_mat, 0)
         return adj_mat
 
@@ -473,7 +569,7 @@ class CaGraph:
             The Laplacian matrix as a numpy array.
         """
         if graph is None:
-            graph = self.get_graph()
+            graph = self.get_graph(threshold=self._threshold)
         return nx.laplacian_matrix(graph).toarray()
 
     def get_weight_matrix(self) -> np.ndarray:
@@ -486,7 +582,7 @@ class CaGraph:
         :return: numpy.ndarray
             The weighted connectivity matrix as a numpy array.
         """
-        weight_matrix = self._pearsons_correlation_matrix
+        weight_matrix = self._correlation_matrix
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
@@ -552,32 +648,75 @@ class CaGraph:
             edge_probability = self.analysis.get_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=edge_probability)
 
-    # Todo: add show and save functionality
-    def draw_graph(self, graph=None, position=None, node_size=25, node_color='b', alpha=0.5, **kwargs):
+# Todo: fix draw labels - what if user specifies label?
+    def draw_graph(
+            self,
+            graph=None,
+            position=None,
+            node_size=25,
+            node_color='b',
+            alpha=0.5,
+            show_labels=False,
+            show=True,
+            save_path=None,
+            **kwargs
+    ):
         """
-            Visualize and draw a networkx.Graph object.
+        Visualize and optionally save a networkx.Graph with a given layout or spatial coordinates.
 
-            This method generates a visual representation of the specified 'graph' using the provided layout 'position' and
-            visual properties such as 'node_size', 'node_color', and 'alpha'. It utilizes the networkx 'nx.draw' function for
-            drawing the graph.
-
-            :param graph: networkx.Graph, optional
-                The graph object to be visualized. If not provided, the CaGraph object's graph is used.
-            :param position: dict, optional
-                The layout position for nodes in the graph. If not provided, a spring layout is used by default.
-            :param node_size: int, optional
-                The size of nodes in the graph visualization. Default is 25.
-            :param node_color: str, optional
-                The color of nodes in the graph visualization. Default is 'b' (blue).
-            :param alpha: float, optional
-                The opacity (alpha) of nodes in the graph visualization. Default is 0.5.
-            :param kwargs: additional keyword arguments for the 'nx.draw' function.
-            """
+        Parameters:
+        - graph: networkx.Graph (default: self._graph)
+        - position: dict {node_id: (x, y)} or None
+        - node_size: int
+        - node_color: str or list
+        - alpha: float
+        - show: bool (whether to display the plot)
+        - save_path: str or None (file path to save figure; supports .png, .pdf, etc.)
+        - kwargs: passed to nx.draw_networkx_nodes
+        """
         if graph is None:
             graph = self._graph
         if position is None:
-            position = nx.spring_layout(graph)
-        nx.draw(graph, pos=position, node_size=node_size, node_color=node_color, alpha=alpha, **kwargs)
+            position = self.coordinates or nx.spring_layout(graph)
+
+        plt.figure(figsize=(8, 6))
+
+        nx.draw_networkx_nodes(
+            graph,
+            position,
+            node_size=node_size,
+            node_color=node_color,
+            edgecolors='black',
+            linewidths=0.8,
+            alpha=alpha,
+            **kwargs
+        )
+        nx.draw_networkx_edges(
+            graph,
+            position,
+            edge_color='gray',
+            width=1.2,
+            alpha=0.5
+        )
+        if show_labels:
+            nx.draw_networkx_labels(
+                graph,
+                position,
+                font_size=6,
+                font_color='black'
+            )
+
+        plt.gca().set_aspect('equal', adjustable='box')
+        plt.axis('off')
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"Graph saved to {save_path}")
+
+        if show:
+            plt.show()
+        else:
+            plt.close()
 
     # Todo: add option to only select a subset of the graph analyses -- analysis_selections
     def get_report(self, parsing_nodes=None, parse_by_attribute=None, parsing_operation=None, parsing_value=None,
@@ -651,7 +790,6 @@ class CaGraph:
         for key in self.__attribute_dictionary.keys():
             report_dict[key] = self.__parse_by_node(node_data=self.__attribute_dictionary[key], node_list=parsing_nodes)
 
-
         # Construct report dataframe
         report_df = pd.DataFrame.from_dict(report_dict, orient='columns')
         report_df.index = parsing_nodes
@@ -683,11 +821,11 @@ class CaGraph:
         return report_df
 
     class Analysis:
-        def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons, labels):
+        def __init__(self, neuron_dynamics, time, correlation_matrix, graph, num_neurons, labels):
             self._time = time
             self._neuron_dynamics = neuron_dynamics
             self._num_neurons = num_neurons
-            self._pearsons_correlation_matrix = pearsons_correlation_matrix
+            self._correlation_matrix = correlation_matrix
             self._graph = graph
             self._node_labels = labels
 
@@ -713,8 +851,8 @@ class CaGraph:
             return self._node_labels
 
         @property
-        def pearsons_correlation_matrix(self):
-            return self._pearsons_correlation_matrix
+        def correlation_matrix(self):
+            return self._correlation_matrix
 
         # Graph theory analysis - global network structure
         def get_density(self, graph=None):
@@ -781,7 +919,7 @@ class CaGraph:
             betweenness_centrality_scores = list(betweenness_centrality.values())
             betweenness_centrality_scores.sort()
 
-            # Compute the outlier threshold using the inter-quartile range
+            # Compute the outlier threshold using the interquartile range
             Q1 = np.percentile(betweenness_centrality_scores, 25, method='midpoint')
             Q3 = np.percentile(betweenness_centrality_scores, 75, method='midpoint')
             IQR = Q3 - Q1
@@ -1029,6 +1167,7 @@ class CaGraph:
                     'Largest subgraph has less than four nodes. networkx.algorithms.smallworld.sigma cannot be computed.')
 
         # Todo: make more functional
+        # Todo: make naming conventions consistent/ best practice
         def compare_graphs(self, graph1, graph2):
             """
             Compare two graphs and return their graph edit distance.
@@ -1047,11 +1186,11 @@ class CaGraph:
             return nx.graph_edit_distance(graph1, graph2)
 
     class Plotting:
-        def __init__(self, neuron_dynamics, time, pearsons_correlation_matrix, graph, num_neurons):
+        def __init__(self, neuron_dynamics, time, correlation_matrix, graph, num_neurons):
             self._num_neurons = num_neurons
             self._time = time
             self._neuron_dynamics = neuron_dynamics
-            self._pearsons_correlation_matrix = pearsons_correlation_matrix
+            self._correlation_matrix = correlation_matrix
             self._graph = graph
 
         # Private utility methods
@@ -1072,8 +1211,8 @@ class CaGraph:
             return self._graph
 
         @property
-        def pearsons_correlation_matrix(self):
-            return self._pearsons_correlation_matrix
+        def correlation_matrix(self):
+            return self._correlation_matrix
 
         def plot_correlation_heatmap(self, correlation_matrix=None, title=None, y_label=None, x_label=None,
                                      show_plot=True,
@@ -1085,7 +1224,7 @@ class CaGraph:
                 between neurons. The heatmap is color-coded to highlight the strength of correlations.
 
                 :param correlation_matrix: numpy.ndarray, optional
-                    The correlation matrix to be visualized. If not provided, the Pearson's correlation matrix of the CaGraph
+                    The correlation matrix to be visualized. If not provided, the correlation matrix of the CaGraph
                     object is used.
                 :param title: str, optional
                     Title for the heatmap plot.
@@ -1107,7 +1246,7 @@ class CaGraph:
                 :return: None
                 """
             if correlation_matrix is None:
-                correlation_matrix = self._pearsons_correlation_matrix()
+                correlation_matrix = self._correlation_matrix()
             sns.heatmap(correlation_matrix, vmin=0, vmax=1)
             if title is not None:
                 plt.title(title)
@@ -1388,8 +1527,8 @@ class CaGraphTimeSamples:
                 condition_identifiers (list): Labels for different conditions, corresponding to the time samples.
             """
 
-    def __init__(self, data, time_samples, condition_labels, node_labels=None, node_metadata=None,
-                 dataset_id=None, threshold=None):
+    def __init__(self, data, time_samples, condition_labels, correlation_method='pearson', node_labels=None, node_metadata=None,
+                 dataset_id=None, threshold=None, **correlation_kwargs):
         """
                 Initializes a CaGraphTimeSamples object.
 
@@ -1424,7 +1563,7 @@ class CaGraphTimeSamples:
         if threshold is not None:
             self._threshold = threshold
         else:
-            self._threshold = self.__generate_threshold()
+            self._threshold = self.__generate_threshold(correlation_method=correlation_method, **correlation_kwargs)
 
         # Generate node labels
         if node_labels is None:
@@ -1436,8 +1575,8 @@ class CaGraphTimeSamples:
         # Add a series of private attributes which are CaGraph objects
         for i, sample in enumerate(time_samples):
             setattr(self, f'__{condition_labels[i]}_cagraph',
-                    CaGraph(data=self._data[:, sample[0]:sample[1]], node_labels=self._node_labels,
-                            node_metadata=node_metadata, threshold=self._threshold))
+                    CaGraph(data=self._data[:, sample[0]:sample[1]], correlation_method = correlation_method, node_labels=self._node_labels,
+                            node_metadata=node_metadata, threshold=self._threshold), **correlation_kwargs)
 
     # Private utility methods
     @property
@@ -1508,7 +1647,7 @@ class CaGraphTimeSamples:
             raise ValueError(
                 'The number of time_samples provided does not match the number of condition_labels provided.')
 
-    def __generate_threshold(self) -> float:
+    def __generate_threshold(self, correlation_method='pearson', **correlation_kwargs) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
         This threshold generation will use the full dataset.
@@ -1517,7 +1656,7 @@ class CaGraphTimeSamples:
 
         :return: float
         """
-        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs)
 
     # Public utility methods
     def save(self, file_path=None):
@@ -1558,7 +1697,8 @@ class CaGraphTimeSamples:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None,
+                        save_filetype=None):
         """
             Generate a consolidated report that combines individual condition reports into a single report.
 
@@ -1597,7 +1737,6 @@ class CaGraphTimeSamples:
             selections_str = '|'.join(analysis_selections)
             full_report_df = full_report_df.filter(regex=selections_str)
 
-
         # Save the report
         if save_report:
             if save_filename is None:
@@ -1613,7 +1752,6 @@ class CaGraphTimeSamples:
             elif save_filetype == 'xlsx':
                 full_report_df.to_excel(save_path + save_filename + 'xlsx', index=True)
         return full_report_df
-
 
 
 # %% Batched analyses
@@ -1639,7 +1777,7 @@ class CaGraphBatch:
             If True, an average threshold will be computed across all datasets to ensure consistent analysis thresholds.
         """
 
-    def __init__(self, data, dataset_labels=None, group_id=None, threshold=None, threshold_averaged=False):
+    def __init__(self, data, correlation_method = 'pearson', dataset_labels=None, group_id=None, threshold=None, threshold_averaged=False, **correlation_kwargs):
         """
             Initialize a CaGraphBatch object for batched analyses on multiple datasets.
 
@@ -1686,9 +1824,10 @@ class CaGraphBatch:
         # Set threshold
         if threshold is not None:
             self._threshold = threshold
+
         # Todo: check if error when using threshold_averaged
         elif threshold_averaged:
-            self._threshold = self.__generate_averaged_threshold(data_path=data_path, dataset_keys=data_list)
+            self._threshold = self.__generate_averaged_threshold(data_path=data_path, correlation_method=correlation_method, dataset_keys=data_list, **correlation_kwargs)
         else:
             self._threshold = None
             self._batch_threshold = None
@@ -1703,7 +1842,7 @@ class CaGraphBatch:
             elif isinstance(dataset, np.ndarray):
                 data = dataset
             try:
-                setattr(self, f'__{dataset_labels[idx]}_cagraph', CaGraph(data=data, threshold=self._threshold))
+                setattr(self, f'__{dataset_labels[idx]}_cagraph', CaGraph(data=data, correlation_method=correlation_method, threshold=self._threshold, **correlation_kwargs))
                 # Add a series of private attributes which are CaGraph objects
                 self._dataset_identifiers.append(dataset_labels[idx])
             except Exception as e:
@@ -1751,7 +1890,8 @@ class CaGraphBatch:
             raise ValueError('Path provided for data parameter does not exist.')
 
     # Todo: Urgent -- make sure this is compatible with datasets passed as NumPy arrays
-    def __generate_averaged_threshold(self, data_path, dataset_keys):
+    # Todo: currently, user must specify the dataset_keys as .csv in the string - make more flexible
+    def __generate_averaged_threshold(self, data_path, dataset_keys, correlation_method='pearson', **correlation_kwargs):
         """
         Compute an averaged threshold by calculating the mean of the recommended thresholds for each individual dataset.
 
@@ -1772,8 +1912,8 @@ class CaGraphBatch:
         """
         store_thresholds = []
         for dataset in dataset_keys:
-            data = np.genfromtxt(f'{data_path}{dataset}.csv', delimiter=",")
-            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
+            data = np.genfromtxt(f'{data_path}{dataset}', delimiter=",")
+            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], correlation_method=correlation_method, shuffle_iterations=10, **correlation_kwargs))
         return np.mean(store_thresholds)
 
     # Public utility methods
@@ -1827,7 +1967,8 @@ class CaGraphBatch:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None,
+                        save_filetype=None):
         """
             Generate a consolidated report for all datasets in the batched sample, combining the results of base analyses
             included in the CaGraph object's get_report() method. This report is presented as a pandas DataFrame and can be
@@ -1870,7 +2011,6 @@ class CaGraphBatch:
             # Todo: Check that analysis_selections are valid
             selections_str = '|'.join(analysis_selections)
             full_report_df = full_report_df.filter(regex=selections_str)
-
 
         # Save the report
         if save_report:
@@ -1922,8 +2062,8 @@ class CaGraphBatchTimeSamples:
     analysis. Future versions will include the node_metadata attribute.
     """
 
-    def __init__(self, data, time_samples, condition_labels, dataset_labels=None, group_id=None, threshold=None,
-                 threshold_averaged=False):
+    def __init__(self, data, time_samples, condition_labels, correlation_method='pearson', dataset_labels=None, group_id=None, threshold=None,
+                 threshold_averaged=False, **correlation_kwargs):
         """
                 Initialize a CaGraphBatchTimeSamples object.
 
@@ -1986,7 +2126,7 @@ class CaGraphBatchTimeSamples:
         if threshold is not None:
             self._threshold = threshold
         elif threshold_averaged:
-            self._threshold = self.__generate_averaged_threshold(data_list=data_list, data_path=data_path)
+            self._threshold = self.__generate_averaged_threshold(data_list=data_list, correlation_method=correlation_method, data_path=data_path, **correlation_kwargs)
         else:
             self._threshold = None
             self._batch_threshold = None
@@ -2003,11 +2143,11 @@ class CaGraphBatchTimeSamples:
             try:
                 if hasattr(self,
                            '_batch_threshold'):  # If the _batch_threshold attribute exists, the threshold should be set for each dataset
-                    self._threshold = self.__generate_threshold(data=data)
+                    self._threshold = self.__generate_threshold(data=data,correlation_method=correlation_method, **correlation_kwargs)
                     # Add a series of private attributes which are CaGraph objects
                 for i, sample in enumerate(time_samples):
                     setattr(self, f'__{dataset_labels[idx]}_{condition_labels[i]}_cagraph',
-                            CaGraph(data=data[:, sample[0]:sample[1]], threshold=self._threshold))
+                            CaGraph(data=data[:, sample[0]:sample[1]], threshold=self._threshold, correlation_method=correlation_method, **correlation_kwargs))
                     self._dataset_identifiers.append(dataset_labels[idx] + '_' + condition_labels[i])
             except Exception as e:
                 print(f"Exception occurred for dataset {dataset_labels[idx]}: " + repr(e))
@@ -2057,7 +2197,7 @@ class CaGraphBatchTimeSamples:
             raise ValueError(
                 'The number of time_samples provided does not match the number of condition_labels provided.')
 
-    def __generate_threshold(self, data) -> float:
+    def __generate_threshold(self, data, correlation_method='pearson', **correlation_kwargs) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
 
@@ -2071,9 +2211,9 @@ class CaGraphBatchTimeSamples:
         function with a specified number of shuffle iterations.
 
         """
-        return preprocess.generate_average_threshold(data=data, shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=data, shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs)
 
-    def __generate_averaged_threshold(self, data_list, data_path=None):
+    def __generate_averaged_threshold(self, data_list, data_path=None, correlation_method='pearson', **correlation_kwargs):
         """
             Computes an averaged threshold by computing the mean of the recommended thresholds for each individual dataset.
 
@@ -2099,7 +2239,7 @@ class CaGraphBatchTimeSamples:
                 data = dataset
             elif isinstance(dataset, str):
                 data = np.genfromtxt(dataset, delimiter=",")
-            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], shuffle_iterations=10))
+            store_thresholds.append(preprocess.generate_average_threshold(data=data[1:, :], shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs))
         return np.mean(store_thresholds)
 
     # Public utility methods
@@ -2156,7 +2296,8 @@ class CaGraphBatchTimeSamples:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None,
+                        save_filetype=None):
         """
         Generate an organized report of all data in the batched sample.
 
@@ -2265,7 +2406,7 @@ class CaGraphMatched:
         matching map provided in the "cell_matching_map.csv" file.
         """
 
-    def __init__(self, data, dataset_labels, match_map, matched_only=True, threshold=None):
+    def __init__(self, data, dataset_labels, match_map, correlation_method='pearson', matched_only=True, threshold=None, **correlation_kwargs):
         """
         Class for running analyses on datasets that have been cell-tracked over time to identify the same cells.
 
@@ -2297,7 +2438,7 @@ class CaGraphMatched:
         if threshold is not None:
             self._threshold = threshold
         else:
-            self._threshold = self.__generate_threshold()
+            self._threshold = self.__generate_threshold(correlation_method=correlation_method, **correlation_kwargs)
 
         # Parse datasets using map
         dataset_0 = self._data_0[0, :]
@@ -2330,7 +2471,7 @@ class CaGraphMatched:
         self._num_neurons = np.shape(dataset_0)[0]
         # Add a series of private attributes which are CaGraph objects
         for i, dataset in enumerate(self._dataset_identifiers):
-            setattr(self, f'__{dataset}_cagraph', CaGraph(data=data_list[i], threshold=self._threshold))
+            setattr(self, f'__{dataset}_cagraph', CaGraph(data=data_list[i], correlation_method=correlation_method, threshold=self._threshold, **correlation_kwargs))
 
     # Private utility methods
     @property
@@ -2391,14 +2532,14 @@ class CaGraphMatched:
             else:
                 raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
-    def __generate_threshold(self) -> float:
+    def __generate_threshold(self, correlation_method='pearson', **correlation_kwargs) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
         This threshold generation will use the full dataset.
 
         :return: float
         """
-        return preprocess.generate_average_threshold(data=self._data_0[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self._data_0[1:, :], shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs)
 
     # Public utility methods
     def save(self, file_path=None):
@@ -2440,7 +2581,8 @@ class CaGraphMatched:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None,
+                        save_filetype=None):
         """
         Generates an organized report of all data in the batched sample and creates a comprehensive tabular summary.
 
@@ -2512,9 +2654,9 @@ class CaGraphBehavior:
     be added to accommodate datasets with unbalanced behavior.
     """
 
-    def __init__(self, data, behavior_data, behavior_dict, construction_method='stacked', node_labels=None,
+    def __init__(self, data, behavior_data, behavior_dict, correlation_method='pearson', construction_method='stacked', node_labels=None,
                  node_metadata=None,
-                 dataset_id=None, threshold=None):
+                 dataset_id=None, threshold=None,**correlation_kwargs):
         """
                 Initialize a CaGraphBehavior object.
 
@@ -2562,7 +2704,7 @@ class CaGraphBehavior:
         if threshold is not None:
             self._threshold = threshold
         else:
-            self._threshold = self.__generate_threshold()
+            self._threshold = self.__generate_threshold(correlation_method=correlation_method, **correlation_kwargs)
 
         # Generate node labels
         if node_labels is None:
@@ -2583,7 +2725,7 @@ class CaGraphBehavior:
                         # Append single timepoint
                         behavior_dataset = np.hstack((behavior_dataset, self._data[:, i].reshape(-1, 1)))
                 setattr(self, f'__{key}_cagraph', CaGraph(data=behavior_dataset[:, 1:], node_labels=self._node_labels,
-                                                          node_metadata=node_metadata, threshold=self._threshold))
+                                                          node_metadata=node_metadata, correlation_method=correlation_method, threshold=self._threshold, **correlation_kwargs))
         else:
             raise ValueError("Invalid value for construction_method. Must choose from: 'stacked'.")
 
@@ -2648,14 +2790,14 @@ class CaGraphBehavior:
         else:
             raise TypeError('Data must be passed as a str containing a .csv or .nwb file, or as numpy.ndarray.')
 
-    def __generate_threshold(self) -> float:
+    def __generate_threshold(self, correlation_method='pearson', **correlation_kwargs) -> float:
         """
         Generates a threshold for the provided dataset as described in the preprocess module.
         This threshold generation will use the full dataset.
 
         :return: float
         """
-        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10)
+        return preprocess.generate_average_threshold(data=self.data[1:, :], shuffle_iterations=10, correlation_method=correlation_method, **correlation_kwargs)
 
     # Public utility methods
     def save(self, file_path=None):
@@ -2697,7 +2839,8 @@ class CaGraphBehavior:
         """
         return getattr(self, f'__{condition_label}_cagraph')
 
-    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None, save_filetype=None):
+    def get_full_report(self, analysis_selections=None, save_report=False, save_path=None, save_filename=None,
+                        save_filetype=None):
         """
             Generate an organized report of the CaGraph analyses for different behaviors.
 
