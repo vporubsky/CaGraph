@@ -46,6 +46,7 @@ _DEFAULT_VALUES = {
 # Todo: add more base attributes
 def interactive_network(cagraph_obj,
                         attributes=['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering'],
+                        layout='auto',
                         additional_attributes=None,
                         hover_attributes=None,
                         adjust_node_size=5, adjust_node_size_by='degree', adjust_node_color_by='communities',
@@ -158,9 +159,23 @@ def interactive_network(cagraph_obj,
                   tools="pan,wheel_zoom,save,reset", active_scroll='wheel_zoom',
                   x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), title=title)
 
-    # Create a network graph object
+    # Determine node positions
     if position is None:
-        position = nx.spring_layout(graph)
+        if layout == 'auto' and hasattr(cg, 'coordinates') and cg.coordinates is not None:
+            # Use coordinates dictionary directly
+            position = cg.coordinates
+        elif layout == 'spring':
+            position = nx.spring_layout(graph)
+        elif layout == 'kamada_kawai':
+            position = nx.kamada_kawai_layout(graph)
+        elif layout == 'circular':
+            position = nx.circular_layout(graph)
+        elif layout == 'shell':
+            position = nx.shell_layout(graph)
+        else:
+            raise ValueError(f"Unsupported layout: {layout}")
+
+    # Create a network graph object
     network_graph = from_networkx(graph, position, scale=10, center=(0, 0))
 
     # Set node sizes and colors according to node degree (color as spectrum of color palette)
