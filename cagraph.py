@@ -648,17 +648,23 @@ class CaGraph:
             edge_probability = self.analysis.get_density(graph=graph)
         return nx.erdos_renyi_graph(n=num_nodes, p=edge_probability)
 
-# Todo: fix draw labels - what if user specifies label?
     def draw_graph(
             self,
             graph=None,
             position=None,
             node_size=25,
             node_color='b',
+            edge_color='gray',
+            edge_width=1.2,
             alpha=0.5,
             show_labels=False,
+            label_font_size=6,
+            label_font_color='black',
+            figsize=(8, 6),
+            dpi=300,
             show=True,
             save_path=None,
+            labels=None,
             **kwargs
     ):
         """
@@ -667,19 +673,27 @@ class CaGraph:
         Parameters:
         - graph: networkx.Graph (default: self._graph)
         - position: dict {node_id: (x, y)} or None
-        - node_size: int
+        - node_size: int or list
         - node_color: str or list
-        - alpha: float
+        - edge_color: str or list
+        - edge_width: float
+        - alpha: float (transparency of nodes)
+        - show_labels: bool
+        - label_font_size: int
+        - label_font_color: str
+        - figsize: tuple (width, height)
+        - dpi: int (resolution of saved figure)
         - show: bool (whether to display the plot)
         - save_path: str or None (file path to save figure; supports .png, .pdf, etc.)
+        - labels: dict (optional: override node labels)
         - kwargs: passed to nx.draw_networkx_nodes
         """
         if graph is None:
             graph = self._graph
         if position is None:
-            position = self.coordinates or nx.spring_layout(graph)
+            position = self.coordinates if hasattr(self, 'coordinates') else nx.spring_layout(graph)
 
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=figsize)
 
         nx.draw_networkx_nodes(
             graph,
@@ -694,23 +708,27 @@ class CaGraph:
         nx.draw_networkx_edges(
             graph,
             position,
-            edge_color='gray',
-            width=1.2,
-            alpha=0.5
+            edge_color=edge_color,
+            width=edge_width,
+            alpha=alpha
         )
+
         if show_labels:
+            # Use provided labels > self._node_labels > None (defaults to node IDs)
+            label_dict = labels or getattr(self, '_node_labels', None)
             nx.draw_networkx_labels(
                 graph,
                 position,
-                font_size=6,
-                font_color='black'
+                labels=label_dict,
+                font_size=label_font_size,
+                font_color=label_font_color
             )
 
         plt.gca().set_aspect('equal', adjustable='box')
         plt.axis('off')
 
         if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
             print(f"Graph saved to {save_path}")
 
         if show:

@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CaGraph.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CaGraph.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="77495dbb-6f10-4b1b-acb9-05150534961f" name="Changes" comment="Refactor CaGraph and Preprocess modules for expanded correlation methods, coordinate support, and threshold estimation improvements&#10;&#10;Major updates across CaGraph-related classes and the preprocessing module to improve flexibility, reproducibility, and usability of calcium imaging graph analysis:&#10;&#10;🔧 CaGraph Core Functionality:&#10;- Added support for multiple correlation methods: 'pearson', 'spearman', 'crosscorrelation', and 'partial' across all CaGraph classes (TimeSamples, Behavior, Matched, Batch).&#10;- Enabled users to optionally pass a precomputed correlation matrix directly into the CaGraph class, bypassing on-the-fly correlation computation.&#10;- Added coordinate-based layout support for graph visualization using calcium imaging field-of-view neuron coordinates.&#10;&#10;📈 Graph Visualization Enhancements:&#10;- `draw_graph()` now accepts neuron spatial coordinates and uses them for graph layout if available.&#10;- Added coordinate loading functionality to allow users to import field-of-view coordinates and bind them to specific datasets.&#10;&#10;🧪 Preprocessing Improvements:&#10;- Updated `generate_average_threshold()` and related threshold estimation methods to use only the upper triangle of the correlation matrix, avoiding redundancy and self-correlations.&#10;- Improved visualization of correlation distributions for thresholding by excluding diagonal and symmetric entries, leading to more accurate histograms.&#10;&#10;🧼 Miscellaneous:&#10;- Ensured API consistency across CaGraph subclasses by standardizing method signatures and correlation method handling.&#10;- Improved docstrings, internal logic clarity, and maintainability across both `cagraph.py` and `preprocess.py`.&#10;&#10;These changes collectively enhance the analytical flexibility and interpretability of the CaGraph package, making it more robust for a range of experimental and data preprocessing workflows.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cagraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/cagraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tutorials/cagraph_tutorial.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -225,9 +220,9 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.tmp_20240213" />
       <item itemvalue="Python.final_exam" />
       <item itemvalue="Python.for_sean_set_num_communities" />
+      <item itemvalue="Python.tmp_20240213" />
       <item itemvalue="Python.tutorial" />
     </list>
     <recent_temporary>
@@ -738,7 +733,8 @@
       <workItem from="1750133797843" duration="6000" />
       <workItem from="1750139800797" duration="5172000" />
       <workItem from="1750171395769" duration="361000" />
-      <workItem from="1750171767813" duration="2289000" />
+      <workItem from="1750171767813" duration="3200000" />
+      <workItem from="1750175067139" duration="41000" />
     </task>
     <task id="LOCAL-00046" summary="Example datasets added due to failed continuous integration workflow.">
       <created>1682975729555</created>
@@ -1083,7 +1079,7 @@
       <option name="project" value="LOCAL" />
       <updated>1699388971748</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1104,7 +1100,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Minor updates to tutorial notebooks." />
     <MESSAGE value="Resolving readthedocs error." />
     <MESSAGE value="Minor updates." />
     <MESSAGE value="Added averaging to threshold generation." />
@@ -1129,7 +1124,8 @@
     <MESSAGE value="Updated cagraph.py." />
     <MESSAGE value="Updated cagraph.py and test_CaGraph.py. Updating test suite." />
     <MESSAGE value="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated cagraph.py and test_CaGraph.py. Updating test suite and fixing CI erorrs on GitHub." />
+    <MESSAGE value="Refactor CaGraph and Preprocess modules for expanded correlation methods, coordinate support, and threshold estimation improvements&#10;&#10;Major updates across CaGraph-related classes and the preprocessing module to improve flexibility, reproducibility, and usability of calcium imaging graph analysis:&#10;&#10; CaGraph Core Functionality:&#10;- Added support for multiple correlation methods: 'pearson', 'spearman', 'crosscorrelation', and 'partial' across all CaGraph classes (TimeSamples, Behavior, Matched, Batch).&#10;- Enabled users to optionally pass a precomputed correlation matrix directly into the CaGraph class, bypassing on-the-fly correlation computation.&#10;- Added coordinate-based layout support for graph visualization using calcium imaging field-of-view neuron coordinates.&#10;&#10; Graph Visualization Enhancements:&#10;- `draw_graph()` now accepts neuron spatial coordinates and uses them for graph layout if available.&#10;- Added coordinate loading functionality to allow users to import field-of-view coordinates and bind them to specific datasets.&#10;&#10; Preprocessing Improvements:&#10;- Updated `generate_average_threshold()` and related threshold estimation methods to use only the upper triangle of the correlation matrix, avoiding redundancy and self-correlations.&#10;- Improved visualization of correlation distributions for thresholding by excluding diagonal and symmetric entries, leading to more accurate histograms.&#10;&#10; Miscellaneous:&#10;- Ensured API consistency across CaGraph subclasses by standardizing method signatures and correlation method handling.&#10;- Improved docstrings, internal logic clarity, and maintainability across both `cagraph.py` and `preprocess.py`.&#10;&#10;These changes collectively enhance the analytical flexibility and interpretability of the CaGraph package, making it more robust for a range of experimental and data preprocessing workflows." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor CaGraph and Preprocess modules for expanded correlation methods, coordinate support, and threshold estimation improvements&#10;&#10;Major updates across CaGraph-related classes and the preprocessing module to improve flexibility, reproducibility, and usability of calcium imaging graph analysis:&#10;&#10; CaGraph Core Functionality:&#10;- Added support for multiple correlation methods: 'pearson', 'spearman', 'crosscorrelation', and 'partial' across all CaGraph classes (TimeSamples, Behavior, Matched, Batch).&#10;- Enabled users to optionally pass a precomputed correlation matrix directly into the CaGraph class, bypassing on-the-fly correlation computation.&#10;- Added coordinate-based layout support for graph visualization using calcium imaging field-of-view neuron coordinates.&#10;&#10; Graph Visualization Enhancements:&#10;- `draw_graph()` now accepts neuron spatial coordinates and uses them for graph layout if available.&#10;- Added coordinate loading functionality to allow users to import field-of-view coordinates and bind them to specific datasets.&#10;&#10; Preprocessing Improvements:&#10;- Updated `generate_average_threshold()` and related threshold estimation methods to use only the upper triangle of the correlation matrix, avoiding redundancy and self-correlations.&#10;- Improved visualization of correlation distributions for thresholding by excluding diagonal and symmetric entries, leading to more accurate histograms.&#10;&#10; Miscellaneous:&#10;- Ensured API consistency across CaGraph subclasses by standardizing method signatures and correlation method handling.&#10;- Improved docstrings, internal logic clarity, and maintainability across both `cagraph.py` and `preprocess.py`.&#10;&#10;These changes collectively enhance the analytical flexibility and interpretability of the CaGraph package, making it more robust for a range of experimental and data preprocessing workflows." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CaGraph$.coverage" NAME=" Coverage Results" MODIFIED="1750171516447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
