@@ -150,7 +150,7 @@ Here is a list of software required for the CaGraph project and how to install t
 
 Examples of best practices for using the package are discussed. Additional screenshots, code examples and demos will be included formally in documentation.
 
-###Recommended preprocessing
+### Recommended preprocessing
 
 For most use cases, we recommend deconvolving calcium imaging data using CNMF (e.g., CNMF-E via CaImAn
 ) before constructing graphs with CaGraph. This reduces noise and improves the biological interpretability of inferred networks.
