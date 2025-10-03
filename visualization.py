@@ -13,7 +13,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import seaborn as sns
-
+from bokeh.io.export import export_png
+from bokeh.io import export_svg, export_svgs
+from PIL import Image
+import tempfile
 from scipy import stats
 import pandas as pd
 import os
@@ -41,7 +44,6 @@ _DEFAULT_VALUES = {
 }
 
 # %% Interactive graph visualization
-# Todo: fix the save functionality --> can't save and then show, causes error
 # Todo: create return with more information
 # Todo: add more base attributes
 def interactive_network(cagraph_obj,
@@ -50,29 +52,64 @@ def interactive_network(cagraph_obj,
                         additional_attributes=None,
                         hover_attributes=None,
                         adjust_node_size=5, adjust_node_size_by='degree', adjust_node_color_by='communities',
+                        edge_color="#7a7a7a", edge_alpha=0.5, edge_width=1, edge_color_by=None, edge_palette="Greys256",
                         palette='Blues8',
                         position=None, return_position=False,
-                        title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None):
+                        title=None, show_plot=True, show_in_notebook=False, save_plot=False, save_path=None,
+                        save_svg=False, svg_path=None, svg_transparent=False,
+                        export_jpg=False,
+                        export_path=None,
+                        export_scale=2,
+                        auto_zoom=True,
+                        zoom_padding=0.10
+                        ):
     """
     Generates an interactive Bokeh.io plot of the graph network.
 
-    :param: cagraph_obj: CaGraph object
-    :param: graph: networkx.Graph object
-    :param: attributes: list
-    :param: additional_attributes: dict
-    :param: hover_attributes: list
-    :param: adjust_node_size: int
-    :param: adjust_size_by: str
-    :param: adjust_node_color_by: str
-    :param: palette: tuple a color palette which can be passed as a tuple: palette = ('grey', 'red', 'blue')
-    :param: position: dict
-    :param: return_position: bool
-    :param: title: str
-    :param: show_plot: bool
-    :param: show_in_notebook: bool
-    :param: save_plot: bool
-    :param: save_path: str
+    :param cagraph_obj: CaGraph object containing the network and analysis results.
+    :param attributes: list of str. Node-level analyses to compute and display.
+        Options: ['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering'].
+        Default is all.
+    :param layout: str. Graph layout algorithm ('auto', 'spring', 'kamada_kawai',
+        'circular', 'shell'). Default = 'auto'.
+    :param additional_attributes: dict. Extra node attributes to add.
+        Keys are attribute names; values must match node order. Default = None.
+    :param hover_attributes: list of str. Node attributes to show in hover tooltips.
+        Defaults to attributes + additional_attributes.
+    :param adjust_node_size: int. Scaling factor for node size (higher = smaller nodes).
+        Default = 5.
+    :param adjust_node_size_by: str. Node attribute to scale size by (e.g., 'degree').
+        Default = 'degree'.
+    :param adjust_node_color_by: str. Node attribute used to color nodes.
+        Default = 'communities'.
+    :param edge_color: str. Fixed edge color (hex or named). Default = "#7a7a7a".
+    :param edge_alpha: float. Edge transparency between 0 and 1. Default = 0.5.
+    :param edge_width: float. Edge line width. Default = 1.
+    :param edge_color_by: str. Attribute to color edges by. Default = None.
+    :param edge_palette: str. Bokeh palette name for edge coloring. Default = "Greys256".
+    :param palette: str or tuple. Node color palette (string from bokeh.palettes
+        or tuple of hex codes). Default = "Blues8".
+    :param position: dict. Predefined node positions {node: (x, y)}.
+        If None, uses `layout`. Default = None.
+    :param return_position: bool. If True, returns the position dictionary.
+        Default = False.
+    :param title: str. Title for the plot. Default = None.
+    :param show_plot: bool. If True, show the plot in a browser window. Default = True.
+    :param show_in_notebook: bool. If True, render inline in Jupyter. Default = False.
+    :param save_plot: bool. If True, save the plot as HTML. Default = False.
+    :param save_path: str. Path for saving HTML plot if save_plot=True.
+        Default = None (CWD/bokeh_graph_visualization.html).
+    :param save_svg: bool. If True, export the plot to SVG. Default = False.
+    :param svg_path: str. Path for saving SVG. Default = None (CWD/network.svg).
+    :param svg_transparent: bool. If True, export SVG with transparent background.
+        Default = False.
+    :param export_jpg: bool. If True, export the plot to JPG. Default = False.
+    :param export_path: str. Path for saving JPG. Default = None (CWD/network.jpg).
+    :param export_scale: int. Scaling factor for export resolution. Default = 2.
+    :param auto_zoom: bool. If True, auto-zooms and pads plot extents. Default = True.
+    :param zoom_padding: float. Fractional padding for auto-zoom. Default = 0.10.
 
+    :return: dict of node positions if return_position=True, else None.
     """
     # Set default analyses to incorporate in interactive visualization
     default_analyses = ['degree', 'betweenness centrality', 'hubs', 'CPR', 'communities', 'clustering']
@@ -129,7 +166,7 @@ def interactive_network(cagraph_obj,
     if adjust_node_size is not None:
         # Adjust node size
         adjusted_node_size = dict(
-            [(node, value + adjust_node_size) for node, value in attribute_dict[adjust_node_size_by].items()])
+            [(node, round(value / adjust_node_size) + 1) for node, value in attribute_dict[adjust_node_size_by].items()])
         nx.set_node_attributes(graph, name='adjusted_node_size', values=adjusted_node_size)
         size_by_this_attribute = 'adjusted_node_size'
 
@@ -152,12 +189,7 @@ def interactive_network(cagraph_obj,
         hover_attributes = default_analyses + add_hover_attributes
     hover_tooltips = [("Neuron", "@index")]
     for value in hover_attributes:
-        hover_tooltips.append((value, "@" + value))
-
-    # Create a plot with set dimensions, toolbar, and title
-    plot = figure(tooltips=hover_tooltips,
-                  tools="pan,wheel_zoom,save,reset", active_scroll='wheel_zoom',
-                  x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), title=title)
+        hover_tooltips.append((value.title(), "@{" + value + "}"))
 
     # Determine node positions
     if position is None:
@@ -175,12 +207,56 @@ def interactive_network(cagraph_obj,
         else:
             raise ValueError(f"Unsupported layout: {layout}")
 
+    # Auto-zoom range calculation
+    if auto_zoom:
+        xs = [xy[0] for xy in position.values()]
+        ys = [xy[1] for xy in position.values()]
+        xmin, xmax = min(xs), max(xs)
+        ymin, ymax = min(ys), max(ys)
+        # pad by percentage of span (handles single-point degenerate spans too)
+        xspan = max(xmax - xmin, 1e-9)
+        yspan = max(ymax - ymin, 1e-9)
+        xpad = xspan * zoom_padding
+        ypad = yspan * zoom_padding
+        x_range = Range1d(xmin - xpad, xmax + xpad)
+        y_range = Range1d(ymin - ypad, ymax + ypad)
+    else:
+        x_range = Range1d(-10.1, 10.1)
+        y_range = Range1d(-10.1, 10.1)
+
+    # Create a plot with set dimensions, toolbar, and title
+    plot = figure(
+        tooltips=hover_tooltips,
+        tools="pan,wheel_zoom,save,reset",
+        active_scroll='wheel_zoom',
+        x_range=x_range, y_range=y_range,
+        title=title
+    )
+    plot.match_aspect = True  # keeps aspect ratio nice when exporting
+    plot.background_fill_color = "white"  # helps avoid transparent backgrounds in export
+    plot.border_fill_color = "white"
+
     # Create a network graph object
     network_graph = from_networkx(graph, position, scale=10, center=(0, 0))
+
+    if edge_color_by is not None:
+        vals = network_graph.edge_renderer.data_source.data[edge_color_by]
+        vmin, vmax = min(vals), max(vals)
+        pal = getattr(bokeh.palettes, edge_palette)
+        network_graph.edge_renderer.glyph = MultiLine(
+            line_color=linear_cmap(field_name=edge_color_by, palette=pal, low=vmin, high=vmax),
+            line_alpha=edge_alpha,
+            line_width=edge_width
+        )
+    else:
+        network_graph.edge_renderer.glyph = MultiLine(
+            line_color=edge_color, line_alpha=edge_alpha, line_width=edge_width
+        )
 
     # Set node sizes and colors according to node degree (color as spectrum of color palette)
     minimum_value_color = min(network_graph.node_renderer.data_source.data[color_by_this_attribute])
     maximum_value_color = max(network_graph.node_renderer.data_source.data[color_by_this_attribute])
+    color_palette = color_palette[:maximum_value_color + 1]
     if adjust_node_size_by is None:
         network_graph.node_renderer.glyph = Circle(fill_color=linear_cmap(color_by_this_attribute, color_palette,
                                                                           minimum_value_color, maximum_value_color))
@@ -190,9 +266,47 @@ def interactive_network(cagraph_obj,
                                                                           minimum_value_color, maximum_value_color))
 
     # Set edge opacity and width
-    network_graph.edge_renderer.glyph = MultiLine(line_alpha=0.5, line_width=1)
+    network_graph.edge_renderer.glyph = MultiLine(
+        line_color=edge_color,
+        line_alpha=edge_alpha,
+        line_width=edge_width
+    )
 
     plot.renderers.append(network_graph)
+
+    if export_jpg:
+        # You can optionally pass width/height to export_png for a larger image
+        # (or rely on export_scale if your Bokeh version supports it via webdriver zoom)
+        with tempfile.TemporaryDirectory() as td:
+            tmp_png = os.path.join(td, "network.png")
+            # Some Bokeh versions accept 'scale'; if not, control size via plot.width/height above.
+            try:
+                export_png(plot, filename=tmp_png, width=plot.width, height=plot.height)
+            except TypeError:
+                # Fallback if width/height unsupported by your bokeh version
+                export_png(plot, filename=tmp_png)
+
+            img = Image.open(tmp_png).convert("RGB")  # drop alpha for JPG
+            out_path = export_path or os.path.join(os.getcwd(), "network.jpg")
+            img.save(out_path, format="JPEG", quality=95)
+
+    if save_svg:
+
+        # Optional transparent background
+        if svg_transparent:
+            plot.background_fill_color = None
+            plot.border_fill_color = None
+
+        prev_backend = plot.output_backend
+        plot.output_backend = "svg"  # required for SVG export
+        out_path = svg_path or os.path.join(os.getcwd(), "network.svg")
+        try:
+            export_svg(plot, filename=out_path)  # single SVG
+        except Exception:
+            export_svg(plot, filename=out_path)  # fallback on some versions
+        finally:
+            plot.output_backend = prev_backend  # restore for normal canvas interactivity
+
     if save_plot:
         if save_path is None:
             save_path=os.path.join(os.getcwd(), f"bokeh_graph_visualization.html")
@@ -425,7 +539,6 @@ def plot_matched_data(data_list: list, labels: list,
     # Create a rectangle patch
     if plot_rectangle:
         if ylim is None:
-            # Todo: find max value, do not universally set to 1
             ylim = (0, 1)
         if rectangle_index == 1:
             # Add rectangle to rightmost boxplot
