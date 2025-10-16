@@ -36,7 +36,8 @@ class CaGraph:
     data : str or numpy.ndarray
         A string pointing to the file to be used for data analysis, or a numpy.ndarray containing data loaded into
         memory. The first (idx 0) row must contain timepoints, the subsequent rows each represent a single neuron timeseries
-        of calcium fluorescence data sampled at the timepoints specified in the first row.
+        of calcium fluorescence data sampled at the timepoints specified in the first row. This dataset should be pre-processed
+        with constrained non-negative matrix factorization prior to generating a CaGraph object.
     node_labels: list
         A list of identifiers for each row of calcium imaging data (each neuron) in the data_file passed to CaGraph.
     node_metadata: dict
@@ -49,8 +50,8 @@ class CaGraph:
         Sets a threshold to be used for thresholded graph.
     """
 
-    def __init__(self, data, correlation_matrix=None, correlation_method='pearson', node_labels=None,
-                 node_metadata=None, dataset_id=None, threshold=None, **correlation_kwargs):
+    def __init__(self, data, threshold=None, correlation_matrix=None, correlation_method='pearson', node_labels=None,
+                 node_metadata=None, dataset_id=None, **correlation_kwargs):
         """
         Initialize a CaGraph object from calcium imaging data or an existing correlation matrix.
 
@@ -118,11 +119,18 @@ class CaGraph:
         self.coordinates = None
 
         # Initialize correlation matrix, threshold, and graph
+        self.correlation_method = correlation_method
         if correlation_matrix is not None:
+            C = np.asarray(correlation_matrix)
+            if C.ndim != 2 or C.shape[0] != C.shape[1]:
+                raise ValueError(
+                    f"`correlation_matrix` must be square 2D; got shape {C.shape}. "
+                    "Check that another parameter was not passed to correlation_matrix."
+                )
             self._correlation_matrix = correlation_matrix
         else:
             self._correlation_matrix = self.get_correlation_matrix(data_matrix=self._neuron_dynamics,
-                                                                   method=correlation_method,
+                                                                   method=self.correlation_method,
                                                                    **correlation_kwargs)
 
         if threshold is not None:
@@ -171,23 +179,7 @@ class CaGraph:
 
         # Add node metadata
         if node_metadata is not None:
-            for key in node_metadata.keys():
-                if type(node_metadata[key]) is list or np.ndarray:
-                    if len(node_metadata[key]) != len(self._node_labels):
-                        raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
-                                         'associated with every node.')
-                    node_metadata_dict = {}
-                    for i, value in enumerate(node_metadata[key]):
-                        node_metadata_dict[self._node_labels[i]] = value
-                    self.__attribute_dictionary[key] = node_metadata_dict
-                    setattr(self, key, node_metadata_dict)
-                elif type(node_metadata[key]) is dict:
-                    self.__attribute_dictionary[key] = node_metadata
-                    setattr(self, key, node_metadata[key])
-                else:
-                    raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
-                                         'supplied as type list, one-dimensional numpy.ndarray, or as a dictionary'
-                                         'where each key is a node and each value is the metadata value for that node.')
+            self.load_metadata(node_metadata=node_metadata)
 
     # Private utility methods
     @property
@@ -420,6 +412,25 @@ class CaGraph:
 
         self.coordinates = {i: (x, y) for i, (x, y) in enumerate(zip(x_coords, y_coords))}
 
+    def load_metadata(self, node_metadata):
+        for key in node_metadata.keys():
+            if isinstance(node_metadata[key], (list, np.ndarray)):
+                if len(node_metadata[key]) != len(self._node_labels):
+                    raise ValueError('Each key-value pair in the node_metadata dictionary must have a value to be '
+                                     'associated with every node.')
+                node_metadata_dict = {}
+                for i, value in enumerate(node_metadata[key]):
+                    node_metadata_dict[self._node_labels[i]] = value
+                self.__attribute_dictionary[key] = node_metadata_dict
+                setattr(self, key, node_metadata_dict)
+            elif isinstance(node_metadata[key], dict):
+                self.__attribute_dictionary[key] = node_metadata
+                setattr(self, key, node_metadata[key])
+            else:
+                raise AttributeError('Each key-value pair in the node_metadata dictionary must have a value'
+                                     'supplied as type list, one-dimensional numpy.ndarray, or as a dictionary'
+                                     'where each key is a node and each value is the metadata value for that node.')
+
     def sensitivity_analysis(self, data, correlation_method='pearson', interval=None, threshold=None, show_plot=True, save_plot=False, save_path=None,
                              dpi=300, save_format='png', **correlation_kwargs):
         """
@@ -505,9 +516,9 @@ class CaGraph:
         n = data_matrix.shape[0]
         corr_matrix = np.ones((n, n))
         if method == "pearson":
-            return np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
+            corr = np.nan_to_num(np.corrcoef(data_matrix, rowvar=True))
         elif method == "spearman":
-            return np.nan_to_num(stats.spearmanr(data_matrix.T).correlation)
+            corr = np.nan_to_num(stats.spearmanr(data_matrix, axis=1).correlation)
         elif method == "crosscorr":
             for i in range(n):
                 for j in range(i + 1, n):
@@ -516,7 +527,7 @@ class CaGraph:
                                 range(-crosscorr_max_lag, crosscorr_max_lag + 1)])
                     corr_matrix[i, j] = corr
                     corr_matrix[j, i] = corr
-            return corr_matrix
+            corr = corr_matrix
         elif method == "partial":
             for i in range(n):
                 for j in range(i + 1, n):
@@ -529,9 +540,22 @@ class CaGraph:
                     corr = np.corrcoef(res_i, res_j)[0, 1]
                     corr_matrix[i, j] = corr
                     corr_matrix[j, i] = corr
-            return corr_matrix
+            corr = corr_matrix
         else:
             raise ValueError(f"Unsupported method: {method}")
+
+        # --- Final sanitation to guarantee 2D (n×n) ---
+        corr = np.nan_to_num(corr)
+        corr = np.atleast_2d(corr)
+
+        # If shape still isn't (n×n), fallback to Pearson layout to avoid downstream crashes
+        if corr.shape != (n, n):
+            corr = np.corrcoef(data_matrix, rowvar=True)
+            corr = np.nan_to_num(corr)
+
+        # Ensure perfect self-correlation on the diagonal
+        np.fill_diagonal(corr, 1.0)
+        return corr
 
     def get_adjacency_matrix(self, threshold=None) -> np.ndarray:
         """
@@ -582,7 +606,7 @@ class CaGraph:
         :return: numpy.ndarray
             The weighted connectivity matrix as a numpy array.
         """
-        weight_matrix = self._correlation_matrix
+        weight_matrix = self._correlation_matrix.copy()
         np.fill_diagonal(weight_matrix, 0)
         return weight_matrix
 
@@ -691,7 +715,10 @@ class CaGraph:
         if graph is None:
             graph = self._graph
         if position is None:
-            position = self.coordinates if hasattr(self, 'coordinates') else nx.spring_layout(graph)
+            if hasattr(self, 'coordinates') and isinstance(self.coordinates, dict) and len(self.coordinates) > 0:
+                position = self.coordinates
+            else:
+                position = nx.spring_layout(graph)
 
         plt.figure(figsize=figsize)
 
@@ -1264,7 +1291,7 @@ class CaGraph:
                 :return: None
                 """
             if correlation_matrix is None:
-                correlation_matrix = self._correlation_matrix()
+                correlation_matrix = self._correlation_matrix
             sns.heatmap(correlation_matrix, vmin=0, vmax=1)
             if title is not None:
                 plt.title(title)
